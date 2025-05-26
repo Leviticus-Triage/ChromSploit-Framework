@@ -1,0 +1,6 @@
+torch>=2.3.1+cu121
+onnxruntime-gpu>=1.17.0
+xgboost>=2.1.0
+transformers>=4.40.0
+pybreaker>=1.0.0
+psutil>=5.9.5
