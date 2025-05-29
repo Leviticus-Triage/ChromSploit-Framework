@@ -6,7 +6,7 @@ Implements the Common Vulnerability Scoring System version 3.1.
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, Any
 import math
 
 

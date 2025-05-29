@@ -28,6 +28,9 @@ try:
     import mss
     SCREENSHOT_AVAILABLE = True
 except ImportError:
+    Image = None
+    ImageDraw = None
+    ImageFont = None
     SCREENSHOT_AVAILABLE = False
 
 from core.enhanced_logger import get_logger
@@ -253,7 +256,7 @@ class ScreenshotCapture:
             self.logger.error(f"Failed to capture screenshot: {str(e)}")
             return None
     
-    def _add_timestamp_overlay(self, img: Image.Image) -> Image.Image:
+    def _add_timestamp_overlay(self, img: Any) -> Any:
         """Add timestamp overlay to image"""
         draw = ImageDraw.Draw(img)
         
@@ -697,7 +700,8 @@ class ReportGenerator:
             
             if evidence.get('console_output'):
                 html_parts.append(f'<p><strong>Console Output:</strong></p>')
-                html_parts.append(f'<pre>{self._escape_html("\\n".join(evidence["console_output"]))}</pre>')
+                console_output = "\n".join(evidence["console_output"])
+                html_parts.append(f'<pre>{self._escape_html(console_output)}</pre>')
             
             if evidence.get('screenshot_path'):
                 # For HTML export, we'll embed the image as base64
@@ -868,7 +872,9 @@ class ReportGenerator:
     def _generate_markdown_report(self, report: SecurityReport) -> str:
         """Generate Markdown report content"""
         report_data = report.to_dict()
+        newline = "\n"
         
+        # Build header section
         md = f"""# {report.title}
 
 **Report ID:** {report_data['report_id']}  
@@ -879,11 +885,17 @@ class ReportGenerator:
 ## Executive Summary
 
 {report_data.get('executive_summary', f"This report documents a **{report_data['vulnerability']['severity']}** severity vulnerability discovered during security assessment.")}
+"""
 
-{'### Business Impact\n\n' + report_data.get('business_impact', 'No business impact analysis available.') + '\n' if report_data.get('business_impact') else ''}
+        # Add optional sections
+        if report_data.get('business_impact'):
+            md += f"\n### Business Impact\n\n{report_data.get('business_impact', 'No business impact analysis available.')}\n"
+        
+        if report_data.get('risk_rating'):
+            md += f"\n### Risk Rating\n\n{report_data.get('risk_rating', 'No risk rating available.')}\n"
 
-{'### Risk Rating\n\n' + report_data.get('risk_rating', 'No risk rating available.') + '\n' if report_data.get('risk_rating') else ''}
-
+        # Add target information
+        md += f"""
 ## Target Information
 
 | Field | Value |
@@ -898,12 +910,19 @@ class ReportGenerator:
 | Field | Value |
 |-------|-------|
 | Name | {report_data['vulnerability']['name']} |
-| Severity | **{report_data['vulnerability']['severity']}** |
-{'| CVE ID | ' + report_data['vulnerability'].get('cve_id', '') + ' |' if report_data['vulnerability'].get('cve_id') else ''}
-{'| CWE ID | ' + report_data['vulnerability'].get('cweid', '') + ' |' if report_data['vulnerability'].get('cweid') else ''}
-{'| OWASP Category | ' + report_data['vulnerability'].get('owasp_category', '') + ' |' if report_data['vulnerability'].get('owasp_category') else ''}
+| Severity | **{report_data['vulnerability']['severity']}** |"""
 
-"""
+        # Add conditional vulnerability fields
+        if report_data['vulnerability'].get('cve_id'):
+            md += f"\n| CVE ID | {report_data['vulnerability'].get('cve_id', '')} |"
+        
+        if report_data['vulnerability'].get('cweid'):
+            md += f"\n| CWE ID | {report_data['vulnerability'].get('cweid', '')} |"
+            
+        if report_data['vulnerability'].get('owasp_category'):
+            md += f"\n| OWASP Category | {report_data['vulnerability'].get('owasp_category', '')} |"
+
+        md += "\n"
         
         # Add CVSS section if available
         if report_data['vulnerability'].get('cvss_base_score'):
@@ -911,25 +930,33 @@ class ReportGenerator:
 
 | Metric | Value |
 |--------|-------|
-| Base Score | **{report_data['vulnerability']['cvss_base_score']}** ({self._get_cvss_severity_text(report_data['vulnerability']['cvss_base_score'])}) |
-{'| Temporal Score | ' + str(report_data['vulnerability']['cvss_temporal_score']) + ' |' if report_data['vulnerability'].get('cvss_temporal_score') else ''}
+| Base Score | **{report_data['vulnerability']['cvss_base_score']}** ({self._get_cvss_severity_text(report_data['vulnerability']['cvss_base_score'])}) |"""
+
+            if report_data['vulnerability'].get('cvss_temporal_score'):
+                md += f"\n| Temporal Score | {report_data['vulnerability']['cvss_temporal_score']} |"
+                
+            md += f"""
 | Vector | `{report_data['vulnerability']['cvss_vector']}` |
 
 {self._generate_cvss_analysis_markdown(report_data['vulnerability'].get('cvss_analysis', {}))}
 """
         
+        # Add description and impact sections
         md += f"""### Description
 
 {report_data['vulnerability'].get('description', 'No description provided.')}
+"""
 
-{'### Technical Summary\n\n' + report_data.get('technical_summary', 'No technical summary available.') + '\n' if report_data.get('technical_summary') else ''}
+        # Add optional technical summary
+        if report_data.get('technical_summary'):
+            md += f"\n### Technical Summary\n\n{report_data.get('technical_summary', 'No technical summary available.')}\n"
 
+        md += f"""
 ### Impact
 
 {report_data['vulnerability'].get('impact', 'No impact analysis provided.')}
 
 ## Evidence
-
 """
         
         # Add evidence
