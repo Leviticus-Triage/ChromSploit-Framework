@@ -1,213 +1,352 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-ChromSploit Framework v2.0
-Modul-Loader für optionale Komponenten
-Für Bildungs- und autorisierte Penetrationstests
+ChromSploit Framework - Module Loader
+Dynamic loading system for optional components with fallback mechanisms
 """
 
 import os
 import sys
 import importlib.util
-from typing import Dict, List, Any, Optional, Tuple, Union
+import threading
+import json
+from typing import Dict, List, Any, Optional, Tuple, Union, Callable
+from dataclasses import dataclass
+from pathlib import Path
+import logging
 
-from core.colors import Colors
-from core.logger import Logger
-from core.utils import Utils
-from core.path_utils import PathUtils
+logger = logging.getLogger(__name__)
+
+
+@dataclass
+class ModuleInfo:
+    """Information about a loadable module"""
+    name: str
+    path: str
+    dependencies: List[str]
+    description: str
+    version: str
+    enabled: bool = False
+    loaded: bool = False
+    instance: Optional[Any] = None
+    fallback: Optional[str] = None
+
 
 class ModuleLoader:
     """
-    Modul-Loader für optionale Komponenten des ChromSploit Frameworks
+    Dynamic module loader for optional components with dependency checking
+    and fallback mechanisms
     """
     
-    def __init__(self, logger: Optional[Logger] = None):
-        """
-        Initialisiert den Modul-Loader
+    def __init__(self, config_path: str = None):
+        self.modules_dir = Path(__file__).parent.parent / "modules"
+        self.config_path = config_path or "config/modules.json"
+        self.loaded_modules: Dict[str, ModuleInfo] = {}
+        self.dependency_graph: Dict[str, List[str]] = {}
+        self.fallback_handlers: Dict[str, Callable] = {}
+        self.lock = threading.Lock()
         
-        Args:
-            logger (Logger, optional): Logger-Instanz
-        """
-        self.logger = logger
-        self.modules_dir = os.path.join(PathUtils.get_root_dir(), "modules")
-        self.enabled_modules = {}
-        
-        # Sicherstellen, dass das Verzeichnis existiert
-        PathUtils.ensure_dir_exists(self.modules_dir)
-    
-    def log(self, level: str, message: str) -> None:
-        """
-        Loggt eine Nachricht
-        
-        Args:
-            level (str): Log-Level
-            message (str): Nachricht
-        """
-        if self.logger:
-            if level == "info":
-                self.logger.info(message)
-            elif level == "warning":
-                self.logger.warning(message)
-            elif level == "error":
-                self.logger.error(message)
-            elif level == "debug":
-                self.logger.debug(message)
-        else:
-            print(f"{Colors.BLUE}[*] {message}{Colors.RESET}" if level == "info" else
-                  f"{Colors.YELLOW}[!] {message}{Colors.RESET}" if level == "warning" else
-                  f"{Colors.RED}[-] {message}{Colors.RESET}" if level == "error" else
-                  f"{Colors.MAGENTA}[D] {message}{Colors.RESET}")
-    
-    def check_optional_deps(self) -> Dict[str, bool]:
-        """
-        Überprüft die Abhängigkeiten für optionale Module
-        
-        Returns:
-            dict: Status der Abhängigkeiten für jedes Modul
-        """
-        self.log("info", "Überprüfe Abhängigkeiten für optionale Module...")
-        
-        deps_status = {
-            'ai': False,
-            'resilience': False
+        # Module registry
+        self.available_modules = {
+            'ai_orchestrator': ModuleInfo(
+                name='ai_orchestrator',
+                path='modules.ai.ai_orchestrator',
+                dependencies=['torch', 'onnxruntime', 'xgboost', 'transformers'],
+                description='AI-powered exploit and payload selection',
+                version='2.0',
+                fallback='legacy_cve_matcher'
+            ),
+            'resilience': ModuleInfo(
+                name='resilience',
+                path='modules.resilience.resilience_module',
+                dependencies=['pybreaker', 'psutil'],
+                description='Self-healing infrastructure components',
+                version='1.0',
+                fallback='basic_error_handler'
+            ),
+            'ollvm_obfuscator': ModuleInfo(
+                name='ollvm_obfuscator',
+                path='modules.obfuscation.ollvm_handler',
+                dependencies=['docker'],
+                description='OLLVM-based binary obfuscation',
+                version='1.0',
+                fallback='xor_obfuscator'
+            ),
+            'advanced_reporting': ModuleInfo(
+                name='advanced_reporting',
+                path='modules.reporting.advanced_reporter',
+                dependencies=['jinja2', 'weasyprint', 'plotly'],
+                description='Enhanced reporting with visualizations',
+                version='1.0',
+                fallback='basic_reporter'
+            )
         }
         
-        # AI-Abhängigkeiten überprüfen
-        required_ai = ['torch', 'onnxruntime', 'xgboost', 'transformers']
-        ai_ok = all(self._check_module_available(m) for m in required_ai)
-        deps_status['ai'] = ai_ok
+        self._init_fallback_handlers()
         
-        # Resilience-Abhängigkeiten überprüfen
-        required_resilience = ['pybreaker', 'psutil']
-        resilience_ok = all(self._check_module_available(m) for m in required_resilience)
-        deps_status['resilience'] = resilience_ok
-        
-        return deps_status
-    
-    def _check_module_available(self, module_name: str) -> bool:
-        """
-        Überprüft, ob ein Python-Modul verfügbar ist
-        
-        Args:
-            module_name (str): Name des Moduls
-            
-        Returns:
-            bool: True, wenn das Modul verfügbar ist, sonst False
-        """
-        try:
-            spec = importlib.util.find_spec(module_name)
-            return spec is not None
-        except (ImportError, AttributeError):
-            return False
-    
-    def load_optional_modules(self) -> Dict[str, bool]:
-        """
-        Lädt optionale Module
-        
-        Returns:
-            dict: Status der geladenen Module
-        """
-        self.log("info", "Lade optionale Module...")
-        
-        # Abhängigkeiten überprüfen
-        deps_status = self.check_optional_deps()
-        
-        # Module laden
-        self.enabled_modules = {
-            'ai': self._load_ai_module() if deps_status['ai'] else False,
-            'resilience': self._load_resilience_module() if deps_status['resilience'] else False
+    def _init_fallback_handlers(self):
+        """Initialize fallback handlers"""
+        self.fallback_handlers = {
+            'legacy_cve_matcher': self._legacy_cve_matcher,
+            'basic_error_handler': self._basic_error_handler,
+            'xor_obfuscator': self._xor_obfuscator,
+            'basic_reporter': self._basic_reporter
         }
-        
-        # Status ausgeben
-        for module, status in self.enabled_modules.items():
-            if status:
-                self.log("info", f"Modul '{module}' erfolgreich geladen")
-            else:
-                self.log("warning", f"Modul '{module}' konnte nicht geladen werden")
-        
-        return self.enabled_modules
     
-    def _load_ai_module(self) -> bool:
+    def check_dependencies(self, module_name: str) -> Tuple[bool, List[str]]:
         """
-        Lädt das AI-Modul
-        
-        Returns:
-            bool: True, wenn das Modul erfolgreich geladen wurde, sonst False
-        """
-        try:
-            # Pfad zum AI-Modul
-            ai_module_path = os.path.join(self.modules_dir, "ai")
-            
-            # Überprüfen, ob das Verzeichnis existiert
-            if not os.path.exists(ai_module_path):
-                self.log("warning", f"AI-Modul-Verzeichnis nicht gefunden: {ai_module_path}")
-                return False
-            
-            # Pfad zum Python-Suchpfad hinzufügen
-            if ai_module_path not in sys.path:
-                sys.path.append(ai_module_path)
-            
-            # Versuchen, den AI-Orchestrator zu importieren
-            try:
-                from ai_orchestrator_v2 import AIOrchestrator
-                self.log("info", "AI-Orchestrator erfolgreich importiert")
-                return True
-            except ImportError as e:
-                self.log("warning", f"Fehler beim Importieren des AI-Orchestrators: {str(e)}")
-                return False
-        except Exception as e:
-            self.log("error", f"Fehler beim Laden des AI-Moduls: {str(e)}")
-            return False
-    
-    def _load_resilience_module(self) -> bool:
-        """
-        Lädt das Resilience-Modul
-        
-        Returns:
-            bool: True, wenn das Modul erfolgreich geladen wurde, sonst False
-        """
-        try:
-            # Pfad zum Resilience-Modul
-            resilience_module_path = os.path.join(self.modules_dir, "resilience")
-            
-            # Überprüfen, ob das Verzeichnis existiert
-            if not os.path.exists(resilience_module_path):
-                self.log("warning", f"Resilience-Modul-Verzeichnis nicht gefunden: {resilience_module_path}")
-                return False
-            
-            # Pfad zum Python-Suchpfad hinzufügen
-            if resilience_module_path not in sys.path:
-                sys.path.append(resilience_module_path)
-            
-            # Versuchen, den CircuitBreaker zu importieren
-            try:
-                from resilience_module import CircuitBreaker
-                self.log("info", "CircuitBreaker erfolgreich importiert")
-                return True
-            except ImportError as e:
-                self.log("warning", f"Fehler beim Importieren des CircuitBreakers: {str(e)}")
-                return False
-        except Exception as e:
-            self.log("error", f"Fehler beim Laden des Resilience-Moduls: {str(e)}")
-            return False
-    
-    def is_module_enabled(self, module_name: str) -> bool:
-        """
-        Überprüft, ob ein Modul aktiviert ist
+        Check if all dependencies for a module are available
         
         Args:
-            module_name (str): Name des Moduls
+            module_name: Name of the module to check
             
         Returns:
-            bool: True, wenn das Modul aktiviert ist, sonst False
+            Tuple of (all_available, missing_dependencies)
         """
-        return self.enabled_modules.get(module_name, False)
-    
-    def get_module_status(self) -> Dict[str, bool]:
-        """
-        Gibt den Status aller Module zurück
+        if module_name not in self.available_modules:
+            return False, [f"Module {module_name} not found"]
+            
+        module_info = self.available_modules[module_name]
+        missing = []
         
-        Returns:
-            dict: Status aller Module
+        for dep in module_info.dependencies:
+            if not self._check_dependency_available(dep):
+                missing.append(dep)
+                
+        return len(missing) == 0, missing
+    
+    def _check_dependency_available(self, dependency: str) -> bool:
+        """Check if a single dependency is available"""
+        try:
+            # Check for Python modules
+            if '.' not in dependency:
+                spec = importlib.util.find_spec(dependency)
+                return spec is not None
+            
+            # Check for system tools
+            if dependency == 'docker':
+                import subprocess
+                result = subprocess.run(['docker', '--version'], 
+                                      capture_output=True, text=True)
+                return result.returncode == 0
+                
+            return False
+        except Exception:
+            return False
+    
+    def load_module(self, module_name: str, force: bool = False) -> Optional[Any]:
         """
-        return self.enabled_modules.copy()
+        Load a module with dependency checking and fallback
+        
+        Args:
+            module_name: Name of the module to load
+            force: Force loading even if dependencies are missing
+            
+        Returns:
+            Module instance or fallback handler
+        """
+        with self.lock:
+            # Check if already loaded
+            if module_name in self.loaded_modules and self.loaded_modules[module_name].loaded:
+                return self.loaded_modules[module_name].instance
+                
+            # Check if module exists
+            if module_name not in self.available_modules:
+                logger.error(f"Module {module_name} not found")
+                return None
+                
+            module_info = self.available_modules[module_name]
+            
+            # Check dependencies
+            deps_ok, missing = self.check_dependencies(module_name)
+            
+            if not deps_ok and not force:
+                logger.warning(f"Missing dependencies for {module_name}: {missing}")
+                
+                # Try fallback
+                if module_info.fallback:
+                    logger.info(f"Using fallback {module_info.fallback} for {module_name}")
+                    return self._get_fallback_handler(module_info.fallback)
+                    
+                return None
+                
+            # Load the module
+            try:
+                module = importlib.import_module(module_info.path)
+                
+                # Get the main class (assumes class name is CamelCase of module name)
+                class_name = ''.join(word.capitalize() for word in module_name.split('_'))
+                if hasattr(module, class_name):
+                    instance = getattr(module, class_name)()
+                else:
+                    # Try common patterns
+                    for pattern in [f"{class_name}Module", f"{class_name}Handler", class_name]:
+                        if hasattr(module, pattern):
+                            instance = getattr(module, pattern)()
+                            break
+                    else:
+                        logger.error(f"No suitable class found in {module_info.path}")
+                        return self._get_fallback_handler(module_info.fallback)
+                
+                # Update module info
+                module_info.loaded = True
+                module_info.enabled = True
+                module_info.instance = instance
+                self.loaded_modules[module_name] = module_info
+                
+                logger.info(f"Successfully loaded module {module_name}")
+                return instance
+                
+            except Exception as e:
+                logger.error(f"Failed to load module {module_name}: {e}")
+                
+                # Try fallback
+                if module_info.fallback:
+                    logger.info(f"Using fallback {module_info.fallback} for {module_name}")
+                    return self._get_fallback_handler(module_info.fallback)
+                    
+                return None
+    
+    def get_module(self, module_name: str) -> Optional[Any]:
+        """Get a loaded module instance"""
+        if module_name in self.loaded_modules:
+            return self.loaded_modules[module_name].instance
+        return None
+    
+    def list_available_modules(self) -> Dict[str, Dict[str, Any]]:
+        """List all available modules with their status"""
+        result = {}
+        for name, info in self.available_modules.items():
+            deps_ok, missing = self.check_dependencies(name)
+            result[name] = {
+                'description': info.description,
+                'version': info.version,
+                'dependencies': info.dependencies,
+                'dependencies_ok': deps_ok,
+                'missing_dependencies': missing,
+                'loaded': info.loaded,
+                'enabled': info.enabled,
+                'fallback': info.fallback
+            }
+        return result
+    
+    def _get_fallback_handler(self, fallback_name: str) -> Optional[Callable]:
+        """Get a fallback handler"""
+        return self.fallback_handlers.get(fallback_name)
+    
+    # Fallback implementations
+    def _legacy_cve_matcher(self):
+        """Fallback CVE matcher when AI orchestrator is unavailable"""
+        class LegacyCVEMatcher:
+            def recommend_exploit(self, target_data: Dict) -> str:
+                """Simple rule-based exploit recommendation"""
+                browser = target_data.get('browser', '').lower()
+                os_type = target_data.get('os_type', '').lower()
+                
+                if 'chrome' in browser:
+                    if 'windows' in os_type:
+                        return 'CVE-2025-2783'  # Chrome Mojo Sandbox Escape
+                    else:
+                        return 'CVE-2025-4664'  # Chrome Data Leak
+                elif 'firefox' in browser:
+                    return 'CVE-2025-2857'  # Firefox Sandbox Escape
+                elif 'edge' in browser:
+                    return 'CVE-2025-30397'  # Edge WebAssembly JIT
+                else:
+                    return 'CVE-2025-4664'  # Default to Chrome Data Leak
+                    
+            def analyze_target(self, target_data: Dict) -> Dict:
+                """Simple target analysis"""
+                return {
+                    'recommended_exploit': self.recommend_exploit(target_data),
+                    'confidence': 0.7,
+                    'reasoning': 'Rule-based recommendation',
+                    'fallback': True
+                }
+        
+        return LegacyCVEMatcher()
+    
+    def _basic_error_handler(self):
+        """Basic error handling fallback"""
+        class BasicErrorHandler:
+            def handle_error(self, error: Exception, context: str) -> bool:
+                logger.error(f"Error in {context}: {error}")
+                return True
+                
+            def is_healthy(self) -> bool:
+                return True
+                
+            def restart_service(self, service_name: str) -> bool:
+                logger.info(f"Basic restart attempt for {service_name}")
+                return False
+        
+        return BasicErrorHandler()
+    
+    def _xor_obfuscator(self):
+        """Simple XOR obfuscation fallback"""
+        class XORObfuscator:
+            def obfuscate_payload(self, payload: bytes, key: int = 0xAA) -> bytes:
+                """Simple XOR obfuscation"""
+                return bytes(b ^ key for b in payload)
+                
+            def generate_decoder_stub(self, key: int = 0xAA) -> str:
+                """Generate decoder stub"""
+                return f"""
+                def decode(data):
+                    return bytes(b ^ {key} for b in data)
+                """
+                
+            def obfuscate_string(self, text: str, key: int = 0xAA) -> str:
+                """Obfuscate string with XOR"""
+                encoded = self.obfuscate_payload(text.encode(), key)
+                return encoded.hex()
+        
+        return XORObfuscator()
+    
+    def _basic_reporter(self):
+        """Basic reporting fallback"""
+        class BasicReporter:
+            def generate_report(self, data: Dict) -> str:
+                """Generate basic text report"""
+                report = "ChromSploit Framework Report\n"
+                report += "=" * 30 + "\n\n"
+                
+                for key, value in data.items():
+                    report += f"{key}: {value}\n"
+                
+                return report
+                
+            def export_json(self, data: Dict, filename: str) -> bool:
+                """Export data as JSON"""
+                try:
+                    with open(filename, 'w') as f:
+                        json.dump(data, f, indent=2)
+                    return True
+                except Exception as e:
+                    logger.error(f"Failed to export JSON: {e}")
+                    return False
+        
+        return BasicReporter()
+
+
+# Global instance
+_module_loader = None
+
+def get_module_loader() -> ModuleLoader:
+    """Get or create module loader instance"""
+    global _module_loader
+    if _module_loader is None:
+        _module_loader = ModuleLoader()
+    return _module_loader
+
+
+def load_module(module_name: str) -> Optional[Any]:
+    """Convenience function to load a module"""
+    loader = get_module_loader()
+    return loader.load_module(module_name)
+
+
+def get_module(module_name: str) -> Optional[Any]:
+    """Convenience function to get a loaded module"""
+    loader = get_module_loader()
+    return loader.get_module(module_name)

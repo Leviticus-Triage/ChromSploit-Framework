@@ -26,6 +26,9 @@ from core.config import Config
 from core.logger import Logger
 from core.utils import Utils
 from core.path_utils import PathUtils
+from core.simulation import SimulationMode, get_simulation_engine
+from core.enhanced_logger import get_logger
+from core.error_handler import get_error_handler, handle_errors
 
 # UI-Module importieren
 from ui.main_menu import MainMenu
@@ -121,6 +124,39 @@ def main():
     # Kommandozeilenargumente parsen
     args = parse_arguments()
     
+    # Initialize enhanced logging
+    enhanced_logger = get_logger()
+    enhanced_logger.set_level(args.log_level)
+    
+    # Initialize error handler
+    error_handler = get_error_handler()
+    error_handler.debug_mode = args.debug
+    
+    # Initialize resilience system
+    try:
+        from modules.resilience import get_resilience_manager, get_self_healing_system
+        resilience_manager = get_resilience_manager()
+        self_healing_system = get_self_healing_system()
+        
+        # Start monitoring
+        resilience_manager.start_monitoring()
+        self_healing_system.start_proactive_healing()
+        print(f"{Colors.GREEN}[+] Resilience system initialized{Colors.RESET}")
+    except ImportError:
+        print(f"{Colors.YELLOW}[!] Resilience system not available{Colors.RESET}")
+    except Exception as e:
+        print(f"{Colors.RED}[!] Resilience system initialization failed: {e}{Colors.RESET}")
+    
+    # Initialize simulation engine
+    sim_mode = SimulationMode(args.simulation)
+    sim_engine = get_simulation_engine(sim_mode)
+    
+    # Show simulation warning
+    if args.simulation:
+        print(f"\n{Colors.YELLOW}[!] SIMULATION MODE ACTIVE - Mode: {args.simulation}{Colors.RESET}")
+        print(f"{Colors.YELLOW}[!] No actual exploitation will be performed{Colors.RESET}\n")
+        time.sleep(2)
+    
     # Banner anzeigen
     display_banner()
     
@@ -128,7 +164,7 @@ def main():
     config_path = args.config if args.config else os.path.join(BASE_DIR, 'config', 'user_config.json')
     config = Config(config_path)
     
-    # Logger initialisieren
+    # Logger initialisieren (legacy logger for compatibility)
     log_level = 2 if args.verbose else 1
     logger = Logger(log_level=log_level, log_file=os.path.join(BASE_DIR, 'logs', f'chromsploit_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'))
     
@@ -149,21 +185,33 @@ def main():
     # Wenn ein Exploit direkt ausgeführt werden soll
     if args.exploit:
         print(f"{Colors.CYAN}[*] Führe Exploit aus: {args.exploit}{Colors.RESET}")
-        # Hier würde die direkte Exploit-Ausführung implementiert werden
-        print(f"{Colors.GREEN}[+] Exploit-Ausführung abgeschlossen{Colors.RESET}")
+        # Use simulation engine for exploit
+        if args.simulation:
+            result = sim_engine.simulate_cve_exploit(args.exploit, "target", {})
+            print(f"{Colors.GREEN}[+] Simulation abgeschlossen: {result.message}{Colors.RESET}")
+        else:
+            print(f"{Colors.RED}[!] Direkte Exploit-Ausführung nur im Simulationsmodus verfügbar{Colors.RESET}")
         sys.exit(0)
     
     # Hauptmenü starten
     try:
         menu = MainMenu()
+        menu.simulation_mode = args.simulation is not None
         menu.display()
     except KeyboardInterrupt:
         print(f"\n{Colors.YELLOW}[!] Benutzerabbruch erkannt. Beende ChromSploit...{Colors.RESET}")
     except Exception as e:
-        print(f"\n{Colors.RED}[!] Fehler: {str(e)}{Colors.RESET}")
-        logger.error(f"Unbehandelte Ausnahme: {str(e)}")
+        error_handler.handle_error(e, "Main execution")
     finally:
         print(f"{Colors.CYAN}[*] ChromSploit wird beendet. Auf Wiedersehen!{Colors.RESET}")
+        
+        # Show simulation statistics if in simulation mode
+        if args.simulation:
+            stats = sim_engine.get_simulation_stats()
+            if stats['total_simulations'] > 0:
+                print(f"\n{Colors.CYAN}=== Simulation Summary ==={Colors.RESET}")
+                print(f"Total simulations: {stats['total_simulations']}")
+                print(f"Success rate: {stats['success_rate']:.1f}%")
 
 if __name__ == "__main__":
     main()

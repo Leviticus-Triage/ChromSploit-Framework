@@ -1,0 +1,34 @@
+# Include important files
+include README.md
+include LICENSE
+include requirements.txt
+include requirements-optional.txt
+include pytest.ini
+include setup.py
+
+# Include configuration files
+recursive-include config *.json *.yaml *.yml
+
+# Include documentation
+recursive-include docs *.md *.txt *.rst
+
+# Include tests
+recursive-include tests *.py
+
+# Include static resources
+recursive-include static *
+
+# Exclude compiled files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude __pycache__
+global-exclude .DS_Store
+global-exclude .git
+global-exclude .gitignore
+
+# Exclude temporary files
+global-exclude *.swp
+global-exclude *.swo
+global-exclude *~
+global-exclude .coverage
+global-exclude .pytest_cache

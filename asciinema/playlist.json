@@ -1,0 +1,69 @@
+{
+  "title": "ChromSploit Framework Demo Playlist",
+  "description": "Complete demonstration of ChromSploit Framework capabilities",
+  "recordings": [
+    {
+      "file": "01_framework_startup.cast",
+      "title": "Framework Startup & Introduction",
+      "description": "Introduction to ChromSploit Framework and basic startup process",
+      "duration": "auto",
+      "order": 1
+    },
+    {
+      "file": "02_cve_exploits.cast",
+      "title": "CVE Exploit Modules Overview",
+      "description": "Overview of available CVE exploit modules and capabilities",
+      "duration": "auto",
+      "order": 2
+    },
+    {
+      "file": "03_advanced_features.cast",
+      "title": "Advanced Framework Features",
+      "description": "Advanced features including AI integration, monitoring, and obfuscation",
+      "duration": "auto",
+      "order": 3
+    },
+    {
+      "file": "04_exploit_execution.cast",
+      "title": "CVE-2025-2783: Chrome Mojo IPC Exploit",
+      "description": "Demonstration of Chrome Mojo IPC sandbox escape exploitation",
+      "duration": "auto",
+      "order": 4
+    },
+    {
+      "file": "05_wasm_jit.cast",
+      "title": "CVE-2025-30397: WebAssembly JIT Type Confusion",
+      "description": "WebAssembly JIT type confusion exploit with multi-stage execution",
+      "duration": "auto",
+      "order": 5
+    },
+    {
+      "file": "06_tomcat_rce.cast",
+      "title": "CVE-2025-24813: Apache Tomcat RCE",
+      "description": "Apache Tomcat RCE via malicious WAR file deployment",
+      "duration": "auto",
+      "order": 6
+    },
+    {
+      "file": "07_git_rce.cast",
+      "title": "CVE-2024-32002: Git Remote Code Execution",
+      "description": "Git RCE exploitation using symbolic links and malicious repositories",
+      "duration": "auto",
+      "order": 7
+    },
+    {
+      "file": "08_framework_features.cast",
+      "title": "Framework Features Summary",
+      "description": "Complete overview of framework capabilities and educational focus",
+      "duration": "auto",
+      "order": 8
+    },
+    {
+      "file": "chromsploit_complete_demo.cast",
+      "title": "Demo Part 9",
+      "description": "ChromSploit demonstration part 9",
+      "duration": "auto",
+      "order": 9
+    }
+  ]
+}
