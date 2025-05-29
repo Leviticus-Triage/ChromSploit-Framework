@@ -50,8 +50,19 @@ flake8 . --max-line-length 120
 # Type checking
 mypy chromsploit.py --ignore-missing-imports
 
+# Security scanning
+bandit -r . -x tests/ -f json -o security-report.json
+
+# Run specific test categories
+python -m pytest -m unit          # Unit tests only
+python -m pytest -m integration   # Integration tests only
+python -m pytest -m "not slow"    # Skip slow tests
+
+# Install in development mode
+pip install -e .[dev]
+
 # Create new exploit module
-cp exploits/template_exploit.py exploits/cve_YYYY_XXXXX.py
+cp exploits/cve_2025_4664.py exploits/cve_YYYY_XXXXX.py  # Use real example as template
 ```
 
 ## Architecture
@@ -201,3 +212,25 @@ Exploits supporting obfuscation should:
 4. **CVE-2025-24813**: Apache Tomcat RCE (WAR deployment)
 5. **CVE-2024-32002**: Git RCE (symbolic links)
 6. **Asciinema Integration**: Terminal recording and playback system
+
+## Tool Integration Points
+
+### External Tools
+- **Ngrok**: Automatic tunnel creation via `core/ngrok_manager.py`
+- **Metasploit**: Integration via `tools/metasploit_integration.py`
+- **Sliver C2**: Full C2 framework integration in `core/sliver_c2/`
+- **OLLVM**: Binary obfuscation via `tools/ollvm_integration.py`
+
+### Framework Dependencies
+- Core depends on: `requests`, `colorama`, `tabulate`, `click`
+- Optional modules may require: `pycryptodome`, `selenium`, `scapy`
+- Development requires: `pytest`, `black`, `flake8`, `mypy`, `bandit`
+
+## Working with Legacy Code
+
+The repository contains some legacy v2.0 code in `chromsploit_framework_v2.0/` that uses different patterns:
+- Old logger in `core/logger.py` vs new `core/enhanced_logger.py`
+- Simple menus vs enhanced menu system
+- Different configuration patterns
+
+When making changes, prefer the new v2.2 patterns and gradually migrate legacy code.
