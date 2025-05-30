@@ -14,7 +14,21 @@ long_description = (this_directory / "README.md").read_text(encoding='utf-8')
 
 # Read requirements
 requirements = (this_directory / "requirements.txt").read_text().splitlines()
-optional_requirements = (this_directory / "requirements-optional.txt").read_text().splitlines()
+requirements = [req.strip() for req in requirements if req.strip() and not req.startswith('#')]
+
+# Read optional requirements and clean them
+optional_requirements = []
+try:
+    optional_reqs_raw = (this_directory / "requirements-optional.txt").read_text().splitlines()
+    for req in optional_reqs_raw:
+        req = req.strip()
+        if req and not req.startswith('#'):
+            # Fix torch CUDA version specifier
+            if req.startswith('torch>='):
+                req = 'torch>=2.3.1'
+            optional_requirements.append(req)
+except FileNotFoundError:
+    optional_requirements = []
 
 setup(
     name="chromsploit-framework",
@@ -57,6 +71,7 @@ setup(
             "chromsploit=chromsploit:main",
         ],
     },
+    py_modules=['chromsploit'],
     include_package_data=True,
     package_data={
         "": ["*.json", "*.yaml", "*.yml", "*.txt", "*.md"],
