@@ -213,6 +213,17 @@ Exploits supporting obfuscation should:
 5. **CVE-2024-32002**: Git RCE (symbolic links)
 6. **Asciinema Integration**: Terminal recording and playback system
 
+## Recent Bug Fixes (v2.2.1)
+
+1. **Session Recovery**: Fixed Windows update interruption recovery - all menu navigation restored
+2. **Menu Shortcuts**: Fixed 'q' shortcut conflicts with quit command - shortcuts now processed before quit
+3. **EnhancedMenuItem**: Fixed initialization errors in all menu classes - proper parameter ordering
+4. **Ngrok Integration**: Fixed tunnel detection error with connection counts - removed incorrect len() usage
+5. **Setup.py**: Fixed package installation and entry points - proper extras_require formatting
+6. **Command Line**: Added `chromsploit` command after pip installation - working console entry point
+7. **Exploit Loading**: Fixed CVE module import mechanism - direct imports instead of module loader
+8. **Menu Methods**: Added missing `run()` and `exit_menu()` methods to all menu classes
+
 ## Tool Integration Points
 
 ### External Tools
