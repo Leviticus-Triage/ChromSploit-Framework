@@ -114,16 +114,14 @@ Beiträge sind willkommen! Bitte beachten Sie:
 
 ## 📄 Lizenz
 
-[Lizenzinformationen hier einfügen]
+Apache 2.0 Lizenz - Leviticus Triage
 
 ## 📞 Support
 
 - Issues: GitHub Issues
-- Dokumentation: Diese Dateien
-- Community: [Community-Link]
 
 ---
 
 **Version**: 3.0  
-**Letzte Aktualisierung**: Januar 2025  
-**Status**: Vollständig implementiert
+**Letzte Aktualisierung**: Juni 2025  
+**Status**: beta
