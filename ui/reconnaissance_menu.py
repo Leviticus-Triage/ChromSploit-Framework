@@ -101,46 +101,51 @@ class ReconnaissanceMenu(EnhancedMenu):
             description="Manage reconnaissance targets"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="1",
-            title="Add New Target",
+        menu.add_enhanced_item(
+            "Add New Target",
+            self.add_target,
+            color=Colors.GREEN,
+            shortcut="a",
             description="Add a new domain or IP address for reconnaissance",
-            action=self.add_target,
-            shortcut="a"
-        ))
+            key="1"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="2",
-            title="List Targets",
+        menu.add_enhanced_item(
+            "List Targets",
+            self.list_targets,
+            color=Colors.CYAN,
+            shortcut="l",
             description="Show all configured targets and their status",
-            action=self.list_targets,
-            shortcut="l"
-        ))
+            key="2"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="3",
-            title="Select Active Target",
+        menu.add_enhanced_item(
+            "Select Active Target",
+            self.select_target,
+            color=Colors.CYAN,
+            shortcut="s",
             description="Choose the current target for operations",
-            action=self.select_target,
-            shortcut="s"
-        ))
+            key="3"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="4",
-            title="Remove Target",
-            description="Remove a target and its data",
-            action=self.remove_target,
+        menu.add_enhanced_item(
+            "Remove Target",
+            self.remove_target,
+            color=Colors.RED,
             shortcut="r",
+            description="Remove a target and its data",
+            key="4",
             dangerous=True
-        ))
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="0",
-            title="Zurück",
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
+            color=Colors.CYAN,
+            shortcut="b",
             description="Return to reconnaissance menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            key="0"
+        )
         
         menu.run()
     
@@ -278,45 +283,50 @@ class ReconnaissanceMenu(EnhancedMenu):
             description="Discover subdomains using various techniques"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="1",
-            title="DNS Bruteforce",
+        menu.add_enhanced_item(
+            "DNS Bruteforce",
+            lambda: self.run_subdomain_enum(['dns_bruteforce']),
+            color=Colors.CYAN,
+            shortcut="d",
             description="Bruteforce subdomains using common wordlists",
-            action=lambda: self.run_subdomain_enum(['dns_bruteforce']),
-            shortcut="d"
-        ))
+            key="1"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="2",
-            title="Certificate Transparency",
+        menu.add_enhanced_item(
+            "Certificate Transparency",
+            lambda: self.run_subdomain_enum(['certificate_transparency']),
+            color=Colors.CYAN,
+            shortcut="c",
             description="Find subdomains from certificate transparency logs",
-            action=lambda: self.run_subdomain_enum(['certificate_transparency']),
-            shortcut="c"
-        ))
+            key="2"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="3",
-            title="All Methods",
+        menu.add_enhanced_item(
+            "All Methods",
+            lambda: self.run_subdomain_enum(),
+            color=Colors.GREEN,
+            shortcut="a",
             description="Run all subdomain enumeration techniques",
-            action=lambda: self.run_subdomain_enum(),
-            shortcut="a"
-        ))
+            key="3"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="4",
-            title="Custom Methods",
+        menu.add_enhanced_item(
+            "Custom Methods",
+            self.custom_subdomain_enum,
+            color=Colors.CYAN,
+            shortcut="s",
             description="Select specific enumeration methods",
-            action=self.custom_subdomain_enum,
-            shortcut="s"
-        ))
+            key="4"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="0",
-            title="Zurück",
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
+            color=Colors.CYAN,
+            shortcut="b",
             description="Return to reconnaissance menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            key="0"
+        )
         
         menu.run()
     
@@ -398,55 +408,61 @@ class ReconnaissanceMenu(EnhancedMenu):
             description="Network port discovery and service detection"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="1",
-            title="Quick Scan (Top 100)",
+        menu.add_enhanced_item(
+            "Quick Scan (Top 100)",
+            lambda: self.run_port_scan("top100"),
+            color=Colors.CYAN,
+            shortcut="q",
             description="Scan most common 100 ports",
-            action=lambda: self.run_port_scan("top100"),
-            shortcut="q"
-        ))
+            key="1"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="2",
-            title="Standard Scan (Top 1000)",
+        menu.add_enhanced_item(
+            "Standard Scan (Top 1000)",
+            lambda: self.run_port_scan("top1000"),
+            color=Colors.CYAN,
+            shortcut="s",
             description="Scan top 1000 most common ports",
-            action=lambda: self.run_port_scan("top1000"),
-            shortcut="s"
-        ))
+            key="2"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="3",
-            title="Full Scan (All Ports)",
-            description="Scan all 65535 ports (very slow)",
-            action=lambda: self.run_port_scan("all"),
+        menu.add_enhanced_item(
+            "Full Scan (All Ports)",
+            lambda: self.run_port_scan("all"),
+            color=Colors.RED,
             shortcut="f",
+            description="Scan all 65535 ports (very slow)",
+            key="3",
             dangerous=True
-        ))
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="4",
-            title="Custom Range",
+        menu.add_enhanced_item(
+            "Custom Range",
+            self.custom_port_scan,
+            color=Colors.CYAN,
+            shortcut="c",
             description="Specify custom port range",
-            action=self.custom_port_scan,
-            shortcut="c"
-        ))
+            key="4"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="5",
-            title="Scan All Subdomains",
-            description="Port scan all discovered subdomains",
-            action=self.scan_all_subdomains,
+        menu.add_enhanced_item(
+            "Scan All Subdomains",
+            self.scan_all_subdomains,
+            color=Colors.RED,
             shortcut="a",
+            description="Port scan all discovered subdomains",
+            key="5",
             dangerous=True
-        ))
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="0",
-            title="Zurück",
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
+            color=Colors.CYAN,
+            shortcut="b",
             description="Return to reconnaissance menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            key="0"
+        )
         
         menu.run()
     
@@ -554,37 +570,41 @@ class ReconnaissanceMenu(EnhancedMenu):
             description="Identify services and versions on open ports"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="1",
-            title="Fingerprint Main Target",
+        menu.add_enhanced_item(
+            "Fingerprint Main Target",
+            lambda: self.run_service_fingerprinting(self.current_target),
+            color=Colors.CYAN,
+            shortcut="m",
             description="Fingerprint services on main target",
-            action=lambda: self.run_service_fingerprinting(self.current_target),
-            shortcut="m"
-        ))
+            key="1"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="2",
-            title="Fingerprint All Hosts",
+        menu.add_enhanced_item(
+            "Fingerprint All Hosts",
+            self.fingerprint_all_hosts,
+            color=Colors.GREEN,
+            shortcut="a",
             description="Fingerprint all scanned hosts",
-            action=self.fingerprint_all_hosts,
-            shortcut="a"
-        ))
+            key="2"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="3",
-            title="Select Specific Host",
+        menu.add_enhanced_item(
+            "Select Specific Host",
+            self.select_host_fingerprinting,
+            color=Colors.CYAN,
+            shortcut="s",
             description="Choose specific host for fingerprinting",
-            action=self.select_host_fingerprinting,
-            shortcut="s"
-        ))
+            key="3"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="0",
-            title="Zurück",
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
+            color=Colors.CYAN,
+            shortcut="b",
             description="Return to reconnaissance menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            key="0"
+        )
         
         menu.run()
     
@@ -775,45 +795,50 @@ class ReconnaissanceMenu(EnhancedMenu):
             description="View results and generate reports"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="1",
-            title="Target Summary",
+        menu.add_enhanced_item(
+            "Target Summary",
+            self.show_target_summary,
+            color=Colors.CYAN,
+            shortcut="s",
             description="Show summary of current target",
-            action=self.show_target_summary,
-            shortcut="s"
-        ))
+            key="1"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="2",
-            title="Detailed Results",
+        menu.add_enhanced_item(
+            "Detailed Results",
+            self.show_detailed_results,
+            color=Colors.CYAN,
+            shortcut="d",
             description="Show detailed reconnaissance results",
-            action=self.show_detailed_results,
-            shortcut="d"
-        ))
+            key="2"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="3",
-            title="Export Results",
+        menu.add_enhanced_item(
+            "Export Results",
+            self.export_results,
+            color=Colors.GREEN,
+            shortcut="e",
             description="Export results to various formats",
-            action=self.export_results,
-            shortcut="e"
-        ))
+            key="3"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="4",
-            title="Compare Targets",
+        menu.add_enhanced_item(
+            "Compare Targets",
+            self.compare_targets,
+            color=Colors.CYAN,
+            shortcut="c",
             description="Compare multiple reconnaissance targets",
-            action=self.compare_targets,
-            shortcut="c"
-        ))
+            key="4"
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
-            key="0",
-            title="Zurück",
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
+            color=Colors.CYAN,
+            shortcut="b",
             description="Return to reconnaissance menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            key="0"
+        )
         
         menu.run()
     

@@ -255,21 +255,12 @@ class EnhancedMenu(Menu):
                     self._show_help()
                     continue
                 
-                # Back navigation
-                if choice.lower() in ['b', 'back'] and self.parent:
-                    return None
-                
-                # Quit
-                if choice.lower() in ['q', 'quit', 'exit']:
-                    if self._confirm_exit():
-                        print(f"\n{Colors.CYAN}Exiting ChromSploit Framework. Goodbye!{Colors.RESET}")
-                        sys.exit(0)
-                    continue
-                
-                # Check shortcuts
+                # Check shortcuts FIRST (before quit check)
+                shortcut_handled = False
                 for i, item in enumerate(self.items):
                     if isinstance(item, EnhancedMenuItem) and item.shortcut:
                         if choice.lower() == item.shortcut.lower():
+                            shortcut_handled = True
                             if not item.enabled:
                                 self.add_notification("This option is currently disabled", "warning")
                                 time.sleep(1)
@@ -277,6 +268,23 @@ class EnhancedMenu(Menu):
                             if item.dangerous and not self._confirm_dangerous_action(item.text):
                                 continue
                             return self._execute_item(item)
+                
+                if shortcut_handled:
+                    continue
+                
+                # Back navigation
+                if choice.lower() in ['b', 'back'] and self.parent:
+                    return None
+                
+                # Quit (only if not a shortcut)
+                if choice.lower() in ['quit', 'exit'] or (choice.lower() == 'q' and not any(
+                    item.shortcut and item.shortcut.lower() == 'q' 
+                    for item in self.items if isinstance(item, EnhancedMenuItem)
+                )):
+                    if self._confirm_exit():
+                        print(f"\n{Colors.CYAN}Exiting ChromSploit Framework. Goodbye!{Colors.RESET}")
+                        sys.exit(0)
+                    continue
                 
                 # Numeric selection
                 try:

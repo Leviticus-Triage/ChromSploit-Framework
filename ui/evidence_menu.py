@@ -7,7 +7,8 @@ import time
 import os
 from typing import List, Optional, Tuple
 
-from core.enhanced_menu import EnhancedMenu, EnhancedMenuItem, ProgressBar
+from core.enhanced_menu import EnhancedMenu, ProgressBar
+from core.colors import Colors
 from core.evidence_collection import get_evidence_manager, EvidenceType
 from core.enhanced_logger import get_logger
 from core.error_handler import handle_errors
@@ -29,69 +30,77 @@ class EvidenceMenu(EnhancedMenu):
     
     def setup_menu_items(self):
         """Setup evidence menu items"""
-        self.add_enhanced_item(EnhancedMenuItem(
+        self.add_enhanced_item(
+            "Case Management",
+            self.case_management_menu,
             key="1",
-            title="Case Management",
             description="Create and manage evidence collection cases",
-            action=self.case_management_menu,
-            shortcut="c"
-        ))
+            shortcut="c",
+            color=Colors.CYAN
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
+        self.add_enhanced_item(
+            "Capture Screenshots",
+            self.screenshot_menu,
             key="2",
-            title="Capture Screenshots",
             description="Capture screen evidence with timestamps",
-            action=self.screenshot_menu,
-            shortcut="s"
-        ))
+            shortcut="s",
+            color=Colors.CYAN
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
+        self.add_enhanced_item(
+            "Network Traffic Capture",
+            self.network_capture_menu,
             key="3",
-            title="Network Traffic Capture",
             description="Record network packets (PCAP format)",
-            action=self.network_capture_menu,
-            shortcut="n"
-        ))
+            shortcut="n",
+            color=Colors.CYAN
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
+        self.add_enhanced_item(
+            "Memory Dumps",
+            self.memory_dump_menu,
             key="4",
-            title="Memory Dumps",
             description="Capture process or system memory",
-            action=self.memory_dump_menu,
-            shortcut="m"
-        ))
+            shortcut="m",
+            color=Colors.CYAN
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
+        self.add_enhanced_item(
+            "File & Artifact Collection",
+            self.artifact_collection_menu,
             key="5",
-            title="File & Artifact Collection",
             description="Collect files and system artifacts",
-            action=self.artifact_collection_menu,
-            shortcut="f"
-        ))
+            shortcut="f",
+            color=Colors.CYAN
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
+        self.add_enhanced_item(
+            "System Information",
+            self.system_info_menu,
             key="6",
-            title="System Information",
             description="Collect comprehensive system data",
-            action=self.system_info_menu,
-            shortcut="i"
-        ))
+            shortcut="i",
+            color=Colors.CYAN
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
+        self.add_enhanced_item(
+            "Evidence Reports",
+            self.report_menu,
             key="7",
-            title="Evidence Reports",
             description="Generate evidence reports and exports",
-            action=self.report_menu,
-            shortcut="r"
-        ))
+            shortcut="r",
+            color=Colors.GREEN
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
+        self.add_enhanced_item(
+            "Zurück zum Hauptmenü",
+            self.exit_menu,
             key="0",
-            title="Zurück zum Hauptmenü",
             description="Return to main menu",
-            action=self.exit_menu,
-            shortcut="b"
-        ))
+            shortcut="b",
+            color=Colors.BRIGHT_RED
+        )
     
     @handle_errors
     def case_management_menu(self):
@@ -101,45 +110,50 @@ class EvidenceMenu(EnhancedMenu):
             description="Manage evidence collection cases"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Create New Case",
+            self.create_case,
             key="1",
-            title="Create New Case",
             description="Start a new evidence collection case",
-            action=self.create_case,
-            shortcut="n"
-        ))
+            shortcut="n",
+            color=Colors.GREEN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "List Cases",
+            self.list_cases,
             key="2",
-            title="List Cases",
             description="Show all evidence cases",
-            action=self.list_cases,
-            shortcut="l"
-        ))
+            shortcut="l",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Select Active Case",
+            self.select_case,
             key="3",
-            title="Select Active Case",
             description="Choose case for evidence collection",
-            action=self.select_case,
-            shortcut="s"
-        ))
+            shortcut="s",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Case Details",
+            self.case_details,
             key="4",
-            title="Case Details",
             description="View detailed case information",
-            action=self.case_details,
-            shortcut="d"
-        ))
+            shortcut="d",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
             key="0",
-            title="Zurück",
             description="Return to evidence menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            shortcut="b",
+            color=Colors.BRIGHT_RED
+        )
         
         menu.run()
     
@@ -270,45 +284,50 @@ class EvidenceMenu(EnhancedMenu):
             description="Capture screen evidence"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Full Screen Capture",
+            self.capture_full_screenshot,
             key="1",
-            title="Full Screen Capture",
             description="Capture entire screen",
-            action=self.capture_full_screenshot,
-            shortcut="f"
-        ))
+            shortcut="f",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Region Capture",
+            self.capture_region_screenshot,
             key="2",
-            title="Region Capture",
             description="Capture specific screen region",
-            action=self.capture_region_screenshot,
-            shortcut="r"
-        ))
+            shortcut="r",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Window Capture",
+            self.capture_window_screenshot,
             key="3",
-            title="Window Capture",
             description="Capture specific window",
-            action=self.capture_window_screenshot,
-            shortcut="w"
-        ))
+            shortcut="w",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Timed Capture",
+            self.timed_screenshot,
             key="4",
-            title="Timed Capture",
             description="Capture after delay",
-            action=self.timed_screenshot,
-            shortcut="t"
-        ))
+            shortcut="t",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
             key="0",
-            title="Zurück",
             description="Return to evidence menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            shortcut="b",
+            color=Colors.BRIGHT_RED
+        )
         
         menu.run()
     
@@ -462,45 +481,50 @@ class EvidenceMenu(EnhancedMenu):
             description="Capture network packets"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Quick Capture (60s)",
+            lambda: self.network_capture(60),
             key="1",
-            title="Quick Capture (60s)",
             description="Capture all traffic for 60 seconds",
-            action=lambda: self.network_capture(60),
-            shortcut="q"
-        ))
+            shortcut="q",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Custom Duration",
+            self.custom_network_capture,
             key="2",
-            title="Custom Duration",
             description="Specify capture duration",
-            action=self.custom_network_capture,
-            shortcut="c"
-        ))
+            shortcut="c",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "HTTP/HTTPS Traffic",
+            self.http_capture,
             key="3",
-            title="HTTP/HTTPS Traffic",
             description="Capture only web traffic",
-            action=self.http_capture,
-            shortcut="h"
-        ))
+            shortcut="h",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Filtered Capture",
+            self.filtered_capture,
             key="4",
-            title="Filtered Capture",
             description="Capture with custom BPF filter",
-            action=self.filtered_capture,
-            shortcut="f"
-        ))
+            shortcut="f",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
             key="0",
-            title="Zurück",
             description="Return to evidence menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            shortcut="b",
+            color=Colors.BRIGHT_RED
+        )
         
         menu.run()
     
@@ -658,38 +682,42 @@ class EvidenceMenu(EnhancedMenu):
             description="Capture process and system memory"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Process Memory Dump",
+            self.process_memory_dump,
             key="1",
-            title="Process Memory Dump",
             description="Dump memory of specific process",
-            action=self.process_memory_dump,
-            shortcut="p"
-        ))
+            shortcut="p",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Current Process Dump",
+            self.current_process_dump,
             key="2",
-            title="Current Process Dump",
             description="Dump memory of current Python process",
-            action=self.current_process_dump,
-            shortcut="c"
-        ))
+            shortcut="c",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Full System Memory",
+            self.full_memory_dump,
             key="3",
-            title="Full System Memory",
             description="Dump complete system memory (requires root)",
-            action=self.full_memory_dump,
             shortcut="f",
-            dangerous=True
-        ))
+            dangerous=True,
+            color=Colors.RED
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
             key="0",
-            title="Zurück",
             description="Return to evidence menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            shortcut="b",
+            color=Colors.BRIGHT_RED
+        )
         
         menu.run()
     
@@ -791,45 +819,50 @@ class EvidenceMenu(EnhancedMenu):
             description="Collect files and system artifacts"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Collect Specific File",
+            self.collect_file,
             key="1",
-            title="Collect Specific File",
             description="Collect a file as evidence",
-            action=self.collect_file,
-            shortcut="f"
-        ))
+            shortcut="f",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Command Output",
+            self.collect_command,
             key="2",
-            title="Command Output",
             description="Collect command execution output",
-            action=self.collect_command,
-            shortcut="c"
-        ))
+            shortcut="c",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Log Files",
+            self.collect_logs,
             key="3",
-            title="Log Files",
             description="Collect system and application logs",
-            action=self.collect_logs,
-            shortcut="l"
-        ))
+            shortcut="l",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Browser Artifacts",
+            self.collect_browser_artifacts,
             key="4",
-            title="Browser Artifacts",
             description="Collect browser data and history",
-            action=self.collect_browser_artifacts,
-            shortcut="b"
-        ))
+            shortcut="b",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
             key="0",
-            title="Zurück",
             description="Return to evidence menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            shortcut="b",
+            color=Colors.BRIGHT_RED
+        )
         
         menu.run()
     
@@ -1072,45 +1105,50 @@ class EvidenceMenu(EnhancedMenu):
             description="Generate and export evidence reports"
         )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Generate HTML Report",
+            lambda: self.generate_report('html'),
             key="1",
-            title="Generate HTML Report",
             description="Create detailed HTML evidence report",
-            action=lambda: self.generate_report('html'),
-            shortcut="h"
-        ))
+            shortcut="h",
+            color=Colors.GREEN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Generate JSON Report",
+            lambda: self.generate_report('json'),
             key="2",
-            title="Generate JSON Report",
             description="Export evidence data as JSON",
-            action=lambda: self.generate_report('json'),
-            shortcut="j"
-        ))
+            shortcut="j",
+            color=Colors.GREEN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Generate Markdown Report",
+            lambda: self.generate_report('markdown'),
             key="3",
-            title="Generate Markdown Report",
             description="Create Markdown documentation",
-            action=lambda: self.generate_report('markdown'),
-            shortcut="m"
-        ))
+            shortcut="m",
+            color=Colors.GREEN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "View Chain of Custody",
+            self.view_chain_of_custody,
             key="4",
-            title="View Chain of Custody",
             description="Show evidence chain of custody",
-            action=self.view_chain_of_custody,
-            shortcut="c"
-        ))
+            shortcut="c",
+            color=Colors.CYAN
+        )
         
-        menu.add_enhanced_item(EnhancedMenuItem(
+        menu.add_enhanced_item(
+            "Zurück",
+            menu.exit_menu,
             key="0",
-            title="Zurück",
             description="Return to evidence menu",
-            action=menu.exit_menu,
-            shortcut="b"
-        ))
+            shortcut="b",
+            color=Colors.BRIGHT_RED
+        )
         
         menu.run()
     
