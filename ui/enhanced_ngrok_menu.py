@@ -441,3 +441,7 @@ class EnhancedNgrokMenu(EnhancedMenu):
         
         input(f"\n{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
         return "continue"
+    
+    def run(self):
+        """Run the menu"""
+        self.display()

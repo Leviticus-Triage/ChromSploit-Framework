@@ -954,3 +954,7 @@ class ReconnaissanceMenu(EnhancedMenu):
         if self.current_target:
             return f"Aktuelles Ziel: {self.current_target}"
         return "Kein Ziel ausgewählt"
+    
+    def run(self):
+        """Run the menu"""
+        self.display()

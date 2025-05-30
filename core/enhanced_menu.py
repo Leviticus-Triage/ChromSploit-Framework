@@ -358,6 +358,14 @@ class EnhancedMenu(Menu):
         print(f"  {Colors.DARK_GRAY}(disabled){Colors.RESET} - Option currently unavailable")
         
         input(f"\n{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
+    
+    def exit_menu(self):
+        """Exit the current menu and return to parent"""
+        return None
+    
+    def run(self):
+        """Run the menu (alias for display)"""
+        return self.display()
 
 def demo_enhanced_menu():
     """Demo function to test enhanced menu"""

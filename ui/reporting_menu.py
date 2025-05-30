@@ -461,6 +461,10 @@ class ReportingMenu(EnhancedMenu):
         
         input(f"\n{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
         return "continue"
+    
+    def run(self):
+        """Run the menu"""
+        self.display()
 
 # Integration function for automatic reporting
 def auto_report_exploit(exploit_name: str, 

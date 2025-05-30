@@ -81,7 +81,7 @@ class NgrokManager:
                         region=tunnel_data.get('config', {}).get('region', 'us'),
                         tunnel_type=tunnel_data.get('config', {}).get('inspect', 'http'),
                         created_at=datetime.now(),  # ngrok doesn't provide creation time in API
-                        connections=len(tunnel_data.get('metrics', {}).get('conns', {}).get('count', 0))
+                        connections=tunnel_data.get('metrics', {}).get('conns', {}).get('count', 0)
                     )
                     tunnels.append(tunnel)
                     self.active_tunnels[tunnel.name] = tunnel

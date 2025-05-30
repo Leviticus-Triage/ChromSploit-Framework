@@ -1196,3 +1196,7 @@ class EvidenceMenu(EnhancedMenu):
             if summary:
                 return f"Aktiver Fall: {summary['case_name']} ({summary['total_evidence']} Items)"
         return "Kein Fall ausgewählt"
+    
+    def run(self):
+        """Run the menu"""
+        self.display()

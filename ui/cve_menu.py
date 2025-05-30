@@ -122,15 +122,19 @@ class CVEMenu(Menu):
             Dict with execution results
         """
         try:
-            # Load the exploit module
-            module_loader = get_module_loader()
-            exploit_module = module_loader.load_module(f"exploits.{self.cve_id}")
-            
-            if not exploit_module:
-                return {
-                    'success': False,
-                    'error': f"Could not load exploit module for {self.cve_id}"
-                }
+            # Load the exploit module directly
+            try:
+                exploit_module = __import__(f"exploits.{self.cve_id}", fromlist=[self.cve_id])
+            except ImportError:
+                # Try with underscores instead of dashes
+                cve_module_name = self.cve_id.replace('-', '_')
+                try:
+                    exploit_module = __import__(f"exploits.{cve_module_name}", fromlist=[cve_module_name])
+                except ImportError:
+                    return {
+                        'success': False,
+                        'error': f"Could not load exploit module for {self.cve_id}"
+                    }
             
             # Check if in simulation mode
             if parameters.get('simulation_mode', False):

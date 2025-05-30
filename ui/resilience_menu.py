@@ -509,6 +509,10 @@ class ResilienceMenu(EnhancedMenu):
             print(f"{Colors.GREEN}[+] All recovery procedures working correctly{Colors.RESET}")
         else:
             print(f"{Colors.YELLOW}[!] Some recovery procedures need attention{Colors.RESET}")
+    
+    def run(self):
+        """Run the menu"""
+        self.display()
 
 def main():
     """Main function for testing"""

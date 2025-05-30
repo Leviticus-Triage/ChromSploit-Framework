@@ -517,6 +517,10 @@ test_function(x, y)
             print(f"  {level.value}. {level.name}")
             
         input(f"\n{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
+    
+    def run(self):
+        """Run the menu"""
+        self.display()
 
 def main():
     """Main function for testing"""

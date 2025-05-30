@@ -558,6 +558,10 @@ class MonitoringMenu(EnhancedMenu):
             self.monitor.set_filter('types', [self.EventType.ERROR])
         elif choice == "4":
             self.monitor.clear_filters()
+    
+    def run(self):
+        """Run the menu"""
+        self.display()
 
 def main():
     """Main function for testing"""
