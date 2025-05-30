@@ -50,6 +50,13 @@ try:
 except ImportError:
     BROWSER_CHAIN_AVAILABLE = False
 
+# Try to import Session Management menu
+try:
+    from ui.session_menu import SessionMenu
+    SESSION_MENU_AVAILABLE = True
+except ImportError:
+    SESSION_MENU_AVAILABLE = False
+
 class MainMenu(Menu):
     """
     Hauptmenü des ChromSploit Frameworks
@@ -83,6 +90,8 @@ class MainMenu(Menu):
         self.add_item("Live Monitoring", self._open_monitoring_menu, Colors.BRIGHT_CYAN)
         self.add_item("Ngrok Tunneling", self._open_ngrok_menu, Colors.BRIGHT_MAGENTA)
         self.add_item("Post-Exploitation", self._open_post_exploitation, Colors.BRIGHT_CYAN)
+        if SESSION_MENU_AVAILABLE:
+            self.add_item("📡 Session Management", self._open_session_management, Colors.BRIGHT_YELLOW)
         if SLIVER_MENU_AVAILABLE:
             self.add_item("🎯 Sliver C2 Command & Control", self._open_sliver_c2, Colors.BRIGHT_RED)
         if COLLAB_MENU_AVAILABLE:
@@ -109,9 +118,19 @@ class MainMenu(Menu):
         """
         Öffnet das Exploitation Chains-Menü
         """
-        # TODO: Create ExploitationMenu class
-        print(f"{Colors.YELLOW}[!] Exploitation Chains Menü wird implementiert...{Colors.RESET}")
-        input("Drücken Sie Enter um fortzufahren...")
+        if BROWSER_CHAIN_AVAILABLE:
+            menu = BrowserChainMenu()
+            menu.display()
+        else:
+            # Fallback to exploitation chain menu
+            try:
+                from ui.exploit_chain_menu import ExploitChainMenu
+                menu = ExploitChainMenu()
+                menu.display()
+            except ImportError:
+                print(f"{Colors.YELLOW}[!] Exploitation Chains Menü nicht verfügbar{Colors.RESET}")
+                print(f"{Colors.RED}[!] Browser Chain Module konnte nicht geladen werden{Colors.RESET}")
+                input("Drücken Sie Enter um fortzufahren...")
     
     def _open_evidence_collection(self) -> None:
         """
@@ -246,6 +265,17 @@ class MainMenu(Menu):
             menu.run()
         else:
             print(f"{Colors.YELLOW}[!] Browser Chain Menü nicht verfügbar{Colors.RESET}")
+            input("Drücken Sie Enter um fortzufahren...")
+    
+    def _open_session_management(self) -> None:
+        """
+        Öffnet das Session Management Menü
+        """
+        if SESSION_MENU_AVAILABLE:
+            menu = SessionMenu()
+            menu.run()
+        else:
+            print(f"{Colors.YELLOW}[!] Session Management Menü nicht verfügbar{Colors.RESET}")
             input("Drücken Sie Enter um fortzufahren...")
     
     def _open_settings(self) -> None:

@@ -97,6 +97,9 @@ def parse_arguments():
     parser.add_argument('-o', '--output', type=str, help='Ausgabeverzeichnis für generierte Dateien')
     parser.add_argument('--check', action='store_true', help='Umgebung überprüfen und beenden')
     parser.add_argument('--update', action='store_true', help='Framework aktualisieren')
+    parser.add_argument('--debug', action='store_true', help='Debug-Modus aktivieren')
+    parser.add_argument('--log-level', type=str, default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'], help='Log-Level setzen')
+    parser.add_argument('--simulation', type=str, choices=['safe', 'demo', 'fast'], help='Simulationsmodus aktivieren')
     
     return parser.parse_args()
 
@@ -148,8 +151,8 @@ def main():
         print(f"{Colors.RED}[!] Resilience system initialization failed: {e}{Colors.RESET}")
     
     # Initialize simulation engine
-    sim_mode = SimulationMode(args.simulation)
-    sim_engine = get_simulation_engine(sim_mode)
+    sim_mode = SimulationMode(args.simulation) if args.simulation else None
+    sim_engine = get_simulation_engine(sim_mode) if sim_mode else None
     
     # Show simulation warning
     if args.simulation:
@@ -186,7 +189,7 @@ def main():
     if args.exploit:
         print(f"{Colors.CYAN}[*] Führe Exploit aus: {args.exploit}{Colors.RESET}")
         # Use simulation engine for exploit
-        if args.simulation:
+        if args.simulation and sim_engine:
             result = sim_engine.simulate_cve_exploit(args.exploit, "target", {})
             print(f"{Colors.GREEN}[+] Simulation abgeschlossen: {result.message}{Colors.RESET}")
         else:
@@ -206,7 +209,7 @@ def main():
         print(f"{Colors.CYAN}[*] ChromSploit wird beendet. Auf Wiedersehen!{Colors.RESET}")
         
         # Show simulation statistics if in simulation mode
-        if args.simulation:
+        if args.simulation and sim_engine:
             stats = sim_engine.get_simulation_stats()
             if stats['total_simulations'] > 0:
                 print(f"\n{Colors.CYAN}=== Simulation Summary ==={Colors.RESET}")

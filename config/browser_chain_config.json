@@ -1,0 +1,5 @@
+{
+  "target_url": "http://localhost:8080",
+  "callback_ip": "127.0.0.1",
+  "callback_port": 4444
+}

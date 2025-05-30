@@ -5,10 +5,12 @@ ChromSploit Framework - Browser Exploit Chain Menu
 UI for managing and executing multi-CVE browser exploitation chains
 """
 
+import os
 import time
+import json
 from typing import Dict, Any, Optional
 from core.enhanced_menu import EnhancedMenu
-from core.color_utils import Colors
+from core.colors import Colors
 from core.enhanced_logger import get_logger
 from modules.browser_exploit_chain import BrowserExploitChain
 try:
@@ -40,92 +42,113 @@ class BrowserChainMenu(EnhancedMenu):
         
         # Quick launch options
         self.add_enhanced_item(
-            key='1',
-            title='🚀 Quick Full Browser Compromise',
+            '🚀 Quick Full Browser Compromise',
+            self.quick_full_compromise,
+            color=Colors.BRIGHT_GREEN,
             description='Execute all 4 browser CVEs automatically',
-            handler=self.quick_full_compromise,
-            hotkey='f'
+            shortcut='f',
+            key='1'
         )
         
         if ENHANCED_CHAIN_AVAILABLE:
             self.add_enhanced_item(
-                key='2',
-                title='🔥 Enhanced Attack (Obfuscation + Ngrok)',
+                '🔥 Enhanced Attack (Obfuscation + Ngrok)',
+                self.enhanced_full_compromise,
+                color=Colors.BRIGHT_RED,
                 description='Full attack with obfuscation and auto-ngrok tunneling',
-                handler=self.enhanced_full_compromise,
-                hotkey='e'
+                shortcut='e',
+                key='2'
             )
         
         self.add_enhanced_item(
-            key='3',
-            title='⚡ Chrome-Focused Attack',
+            '⚡ Chrome-Focused Attack',
+            self.chrome_focused_attack,
+            color=Colors.BRIGHT_YELLOW,
             description='Target Chrome browser with 3 CVEs',
-            handler=self.chrome_focused_attack,
-            hotkey='c'
+            shortcut='c',
+            key='3'
         )
         
         self.add_enhanced_item(
-            key='4',
-            title='🏃 Rapid Parallel Exploitation',
+            '🏃 Rapid Parallel Exploitation',
+            self.rapid_exploitation,
+            color=Colors.BRIGHT_CYAN,
             description='Fast parallel execution of all exploits',
-            handler=self.rapid_exploitation,
-            hotkey='r'
+            shortcut='r',
+            key='4'
         )
         
         self.add_enhanced_item(
-            key='5',
-            title='🥷 Stealth Browser Chain',
+            '🥷 Stealth Browser Chain',
+            self.stealth_exploitation,
+            color=Colors.BRIGHT_MAGENTA,
             description='Low-profile exploitation chain',
-            handler=self.stealth_exploitation,
-            hotkey='s'
+            shortcut='s',
+            key='5'
         )
         
         # Advanced options
-        self.add_separator("Advanced Operations")
+        self.add_enhanced_item(
+            '--- Advanced Operations ---',
+            lambda: None,  # No-op for separator
+            color=Colors.DARK_GRAY,
+            description=''
+        )
         
         self.add_enhanced_item(
-            key='5',
-            title='🛠️ Create Custom Chain',
+            '🛠️ Create Custom Chain',
+            self.create_custom_chain,
+            color=Colors.BLUE,
             description='Build custom browser exploitation chain',
-            handler=self.create_custom_chain
+            key='6'
         )
         
         self.add_enhanced_item(
-            key='6',
-            title='📊 View Active Chains',
+            '📊 View Active Chains',
+            self.view_active_chains,
+            color=Colors.WHITE,
             description='Monitor running exploitation chains',
-            handler=self.view_active_chains
+            key='7'
         )
         
         self.add_enhanced_item(
-            key='7',
-            title='🔍 Chain Status Details',
+            '🔍 Chain Status Details',
+            self.view_chain_details,
+            color=Colors.CYAN,
             description='Detailed status of specific chain',
-            handler=self.view_chain_details
+            key='8'
         )
         
         self.add_enhanced_item(
-            key='8',
-            title='⏹️ Stop Active Chain',
+            '⏹️ Stop Active Chain',
+            self.stop_chain,
+            color=Colors.RED,
             description='Stop a running exploitation chain',
-            handler=self.stop_chain
+            key='9'
         )
         
         # Configuration
-        self.add_separator("Configuration")
-        
         self.add_enhanced_item(
-            key='9',
-            title='⚙️ Configure Targets',
-            description='Set target URLs and callback settings',
-            handler=self.configure_targets
+            '--- Configuration ---',
+            lambda: None,  # No-op for separator
+            color=Colors.DARK_GRAY,
+            description=''
         )
         
         self.add_enhanced_item(
-            key='10',
-            title='📋 Export Chain Results',
+            '⚙️ Configure Targets',
+            self.configure_targets,
+            color=Colors.YELLOW,
+            description='Set target URLs and callback settings',
+            key='10'
+        )
+        
+        self.add_enhanced_item(
+            '📋 Export Chain Results',
+            self.export_results,
+            color=Colors.GREEN,
             description='Export exploitation results',
-            handler=self.export_results
+            key='11'
         )
     
     def quick_full_compromise(self):
@@ -133,7 +156,7 @@ class BrowserChainMenu(EnhancedMenu):
         self.clear_screen()
         self.display_header("🚀 Full Browser Compromise Chain")
         
-        print(f"\n{Colors.YELLOW}This will execute all 4 browser CVEs in sequence:{Colors.END}")
+        print(f"\n{Colors.YELLOW}This will execute all 4 browser CVEs in sequence:{Colors.RESET}")
         print("1. CVE-2025-4664 - Chrome Data Leak (Reconnaissance)")
         print("2. CVE-2025-2857 - Chrome OAuth Exploitation")
         print("3. CVE-2025-30397 - Edge WebAssembly JIT")
@@ -172,7 +195,7 @@ class BrowserChainMenu(EnhancedMenu):
         self.clear_screen()
         self.display_header("🔥 Enhanced Browser Compromise (Obfuscation + Ngrok)")
         
-        print(f"\n{Colors.YELLOW}Enhanced features enabled:{Colors.END}")
+        print(f"\n{Colors.YELLOW}Enhanced features enabled:{Colors.RESET}")
         print("✓ Full payload obfuscation (EXTREME level)")
         print("✓ Control flow obfuscation")
         print("✓ String encryption & encoding")
@@ -182,7 +205,7 @@ class BrowserChainMenu(EnhancedMenu):
         print("✓ Binary data obfuscation")
         print("✓ Dead code injection")
         
-        print(f"\n{Colors.CYAN}Attack sequence:{Colors.END}")
+        print(f"\n{Colors.CYAN}Attack sequence:{Colors.RESET}")
         print("1. Setup ngrok tunnels for callbacks")
         print("2. Obfuscate all exploit payloads")
         print("3. Execute CVE-2025-4664 (Recon)")
@@ -214,7 +237,7 @@ class BrowserChainMenu(EnhancedMenu):
     
     def _display_enhanced_results(self, result: Dict[str, Any]):
         """Display results from enhanced attack"""
-        print(f"\n{Colors.CYAN}Enhanced Attack Results:{Colors.END}")
+        print(f"\n{Colors.CYAN}Enhanced Attack Results:{Colors.RESET}")
         print("=" * 60)
         
         if result.get('success'):
@@ -225,26 +248,26 @@ class BrowserChainMenu(EnhancedMenu):
         # Show obfuscation report
         if 'obfuscation_report' in result:
             report = result['obfuscation_report']
-            print(f"\n{Colors.YELLOW}Obfuscation Report:{Colors.END}")
+            print(f"\n{Colors.YELLOW}Obfuscation Report:{Colors.RESET}")
             print(f"  Payloads obfuscated: {report.get('total_payloads_obfuscated', 0)}")
             print(f"  Obfuscation time: {report.get('obfuscation_time', 0):.2f}s")
             print(f"  Average size increase: {report.get('average_size_increase', 0):.1%}")
             
-            print(f"\n{Colors.CYAN}Techniques used:{Colors.END}")
+            print(f"\n{Colors.CYAN}Techniques used:{Colors.RESET}")
             for technique in report.get('techniques_used', []):
                 print(f"  ✓ {technique}")
         
         # Show ngrok tunnels
         if 'ngrok_tunnels' in result:
             tunnels = result['ngrok_tunnels']
-            print(f"\n{Colors.GREEN}Ngrok Tunnels Created:{Colors.END}")
+            print(f"\n{Colors.GREEN}Ngrok Tunnels Created:{Colors.RESET}")
             for name, url in tunnels.items():
                 print(f"  {name}: {url}")
         
         # Show enhanced features
         if 'enhanced_features' in result:
             features = result['enhanced_features']
-            print(f"\n{Colors.BLUE}Enhanced Features:{Colors.END}")
+            print(f"\n{Colors.BLUE}Enhanced Features:{Colors.RESET}")
             for feature, enabled in features.items():
                 status = "✓" if enabled else "✗"
                 print(f"  {status} {feature.replace('_', ' ').title()}")
@@ -252,7 +275,7 @@ class BrowserChainMenu(EnhancedMenu):
         # Standard chain results
         if 'chain_result' in result:
             chain_result = result['chain_result']
-            print(f"\n{Colors.CYAN}Chain Execution:{Colors.END}")
+            print(f"\n{Colors.CYAN}Chain Execution:{Colors.RESET}")
             print(f"  Status: {chain_result.status.value}")
             print(f"  Steps: {chain_result.successful_steps}/{chain_result.total_steps} successful")
             print(f"  Time: {chain_result.execution_time:.2f}s")
@@ -264,7 +287,7 @@ class BrowserChainMenu(EnhancedMenu):
         self.clear_screen()
         self.display_header("⚡ Chrome-Focused Attack Chain")
         
-        print(f"\n{Colors.CYAN}Chrome-specific exploitation using 3 CVEs:{Colors.END}")
+        print(f"\n{Colors.CYAN}Chrome-specific exploitation using 3 CVEs:{Colors.RESET}")
         print("1. CVE-2025-4664 - Chrome Reconnaissance")
         print("2. CVE-2025-2857 - OAuth Token Theft")
         print("3. CVE-2025-2783 - Sandbox Escape")
@@ -286,7 +309,7 @@ class BrowserChainMenu(EnhancedMenu):
         self.clear_screen()
         self.display_header("🏃 Rapid Parallel Exploitation")
         
-        print(f"\n{Colors.RED}Fast parallel execution of browser exploits{Colors.END}")
+        print(f"\n{Colors.RED}Fast parallel execution of browser exploits{Colors.RESET}")
         print("⚠️  This mode executes exploits simultaneously")
         print("   - Higher detection risk")
         print("   - Faster completion time")
@@ -310,7 +333,7 @@ class BrowserChainMenu(EnhancedMenu):
             
             if result['success']:
                 self.display_success("Rapid exploitation started!")
-                print(f"\nChain ID: {Colors.CYAN}{chain_id[:8]}...{Colors.END}")
+                print(f"\nChain ID: {Colors.CYAN}{chain_id[:8]}...{Colors.RESET}")
                 print(f"Use option '7' to monitor progress")
                 
                 # Brief real-time monitoring
@@ -321,7 +344,7 @@ class BrowserChainMenu(EnhancedMenu):
         self.clear_screen()
         self.display_header("🥷 Stealth Browser Exploitation")
         
-        print(f"\n{Colors.BLUE}Low-profile exploitation chain:{Colors.END}")
+        print(f"\n{Colors.BLUE}Low-profile exploitation chain:{Colors.RESET}")
         print("✓ Minimal network footprint")
         print("✓ Anti-forensics measures")
         print("✓ Evasion techniques enabled")
@@ -352,12 +375,12 @@ class BrowserChainMenu(EnhancedMenu):
         
         print("\nAvailable Browser CVEs:")
         for cve_id, info in self.browser_chain.BROWSER_CVES.items():
-            print(f"\n{Colors.CYAN}{cve_id}{Colors.END} - {info['name']}")
+            print(f"\n{Colors.CYAN}{cve_id}{Colors.RESET} - {info['name']}")
             print(f"  Browser: {info['browser']}")
             print(f"  Type: {info['type']}")
             print(f"  Severity: {info['severity']}")
         
-        print(f"\n{Colors.YELLOW}Select CVEs to include in chain:{Colors.END}")
+        print(f"\n{Colors.YELLOW}Select CVEs to include in chain:{Colors.RESET}")
         selected_cves = []
         
         for cve_id in self.browser_chain.BROWSER_CVES:
@@ -414,7 +437,7 @@ class BrowserChainMenu(EnhancedMenu):
             self.display_warning("No active chains")
             return
         
-        print(f"\n{Colors.CYAN}Active Chains:{Colors.END}")
+        print(f"\n{Colors.CYAN}Active Chains:{Colors.RESET}")
         print("-" * 80)
         
         for chain in chains:
@@ -422,10 +445,10 @@ class BrowserChainMenu(EnhancedMenu):
                 Colors.RED if chain['status'] == 'failed' else Colors.YELLOW
             )
             
-            print(f"\nID: {Colors.BLUE}{chain['id'][:8]}...{Colors.END}")
+            print(f"\nID: {Colors.BLUE}{chain['id'][:8]}...{Colors.RESET}")
             print(f"Name: {chain['name']}")
             print(f"Template: {chain['template']}")
-            print(f"Status: {status_color}{chain['status']}{Colors.END}")
+            print(f"Status: {status_color}{chain['status']}{Colors.RESET}")
             print(f"Steps: {chain['steps']}")
             print(f"Browsers: {', '.join(chain['browsers'])}")
             print(f"Created: {chain['created']}")
@@ -461,21 +484,21 @@ class BrowserChainMenu(EnhancedMenu):
             return
         
         # Display status
-        print(f"\n{Colors.CYAN}Chain Details:{Colors.END}")
+        print(f"\n{Colors.CYAN}Chain Details:{Colors.RESET}")
         print(f"ID: {status['id']}")
         print(f"Name: {status['name']}")
-        print(f"Status: {self._get_status_color(status['status'])}{status['status']}{Colors.END}")
+        print(f"Status: {self._get_status_color(status['status'])}{status['status']}{Colors.RESET}")
         print(f"Progress: {status['progress']}")
         print(f"Execution Time: {status.get('execution_time', 0):.2f}s")
         
-        print(f"\n{Colors.YELLOW}Exploitation Progress:{Colors.END}")
+        print(f"\n{Colors.YELLOW}Exploitation Progress:{Colors.RESET}")
         progress = status['exploitation_progress']
         print(f"  Percentage: {progress['percentage']:.1f}%")
         print(f"  Completed: {progress['completed_steps']}/{progress['total_steps']}")
-        print(f"  Successful: {Colors.GREEN}{progress['successful_steps']}{Colors.END}")
-        print(f"  Failed: {Colors.RED}{progress['failed_steps']}{Colors.END}")
+        print(f"  Successful: {Colors.GREEN}{progress['successful_steps']}{Colors.RESET}")
+        print(f"  Failed: {Colors.RED}{progress['failed_steps']}{Colors.RESET}")
         
-        print(f"\n{Colors.CYAN}Targeted Browsers:{Colors.END}")
+        print(f"\n{Colors.CYAN}Targeted Browsers:{Colors.RESET}")
         for browser in status['browsers_targeted']:
             print(f"  • {browser}")
         
@@ -499,7 +522,7 @@ class BrowserChainMenu(EnhancedMenu):
             self.display_warning("No running chains to stop")
             return
         
-        print(f"\n{Colors.YELLOW}Running Chains:{Colors.END}")
+        print(f"\n{Colors.YELLOW}Running Chains:{Colors.RESET}")
         for i, chain in enumerate(running_chains, 1):
             print(f"{i}. {chain['name']} ({chain['id'][:8]}...)")
         
@@ -522,13 +545,13 @@ class BrowserChainMenu(EnhancedMenu):
         self.clear_screen()
         self.display_header("⚙️ Configure Browser Chain Targets")
         
-        print(f"\n{Colors.CYAN}Current Configuration:{Colors.END}")
+        print(f"\n{Colors.CYAN}Current Configuration:{Colors.RESET}")
         config = self._get_default_config()
         
         for key, value in config.items():
             print(f"  {key}: {value}")
         
-        print(f"\n{Colors.YELLOW}Update Configuration:{Colors.END}")
+        print(f"\n{Colors.YELLOW}Update Configuration:{Colors.RESET}")
         
         # Update each setting
         new_config = {}
@@ -558,7 +581,7 @@ class BrowserChainMenu(EnhancedMenu):
             self.display_warning("No results to export")
             return
         
-        print(f"\n{Colors.CYAN}Available Results:{Colors.END}")
+        print(f"\n{Colors.CYAN}Available Results:{Colors.RESET}")
         for i, (chain_id, result) in enumerate(self.browser_chain.results.items(), 1):
             timestamp = result['timestamp'].strftime("%Y-%m-%d %H:%M:%S")
             print(f"{i}. Chain {chain_id[:8]}... - {timestamp}")
@@ -614,7 +637,7 @@ class BrowserChainMenu(EnhancedMenu):
     
     def _display_execution_results(self, result: Dict[str, Any]):
         """Display chain execution results"""
-        print(f"\n{Colors.CYAN}Execution Results:{Colors.END}")
+        print(f"\n{Colors.CYAN}Execution Results:{Colors.RESET}")
         print("=" * 60)
         
         if result.get('success'):
@@ -622,38 +645,38 @@ class BrowserChainMenu(EnhancedMenu):
         else:
             self.display_error("Browser exploitation chain failed")
         
-        print(f"\nStatus: {self._get_status_color(result.get('status', 'unknown'))}{result.get('status', 'unknown')}{Colors.END}")
+        print(f"\nStatus: {self._get_status_color(result.get('status', 'unknown'))}{result.get('status', 'unknown')}{Colors.RESET}")
         
         if 'statistics' in result:
             stats = result['statistics']
-            print(f"\n{Colors.YELLOW}Statistics:{Colors.END}")
+            print(f"\n{Colors.YELLOW}Statistics:{Colors.RESET}")
             print(f"  Total Steps: {stats['total_steps']}")
-            print(f"  Successful: {Colors.GREEN}{stats['successful_steps']}{Colors.END}")
-            print(f"  Failed: {Colors.RED}{stats['failed_steps']}{Colors.END}")
+            print(f"  Successful: {Colors.GREEN}{stats['successful_steps']}{Colors.RESET}")
+            print(f"  Failed: {Colors.RED}{stats['failed_steps']}{Colors.RESET}")
             print(f"  Skipped: {stats.get('skipped_steps', 0)}")
         
         if 'exploited_browsers' in result:
-            print(f"\n{Colors.CYAN}Exploited Browsers:{Colors.END}")
+            print(f"\n{Colors.CYAN}Exploited Browsers:{Colors.RESET}")
             for browser in result['exploited_browsers']:
                 print(f"  ✓ {browser}")
         
         if 'successful_cves' in result:
-            print(f"\n{Colors.GREEN}Successful CVEs:{Colors.END}")
+            print(f"\n{Colors.GREEN}Successful CVEs:{Colors.RESET}")
             for cve in result['successful_cves']:
                 print(f"  ✓ {cve}")
         
         if 'failed_cves' in result:
-            print(f"\n{Colors.RED}Failed CVEs:{Colors.END}")
+            print(f"\n{Colors.RED}Failed CVEs:{Colors.RESET}")
             for cve in result['failed_cves']:
                 print(f"  ✗ {cve}")
         
         if 'recommendations' in result:
-            print(f"\n{Colors.YELLOW}Recommendations:{Colors.END}")
+            print(f"\n{Colors.YELLOW}Recommendations:{Colors.RESET}")
             for rec in result['recommendations']:
                 print(f"  • {rec}")
         
         if 'execution_time' in result:
-            print(f"\n{Colors.BLUE}Execution Time: {result['execution_time']:.2f} seconds{Colors.END}")
+            print(f"\n{Colors.BLUE}Execution Time: {result['execution_time']:.2f} seconds{Colors.RESET}")
         
         self.wait_for_key()
     
@@ -671,7 +694,7 @@ class BrowserChainMenu(EnhancedMenu):
     
     def _monitor_chain_briefly(self, chain_id: str, duration: int = 10):
         """Briefly monitor chain progress"""
-        print(f"\n{Colors.CYAN}Monitoring chain progress for {duration} seconds...{Colors.END}")
+        print(f"\n{Colors.CYAN}Monitoring chain progress for {duration} seconds...{Colors.RESET}")
         
         start_time = time.time()
         while time.time() - start_time < duration:
@@ -680,7 +703,7 @@ class BrowserChainMenu(EnhancedMenu):
             
             print(f"\r  Progress: {progress['percentage']:.1f}% "
                   f"({progress['completed_steps']}/{progress['total_steps']} steps) "
-                  f"Status: {self._get_status_color(status['status'])}{status['status']}{Colors.END}",
+                  f"Status: {self._get_status_color(status['status'])}{status['status']}{Colors.RESET}",
                   end='', flush=True)
             
             if status['status'] not in ['running', 'pending']:
@@ -692,7 +715,7 @@ class BrowserChainMenu(EnhancedMenu):
     
     def _monitor_chain_progress(self, chain_id: str):
         """Monitor chain progress until completion"""
-        print(f"\n{Colors.CYAN}Monitoring chain progress (Press Ctrl+C to stop)...{Colors.END}")
+        print(f"\n{Colors.CYAN}Monitoring chain progress (Press Ctrl+C to stop)...{Colors.RESET}")
         
         try:
             while True:
@@ -704,7 +727,7 @@ class BrowserChainMenu(EnhancedMenu):
                 self.display_header("📊 Chain Progress Monitor")
                 
                 print(f"\nChain: {status['name']}")
-                print(f"Status: {self._get_status_color(status['status'])}{status['status']}{Colors.END}")
+                print(f"Status: {self._get_status_color(status['status'])}{status['status']}{Colors.RESET}")
                 print(f"Progress: {progress['percentage']:.1f}%")
                 
                 # Progress bar
@@ -713,18 +736,66 @@ class BrowserChainMenu(EnhancedMenu):
                 bar = '█' * filled + '░' * (bar_length - filled)
                 print(f"\n[{bar}] {progress['completed_steps']}/{progress['total_steps']}")
                 
-                print(f"\n✓ Successful: {Colors.GREEN}{progress['successful_steps']}{Colors.END}")
-                print(f"✗ Failed: {Colors.RED}{progress['failed_steps']}{Colors.END}")
+                print(f"\n✓ Successful: {Colors.GREEN}{progress['successful_steps']}{Colors.RESET}")
+                print(f"✗ Failed: {Colors.RED}{progress['failed_steps']}{Colors.RESET}")
                 print(f"Execution Time: {status.get('execution_time', 0):.2f}s")
                 
                 if status['status'] not in ['running', 'pending']:
-                    print(f"\n{Colors.YELLOW}Chain completed!{Colors.END}")
+                    print(f"\n{Colors.YELLOW}Chain completed!{Colors.RESET}")
                     break
                 
                 time.sleep(1)
                 
         except KeyboardInterrupt:
-            print(f"\n{Colors.YELLOW}Monitoring stopped{Colors.END}")
+            print(f"\n{Colors.YELLOW}Monitoring stopped{Colors.RESET}")
+    
+    def clear_screen(self):
+        """Clear the terminal screen"""
+        os.system('clear' if os.name == 'posix' else 'cls')
+    
+    def display_header(self, title: str):
+        """Display a header with title"""
+        print(f"\n{Colors.CYAN}{'=' * 60}{Colors.RESET}")
+        print(f"{Colors.BRIGHT_WHITE}{title}{Colors.RESET}")
+        print(f"{Colors.CYAN}{'=' * 60}{Colors.RESET}")
+    
+    def confirm(self, prompt: str, danger: bool = False) -> bool:
+        """Ask for user confirmation"""
+        color = Colors.RED if danger else Colors.YELLOW
+        response = input(f"{color}{prompt} (y/N): {Colors.RESET}").lower()
+        return response in ['y', 'yes']
+    
+    def display_error(self, message: str):
+        """Display an error message"""
+        print(f"{Colors.RED}[!] {message}{Colors.RESET}")
+    
+    def display_success(self, message: str):
+        """Display a success message"""
+        print(f"{Colors.GREEN}[✓] {message}{Colors.RESET}")
+    
+    def display_warning(self, message: str):
+        """Display a warning message"""
+        print(f"{Colors.YELLOW}[!] {message}{Colors.RESET}")
+    
+    def display_progress(self, message: str):
+        """Display a progress message"""
+        print(f"{Colors.CYAN}[*] {message}{Colors.RESET}")
+    
+    def wait_for_key(self):
+        """Wait for user to press a key"""
+        input(f"\n{Colors.CYAN}Press Enter to continue...{Colors.RESET}")
+    
+    def get_input(self, prompt: str, default: str = None) -> str:
+        """Get user input with optional default"""
+        if default:
+            value = input(f"{Colors.CYAN}{prompt} [{default}]: {Colors.RESET}")
+            return value if value else default
+        else:
+            return input(f"{Colors.CYAN}{prompt}: {Colors.RESET}")
+    
+    def run(self):
+        """Run the browser chain menu"""
+        self.display()
 
 
 # Module registration

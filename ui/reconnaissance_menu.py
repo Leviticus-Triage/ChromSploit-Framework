@@ -10,6 +10,7 @@ from core.enhanced_menu import EnhancedMenu, EnhancedMenuItem, ProgressBar
 from core.reconnaissance import get_reconnaissance_manager, ReconTarget
 from core.enhanced_logger import get_logger
 from core.error_handler import handle_errors
+from core.colors import Colors
 
 
 class ReconnaissanceMenu(EnhancedMenu):
@@ -28,62 +29,69 @@ class ReconnaissanceMenu(EnhancedMenu):
     
     def setup_menu_items(self):
         """Setup reconnaissance menu items"""
-        self.add_enhanced_item(EnhancedMenuItem(
-            key="1",
-            title="Target Management",
+        self.add_enhanced_item(
+            "Target Management",
+            self.target_management_menu,
+            color=Colors.CYAN,
             description="Add, remove, and manage reconnaissance targets",
-            action=self.target_management_menu,
-            shortcut="t"
-        ))
+            shortcut="t",
+            key="1"
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
-            key="2", 
-            title="Subdomain Enumeration",
+        self.add_enhanced_item(
+            "Subdomain Enumeration",
+            self.subdomain_enumeration_menu,
+            color=Colors.BLUE,
             description="Discover subdomains using multiple techniques",
-            action=self.subdomain_enumeration_menu,
-            shortcut="s"
-        ))
+            shortcut="s",
+            key="2"
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
-            key="3",
-            title="Port Scanning",
+        self.add_enhanced_item(
+            "Port Scanning",
+            self.port_scanning_menu,
+            color=Colors.YELLOW,
             description="Network port discovery and service detection",
-            action=self.port_scanning_menu,
-            shortcut="p"
-        ))
+            shortcut="p",
+            key="3"
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
-            key="4",
-            title="Service Fingerprinting",
+        self.add_enhanced_item(
+            "Service Fingerprinting",
+            self.service_fingerprinting_menu,
+            color=Colors.GREEN,
             description="Identify services and versions on open ports",
-            action=self.service_fingerprinting_menu,
-            shortcut="f"
-        ))
+            shortcut="f",
+            key="4"
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
-            key="5",
-            title="Full Reconnaissance",
+        self.add_enhanced_item(
+            "Full Reconnaissance",
+            self.full_reconnaissance_menu,
+            color=Colors.RED,
             description="Complete automated reconnaissance workflow",
-            action=self.full_reconnaissance_menu,
             shortcut="r",
+            key="5",
             dangerous=True
-        ))
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
-            key="6",
-            title="Results & Reports",
+        self.add_enhanced_item(
+            "Results & Reports",
+            self.results_menu,
+            color=Colors.PURPLE,
             description="View reconnaissance results and generate reports",
-            action=self.results_menu,
-            shortcut="v"
-        ))
+            shortcut="v",
+            key="6"
+        )
         
-        self.add_enhanced_item(EnhancedMenuItem(
-            key="0",
-            title="Zurück zum Hauptmenü",
+        self.add_enhanced_item(
+            "Zurück zum Hauptmenü",
+            self.exit_menu,
+            color=Colors.BRIGHT_RED,
             description="Return to main menu",
-            action=self.exit_menu,
-            shortcut="b"
-        ))
+            shortcut="b",
+            key="0"
+        )
     
     @handle_errors
     def target_management_menu(self):

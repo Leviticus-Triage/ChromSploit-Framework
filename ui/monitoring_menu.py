@@ -35,63 +35,73 @@ class MonitoringMenu(EnhancedMenu):
         """Setup menu items"""
         if not self.monitoring_available:
             self.add_enhanced_item(
-                "error", "Monitoring Not Available", 
+                "Monitoring Not Available", 
                 self._show_error,
+                color=Colors.RED,
                 description="Monitoring modules not found"
             )
             return
             
         self.add_enhanced_item(
-            "start", "Start Monitoring", 
+            "Start Monitoring", 
             self._start_monitoring,
+            color=Colors.GREEN,
             description="Start live event monitoring"
         )
         
         self.add_enhanced_item(
-            "terminal", "Terminal Display", 
+            "Terminal Display", 
             self._terminal_display,
+            color=Colors.CYAN,
             description="View live events in terminal"
         )
         
         self.add_enhanced_item(
-            "dashboard", "Web Dashboard", 
+            "Web Dashboard", 
             self._web_dashboard,
+            color=Colors.BLUE,
             description="Open web-based monitoring dashboard"
         )
         
         self.add_enhanced_item(
-            "events", "View Events", 
+            "View Events", 
             self._view_events,
+            color=Colors.WHITE,
             description="Browse recorded events"
         )
         
         self.add_enhanced_item(
-            "filters", "Configure Filters", 
+            "Configure Filters", 
             self._configure_filters,
+            color=Colors.YELLOW,
             description="Set event filtering options"
         )
         
         self.add_enhanced_item(
-            "alerts", "Alert Configuration", 
+            "Alert Configuration", 
             self._configure_alerts,
+            color=Colors.ORANGE,
             description="Configure alert conditions"
         )
         
         self.add_enhanced_item(
-            "stats", "Statistics", 
+            "Statistics", 
             self._show_statistics,
+            color=Colors.PURPLE,
             description="View monitoring statistics"
         )
         
         self.add_enhanced_item(
-            "export", "Export Events", 
+            "Export Events", 
             self._export_events,
+            color=Colors.GREEN,
             description="Export events to file"
         )
         
         self.add_enhanced_item(
-            "test", "Test Events", 
+            "Test Events", 
             self._test_events,
+            color=Colors.MAGENTA,
             description="Generate test events"
         )
         

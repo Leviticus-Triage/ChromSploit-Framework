@@ -20,11 +20,13 @@ class EnhancedMenuItem(MenuItem):
     
     def __init__(self, text: str, action: Callable, color: str = Colors.WHITE, 
                  shortcut: Optional[str] = None, description: Optional[str] = None,
-                 dangerous: bool = False):
+                 dangerous: bool = False, key: Optional[str] = None, title: Optional[str] = None):
         super().__init__(text, action, color)
         self.shortcut = shortcut
         self.description = description
         self.dangerous = dangerous
+        self.key = key
+        self.title = title
         self.enabled = True
         self.badge = None
     
@@ -70,8 +72,9 @@ class ProgressBar:
 class EnhancedMenu(Menu):
     """Enhanced menu with improved features"""
     
-    def __init__(self, title: str, parent=None):
+    def __init__(self, title: str, parent=None, description: Optional[str] = None):
         super().__init__(title, parent)
+        self.description = description
         self.breadcrumb = []
         self.notifications = []
         self.status_message = None
@@ -81,9 +84,9 @@ class EnhancedMenu(Menu):
         
     def add_enhanced_item(self, text: str, action: Callable, color: str = Colors.WHITE,
                          shortcut: Optional[str] = None, description: Optional[str] = None,
-                         dangerous: bool = False) -> None:
+                         dangerous: bool = False, key: Optional[str] = None, title: Optional[str] = None) -> None:
         """Add an enhanced menu item"""
-        item = EnhancedMenuItem(text, action, color, shortcut, description, dangerous)
+        item = EnhancedMenuItem(text, action, color, shortcut, description, dangerous, key, title)
         self.items.append(item)
     
     def add_notification(self, message: str, type: str = "info"):

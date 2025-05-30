@@ -44,14 +44,55 @@ class Utils:
         Returns:
             str: Die IP-Adresse oder '127.0.0.1' bei Fehler
         """
+        # Method 1: Try to connect to external DNS and get local IP
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(("8.8.8.8", 80))
             ip = s.getsockname()[0]
             s.close()
-            return ip
+            if ip and ip != '0.0.0.0':
+                return ip
         except:
-            return "127.0.0.1"
+            pass
+        
+        # Method 2: Get hostname and resolve it
+        try:
+            hostname = socket.gethostname()
+            ip = socket.gethostbyname(hostname)
+            if ip and not ip.startswith('127.'):
+                return ip
+        except:
+            pass
+        
+        # Method 3: Parse network interfaces (Linux specific)
+        try:
+            import subprocess
+            result = subprocess.run(['ip', 'addr', 'show'], capture_output=True, text=True)
+            if result.returncode == 0:
+                import re
+                # Find all IPs that are not loopback
+                ips = re.findall(r'inet (\d+\.\d+\.\d+\.\d+)', result.stdout)
+                for ip in ips:
+                    if not ip.startswith('127.') and not ip.startswith('169.254.'):
+                        return ip
+        except:
+            pass
+        
+        # Method 4: Use netifaces if available
+        try:
+            import netifaces
+            for interface in netifaces.interfaces():
+                addrs = netifaces.ifaddresses(interface)
+                if netifaces.AF_INET in addrs:
+                    for addr in addrs[netifaces.AF_INET]:
+                        ip = addr['addr']
+                        if not ip.startswith('127.') and not ip.startswith('169.254.'):
+                            return ip
+        except ImportError:
+            pass
+        
+        # Fallback to localhost
+        return "127.0.0.1"
     
     @staticmethod
     def check_port_available(port: int, host: str = '127.0.0.1') -> bool:
