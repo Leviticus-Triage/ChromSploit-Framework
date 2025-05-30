@@ -9,8 +9,11 @@ Für Bildungs- und autorisierte Penetrationstests
 import os
 import sys
 import shutil
+import re
+import stat
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Union
+from urllib.parse import unquote
 
 class PathUtils:
     """
@@ -320,3 +323,309 @@ class PathUtils:
             return os.path.splitext(file_path)[1].lower()
         except:
             return ""
+    
+    @staticmethod
+    def is_safe_path(path: str, allow_parent_traversal: bool = False) -> bool:
+        """
+        Überprüft, ob ein Pfad sicher ist (keine Path Traversal-Angriffe)
+        
+        Args:
+            path (str): Der zu überprüfende Pfad
+            allow_parent_traversal (bool): Ob Parent-Directory-Traversal erlaubt ist
+            
+        Returns:
+            bool: True, wenn der Pfad sicher ist, sonst False
+        """
+        try:
+            # URL-Dekodierung für Web-Pfade
+            decoded_path = unquote(path)
+            
+            # Normalisiere Pfad
+            normalized_path = os.path.normpath(decoded_path)
+            
+            # Überprüfe auf gefährliche Zeichen und Muster
+            dangerous_patterns = [
+                '../',
+                '..\\',
+                '/../',
+                '\\..\\',
+                '/..',
+                '\\..',
+                '%2e%2e/',
+                '%2e%2e\\',
+                '..%2f',
+                '..%5c',
+                '%c0%af',  # Unicode bypass
+                '%c1%9c',  # Unicode bypass
+                '\x00',    # Null byte
+                '\r',      # Carriage return
+                '\n'       # Newline
+            ]
+            
+            path_lower = decoded_path.lower()
+            for pattern in dangerous_patterns:
+                if pattern in path_lower:
+                    return False
+            
+            # Überprüfe auf absoluten Pfad wenn nicht erlaubt
+            if os.path.isabs(normalized_path) and not allow_parent_traversal:
+                # Erlaubt nur Framework-Basispfade
+                base_dir = PathUtils.get_base_dir()
+                try:
+                    resolved_path = os.path.realpath(normalized_path)
+                    if not resolved_path.startswith(base_dir):
+                        return False
+                except:
+                    return False
+            
+            # Überprüfe auf Parent-Directory-Traversal
+            if not allow_parent_traversal:
+                if normalized_path.startswith('../') or '/../' in normalized_path:
+                    return False
+            
+            # Überprüfe auf gefährliche Dateierweiterungen
+            dangerous_extensions = [
+                '.exe', '.bat', '.cmd', '.com', '.scr', '.pif',
+                '.vbs', '.vbe', '.js', '.jse', '.wsf', '.wsh',
+                '.msi', '.dll', '.so', '.dylib'
+            ]
+            
+            ext = PathUtils.get_file_extension(path)
+            if ext in dangerous_extensions:
+                return False
+            
+            return True
+        except Exception:
+            return False
+    
+    @staticmethod
+    def sanitize_filename(filename: str) -> str:
+        """
+        Bereinigt einen Dateinamen von gefährlichen Zeichen
+        
+        Args:
+            filename (str): Der zu bereinigende Dateiname
+            
+        Returns:
+            str: Der bereinigte Dateiname
+        """
+        # Entferne gefährliche Zeichen
+        unsafe_chars = r'[<>:"/\\|?*\x00-\x1f]'
+        sanitized = re.sub(unsafe_chars, '_', filename)
+        
+        # Entferne führende und abschließende Punkte und Leerzeichen
+        sanitized = sanitized.strip('. ')
+        
+        # Verhindere reservierte Namen (Windows)
+        reserved_names = [
+            'CON', 'PRN', 'AUX', 'NUL',
+            'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
+            'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9'
+        ]
+        
+        name_without_ext = os.path.splitext(sanitized)[0].upper()
+        if name_without_ext in reserved_names:
+            sanitized = f"_{sanitized}"
+        
+        # Begrenze Länge
+        if len(sanitized) > 255:
+            name, ext = os.path.splitext(sanitized)
+            sanitized = name[:255-len(ext)] + ext
+        
+        return sanitized or 'unnamed_file'
+    
+    @staticmethod
+    def validate_file_path(file_path: str, base_dir: Optional[str] = None) -> bool:
+        """
+        Validiert einen Dateipfad umfassend
+        
+        Args:
+            file_path (str): Der zu validierende Dateipfad
+            base_dir (str, optional): Basisverzeichnis für relative Pfade
+            
+        Returns:
+            bool: True, wenn der Pfad gültig ist, sonst False
+        """
+        try:
+            if not file_path or not isinstance(file_path, str):
+                return False
+            
+            # Überprüfe Pfadsicherheit
+            if not PathUtils.is_safe_path(file_path):
+                return False
+            
+            # Setze Basisverzeichnis falls nicht angegeben
+            if base_dir is None:
+                base_dir = PathUtils.get_base_dir()
+            
+            # Behandle relative Pfade
+            if not os.path.isabs(file_path):
+                file_path = os.path.join(base_dir, file_path)
+            
+            # Normalisiere und löse Pfad auf
+            normalized_path = os.path.normpath(file_path)
+            resolved_path = os.path.realpath(normalized_path)
+            
+            # Überprüfe, ob der aufgelöste Pfad innerhalb des Basisverzeichnisses liegt
+            if not resolved_path.startswith(os.path.realpath(base_dir)):
+                return False
+            
+            return True
+        except Exception:
+            return False
+    
+    @staticmethod
+    def get_secure_temp_path(prefix: str = 'chromsploit_', suffix: str = '') -> str:
+        """
+        Erstellt einen sicheren temporären Pfad
+        
+        Args:
+            prefix (str): Präfix für den temporären Pfad
+            suffix (str): Suffix für den temporären Pfad
+            
+        Returns:
+            str: Sicherer temporärer Pfad
+        """
+        import tempfile
+        import uuid
+        
+        # Bereinige Präfix und Suffix
+        clean_prefix = PathUtils.sanitize_filename(prefix)
+        clean_suffix = suffix if suffix else ''  # Don't sanitize suffix to preserve file extensions
+        
+        # Erstelle einzigartigen Namen
+        unique_name = f"{clean_prefix}{uuid.uuid4().hex[:8]}{clean_suffix}"
+        
+        # Verwende Framework-spezifisches Temp-Verzeichnis
+        temp_base = os.path.join(PathUtils.get_base_dir(), 'temp')
+        PathUtils.ensure_dir_exists(temp_base)
+        
+        # Setze sichere Berechtigungen
+        try:
+            os.chmod(temp_base, stat.S_IRWXU)  # Nur Besitzer kann lesen/schreiben/ausführen
+        except:
+            pass
+        
+        return os.path.join(temp_base, unique_name)
+    
+    @staticmethod
+    def is_within_base_directory(path: str, base_dir: Optional[str] = None) -> bool:
+        """
+        Überprüft, ob ein Pfad innerhalb des Basisverzeichnisses liegt
+        
+        Args:
+            path (str): Der zu überprüfende Pfad
+            base_dir (str, optional): Basisverzeichnis
+            
+        Returns:
+            bool: True, wenn der Pfad innerhalb des Basisverzeichnisses liegt
+        """
+        try:
+            if base_dir is None:
+                base_dir = PathUtils.get_base_dir()
+            
+            # Normalisiere beide Pfade
+            real_path = os.path.realpath(path)
+            real_base = os.path.realpath(base_dir)
+            
+            # Überprüfe, ob der Pfad innerhalb der Basis liegt
+            return real_path.startswith(real_base + os.sep) or real_path == real_base
+        except Exception:
+            return False
+    
+    @staticmethod
+    def get_allowed_file_extensions() -> List[str]:
+        """
+        Gibt eine Liste erlaubter Dateierweiterungen zurück
+        
+        Returns:
+            List[str]: Liste erlaubter Dateierweiterungen
+        """
+        return [
+            '.txt', '.log', '.json', '.xml', '.csv', '.html', '.htm',
+            '.py', '.js', '.css', '.md', '.rst', '.yaml', '.yml',
+            '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.svg',
+            '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+            '.zip', '.tar', '.gz', '.bz2', '.7z',
+            '.key', '.pem', '.crt', '.p12', '.pfx'
+        ]
+    
+    @staticmethod
+    def is_allowed_file_type(file_path: str) -> bool:
+        """
+        Überprüft, ob eine Datei einen erlaubten Typ hat
+        
+        Args:
+            file_path (str): Pfad zur Datei
+            
+        Returns:
+            bool: True, wenn der Dateityp erlaubt ist
+        """
+        extension = PathUtils.get_file_extension(file_path)
+        allowed_extensions = PathUtils.get_allowed_file_extensions()
+        return extension in allowed_extensions
+    
+    @staticmethod
+    def create_secure_directory(directory: str, mode: int = 0o700) -> bool:
+        """
+        Erstellt ein Verzeichnis mit sicheren Berechtigungen
+        
+        Args:
+            directory (str): Das zu erstellende Verzeichnis
+            mode (int): Berechtigungsmodus (Standard: nur Besitzer)
+            
+        Returns:
+            bool: True, wenn das Verzeichnis erstellt wurde
+        """
+        try:
+            # Validiere Pfad
+            if not PathUtils.is_safe_path(directory):
+                return False
+            
+            # Erstelle Verzeichnis
+            os.makedirs(directory, mode=mode, exist_ok=True)
+            
+            # Setze explizit Berechtigungen (für Systeme, die umask ignorieren)
+            os.chmod(directory, mode)
+            
+            return True
+        except Exception:
+            return False
+    
+    @staticmethod
+    def secure_file_copy(src: str, dst: str, preserve_permissions: bool = False) -> bool:
+        """
+        Kopiert eine Datei sicher mit Validierung
+        
+        Args:
+            src (str): Quelldatei
+            dst (str): Zieldatei
+            preserve_permissions (bool): Berechtigungen beibehalten
+            
+        Returns:
+            bool: True, wenn das Kopieren erfolgreich war
+        """
+        try:
+            # Validiere beide Pfade
+            if not PathUtils.validate_file_path(src) or not PathUtils.is_safe_path(dst):
+                return False
+            
+            # Überprüfe, ob Quelldatei existiert und lesbar ist
+            if not PathUtils.is_path_readable(src):
+                return False
+            
+            # Erstelle Zielverzeichnis falls nötig
+            dst_dir = os.path.dirname(dst)
+            if not PathUtils.create_secure_directory(dst_dir):
+                return False
+            
+            # Kopiere Datei
+            shutil.copy2(src, dst) if preserve_permissions else shutil.copy(src, dst)
+            
+            # Setze sichere Berechtigungen für Zieldatei
+            if not preserve_permissions:
+                os.chmod(dst, stat.S_IRUSR | stat.S_IWUSR)  # Nur Besitzer read/write
+            
+            return True
+        except Exception:
+            return False

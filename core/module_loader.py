@@ -213,6 +213,22 @@ class ModuleLoader:
             return self.loaded_modules[module_name].instance
         return None
     
+    def check_optional_deps(self) -> Dict[str, bool]:
+        """Check optional dependencies for all modules"""
+        result = {}
+        for module_name in self.available_modules:
+            deps_ok, _ = self.check_dependencies(module_name)
+            result[module_name] = deps_ok
+        return result
+    
+    def load_optional_modules(self) -> Dict[str, bool]:
+        """Load all optional modules"""
+        result = {}
+        for module_name in self.available_modules:
+            instance = self.load_module(module_name)
+            result[module_name] = instance is not None
+        return result
+    
     def list_available_modules(self) -> Dict[str, Dict[str, Any]]:
         """List all available modules with their status"""
         result = {}

@@ -1,0 +1,7 @@
+{
+  "timestamp": "2025-05-30T14:27:36Z",
+  "module": "ai_decision",
+  "status": "fallback_activated",
+  "reason": "torch_not_available",
+  "target": "192.168.1.105"
+}

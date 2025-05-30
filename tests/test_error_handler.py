@@ -110,7 +110,7 @@ class TestErrorHandler(TestBase):
         assert not handler.debug_mode
     
     @patch('core.error_handler.get_logger')
-    def test_handle_framework_error(self, mock_get_logger, capture_print):
+    def test_handle_framework_error(self, mock_get_logger):
         """Test handling framework errors"""
         handler = ErrorHandler()
         handler.user_friendly_mode = True
@@ -121,7 +121,8 @@ class TestErrorHandler(TestBase):
             suggestions=["Check internet connection"]
         )
         
-        result = handler.handle_error(error, context="Network test")
+        with patch('builtins.print'):
+            result = handler.handle_error(error, context="Network test")
         
         assert result['message'] == "Connection failed"
         assert result['category'] == "Network Error"
@@ -132,12 +133,13 @@ class TestErrorHandler(TestBase):
         mock_get_logger.return_value.error.assert_called()
     
     @patch('core.error_handler.get_logger')
-    def test_handle_standard_exception(self, mock_get_logger, capture_print):
+    def test_handle_standard_exception(self, mock_get_logger):
         """Test handling standard Python exceptions"""
         handler = ErrorHandler()
         
         error = FileNotFoundError("test.txt not found")
-        result = handler.handle_error(error, context="File operation")
+        with patch('builtins.print'):
+            result = handler.handle_error(error, context="File operation")
         
         assert result['message'] == "test.txt not found"
         assert result['category'] == ErrorCategory.FILE_IO.value
@@ -150,12 +152,12 @@ class TestErrorHandler(TestBase):
         handler = ErrorHandler()
         
         # Test various error types
-        assert handler._categorize_error(FileNotFoundError()) == ErrorCategory.FILE_IO.value
-        assert handler._categorize_error(PermissionError()) == ErrorCategory.PERMISSION.value
-        assert handler._categorize_error(ConnectionError()) == ErrorCategory.NETWORK.value
-        assert handler._categorize_error(ValueError()) == ErrorCategory.VALIDATION.value
-        assert handler._categorize_error(ImportError()) == ErrorCategory.DEPENDENCY.value
-        assert handler._categorize_error(Exception()) == ErrorCategory.UNKNOWN.value
+        assert handler._categorize_error(FileNotFoundError("test")) == ErrorCategory.FILE_IO.value
+        assert handler._categorize_error(PermissionError("access denied")) == ErrorCategory.PERMISSION.value
+        assert handler._categorize_error(ConnectionError("connection failed")) == ErrorCategory.NETWORK.value
+        assert handler._categorize_error(ValueError("invalid value")) == ErrorCategory.VALIDATION.value
+        assert handler._categorize_error(ImportError("module not found")) == ErrorCategory.DEPENDENCY.value
+        assert handler._categorize_error(Exception("generic error")) == ErrorCategory.UNKNOWN.value
     
     @patch('core.error_handler.get_logger')
     def test_severity_assessment(self, mock_get_logger):
@@ -173,15 +175,15 @@ class TestErrorHandler(TestBase):
         handler = ErrorHandler()
         
         # File not found suggestions
-        suggestions = handler._generate_suggestions(FileNotFoundError())
+        suggestions = handler._generate_suggestions(FileNotFoundError("test.txt"))
         assert any("path is correct" in s for s in suggestions)
         
         # Permission error suggestions
-        suggestions = handler._generate_suggestions(PermissionError())
+        suggestions = handler._generate_suggestions(PermissionError("access denied"))
         assert any("permissions" in s for s in suggestions)
         
         # Connection error suggestions
-        suggestions = handler._generate_suggestions(ConnectionError())
+        suggestions = handler._generate_suggestions(ConnectionError("connection failed"))
         assert any("internet connection" in s for s in suggestions)
         
         # Module not found suggestions
@@ -265,7 +267,7 @@ class TestErrorHandler(TestBase):
         assert len(handler.error_history) == 0
     
     @patch('core.error_handler.get_logger')
-    def test_debug_mode(self, mock_get_logger, capture_print):
+    def test_debug_mode(self, mock_get_logger):
         """Test debug mode with traceback"""
         handler = ErrorHandler()
         handler.debug_mode = True
@@ -274,7 +276,8 @@ class TestErrorHandler(TestBase):
         try:
             raise ValueError("Test error")
         except ValueError as e:
-            result = handler.handle_error(e)
+            with patch('builtins.print'):
+                result = handler.handle_error(e)
         
         assert result['traceback'] is not None
         assert "Traceback" in result['traceback']
@@ -315,7 +318,14 @@ class TestErrorDecorator(TestBase):
         """Test decorator with reraise option"""
         mock_handler = Mock()
         mock_get_handler.return_value = mock_handler
-        mock_handler.handle_error.side_effect = lambda e, c, r: e if r else None
+        
+        # Configure the mock to properly reraise when reraise=True
+        def mock_handle_error(e, c, r):
+            if r:
+                raise e
+            return None
+        
+        mock_handler.handle_error.side_effect = mock_handle_error
         
         @handle_errors(reraise=True)
         def failing_function():

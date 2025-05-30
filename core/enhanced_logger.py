@@ -106,10 +106,10 @@ class LogFilter:
             return False
         
         # Text filters
-        message = record.get('message', '')
-        if self.filters['contains'] and self.filters['contains'] not in message:
+        message = record.get('message', '').lower()
+        if self.filters['contains'] and self.filters['contains'].lower() not in message:
             return False
-        if self.filters['excludes'] and self.filters['excludes'] in message:
+        if self.filters['excludes'] and self.filters['excludes'].lower() in message:
             return False
         
         return True

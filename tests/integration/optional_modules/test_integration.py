@@ -37,13 +37,13 @@ class OptionalModulesIntegrationTest(unittest.TestCase):
         cls.logger.info("Starte Integrationstests für optionale Module")
         
         # Konfiguration initialisieren
-        cls.config = Config(config_file=os.path.join(PathUtils.get_config_dir(), "test_config.json"))
+        cls.config = Config(config_path=os.path.join(PathUtils.get_config_dir(), "test_config.json"))
         
         # Modul-Loader initialisieren
-        cls.module_loader = ModuleLoader(logger=cls.logger)
+        cls.module_loader = ModuleLoader()
         
         # Testverzeichnis erstellen
-        cls.test_dir = os.path.join(PathUtils.get_root_dir(), "tests", "integration", "optional_modules")
+        cls.test_dir = os.path.join(PathUtils.get_base_dir(), "tests", "integration", "optional_modules")
         PathUtils.ensure_dir_exists(cls.test_dir)
     
     def setUp(self):
@@ -96,7 +96,7 @@ class OptionalModulesIntegrationTest(unittest.TestCase):
         # Fallback-Test
         try:
             # Direkter Import, um zu testen, ob das Modul verfügbar ist
-            sys.path.append(os.path.join(PathUtils.get_root_dir(), "modules"))
+            sys.path.append(os.path.join(PathUtils.get_base_dir(), "modules"))
             from ai.ai_orchestrator_v2 import AIOrchestrator
             
             # Testziel erstellen
@@ -137,7 +137,7 @@ class OptionalModulesIntegrationTest(unittest.TestCase):
         # Fallback-Test
         try:
             # Direkter Import, um zu testen, ob das Modul verfügbar ist
-            sys.path.append(os.path.join(PathUtils.get_root_dir(), "modules"))
+            sys.path.append(os.path.join(PathUtils.get_base_dir(), "modules"))
             from resilience.resilience_module import NetworkResilience
             
             # NetworkResilience initialisieren
