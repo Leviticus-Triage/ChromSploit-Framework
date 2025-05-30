@@ -21,7 +21,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ChromSploit-Framework.git
+git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 
 # Install dependencies
@@ -38,7 +38,7 @@ python3 chromsploit.py
 
 ```bash
 # Download latest release
-wget https://github.com/yourusername/ChromSploit-Framework/releases/latest/download/chromsploit-v2.2.tar.gz
+wget https://github.com/Leviticus-Triage/ChromSploit-Framework/releases/latest/download/chromsploit-v2.2.tar.gz
 
 # Extract
 tar -xzf chromsploit-v2.2.tar.gz
@@ -63,7 +63,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install -y python3 python3-pip python3-venv git curl wget
 
 # 3. Clone repository
-git clone https://github.com/YourUsername/ChromSploit-Framework.git
+git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 
 # 4. Create virtual environment
@@ -88,7 +88,7 @@ sudo yum install -y python3 python3-pip git
 sudo dnf install -y python3 python3-pip git
 
 # Continue with common steps
-git clone https://github.com/YourUsername/ChromSploit-Framework.git
+git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 python3 -m venv venv
 source venv/bin/activate
@@ -102,7 +102,7 @@ pip install -r requirements.txt
 sudo pacman -S python python-pip git
 
 # Clone and setup
-git clone https://github.com/YourUsername/ChromSploit-Framework.git
+git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 python -m venv venv
 source venv/bin/activate
@@ -132,7 +132,7 @@ wsl --install -d Ubuntu
 # 2. Install Git from git-scm.com
 
 # 3. Open PowerShell/Command Prompt
-git clone https://github.com/YourUsername/ChromSploit-Framework.git
+git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 
 # 4. Create virtual environment
@@ -161,7 +161,7 @@ python chromsploit.py --check
 brew install python@3.9 git
 
 # 3. Clone repository
-git clone https://github.com/YourUsername/ChromSploit-Framework.git
+git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 
 # 4. Setup virtual environment
@@ -183,7 +183,7 @@ python chromsploit.py --check
 sudo port install python39 git
 
 # Continue with standard setup
-git clone https://github.com/YourUsername/ChromSploit-Framework.git
+git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 python3.9 -m venv venv
 source venv/bin/activate
@@ -208,7 +208,7 @@ docker run -it --rm \
   chromsploit/framework:v2.2
 
 # 3. Or build from source
-git clone https://github.com/YourUsername/ChromSploit-Framework.git
+git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 docker build -t chromsploit:local .
 docker run -it --rm chromsploit:local
@@ -239,7 +239,7 @@ services:
 
 ```bash
 # Clone with development branch
-git clone -b develop https://github.com/YourUsername/ChromSploit-Framework.git
+git clone -b develop https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 
 # Install with development dependencies
@@ -260,7 +260,7 @@ sudo apt update
 sudo apt install -y python3-venv
 
 # Clone and setup
-git clone https://github.com/YourUsername/ChromSploit-Framework.git
+git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 python3 -m venv venv
 source venv/bin/activate
@@ -274,7 +274,7 @@ sudo apt install -y metasploit-framework ngrok
 
 ```bash
 # For environments with limited resources
-git clone --depth=1 https://github.com/YourUsername/ChromSploit-Framework.git
+git clone --depth=1 https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 python3 -m venv venv --without-pip
 source venv/bin/activate
@@ -304,9 +304,9 @@ python chromsploit.py --check
 ### Configuration Files
 
 | File | Purpose | Location |
-|------|---------|----------|
-| `user_config.json` | User preferences | `config/` |
-| `default_config.json` | Framework defaults | `config/` |
+|-----------------------------|------------------------|-----------|
+|      `user_config.json`     |    User preferences    | `config/` |
+|     `default_config.json`   |   Framework defaults   | `config/` |
 | `browser_chain_config.json` | Multi-exploit settings | `config/` |
 
 ### Environment Variables
