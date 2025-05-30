@@ -467,7 +467,6 @@ pip install -r requirements.txt --trusted-host pypi.org --trusted-host pypi.pyth
 - 📖 Check [FAQ](../FAQ.md)
 - 🐛 Open [GitHub Issue](../../issues)
 - 💬 Join [Discussions](../../discussions)
-- 📧 Email: support@chromsploit.org
 
 ---
 
@@ -523,12 +522,12 @@ docker rmi chromsploit/framework:v2.2
 
 <div align="center">
 
-| Platform | Success Rate | Avg. Install Time | Disk Usage |
-|----------|--------------|------------------|------------|
-| Ubuntu 20.04+ | 98% | 3-5 minutes | 450MB |
-| Windows 10+ | 95% | 5-8 minutes | 520MB |
-| macOS 11+ | 97% | 4-6 minutes | 480MB |
-| Kali Linux | 99% | 2-3 minutes | 420MB |
+|   Platform    | Success Rate | Avg. Instal Time | Disk Usage |
+|---------------|--------------|------------------|------------|
+| Ubuntu 20.04+ |      98%     |    3-5 minutes   |    450MB   |
+|  Windows 10+  |      95%     |    5-8 minutes   |    520MB   |
+|   macOS 11+   |      97%     |    4-6 minutes   |    480MB   |
+|  Kali  Linux  |      99%     |    2-3 minutes   |    420MB   |
 
 </div>
 
