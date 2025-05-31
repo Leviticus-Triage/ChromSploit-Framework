@@ -20,10 +20,8 @@ class SessionMenu(EnhancedMenu):
     """Menu for managing C2 framework sessions"""
     
     def __init__(self):
-        super().__init__(
-            title="🎯 Session Management",
-            description="Manage active sessions from C2 frameworks"
-        )
+        super().__init__(title="🎯 Session Management")
+        self.set_description("Manage active sessions from C2 frameworks")
         
         self.session_manager = get_session_manager()
         self.logger = get_logger()

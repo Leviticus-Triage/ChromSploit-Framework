@@ -151,6 +151,17 @@ temp/
 config/user_config.json
 simulation_results.json
 
+# Internal development files (not for external users)
+CLAUDE.md
+DEVELOPMENT.md
+INTERNAL_NOTES.md
+.internal/
+internal/
+dev/
+development/
+private/
+team/
+
 # Security - never commit these
 *.key
 *.pem

@@ -183,3 +183,11 @@ class Menu:
                 else:
                     print(f"\n{Colors.CYAN}ChromSploit wird beendet. Auf Wiedersehen!{Colors.RESET}")
                     sys.exit(0)
+    
+    def exit_menu(self):
+        """Exit the current menu and return to parent"""
+        return None
+    
+    def run(self):
+        """Run the menu (alias for display)"""
+        return self.display()

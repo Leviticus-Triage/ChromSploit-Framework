@@ -26,10 +26,8 @@ class BrowserChainMenu(EnhancedMenu):
     """Menu for browser exploit chain operations"""
     
     def __init__(self):
-        super().__init__(
-            title="Browser Multi-Exploit Chain",
-            description="Automated browser CVE combination attacks"
-        )
+        super().__init__(title="Browser Multi-Exploit Chain")
+        self.set_description("Automated browser CVE combination attacks")
         
         self.browser_chain = BrowserExploitChain()
         self.active_chain_id: Optional[str] = None

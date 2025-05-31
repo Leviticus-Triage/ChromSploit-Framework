@@ -57,6 +57,13 @@ try:
 except ImportError:
     SESSION_MENU_AVAILABLE = False
 
+# Try to import AI Assistant menu
+try:
+    from ui.ai_assistant_menu import AIAssistantMenu
+    AI_MENU_AVAILABLE = True
+except ImportError:
+    AI_MENU_AVAILABLE = False
+
 class MainMenu(Menu):
     """
     Hauptmenü des ChromSploit Frameworks
@@ -82,6 +89,8 @@ class MainMenu(Menu):
         self.add_item("CVE-2025-30397 (Edge WebAssembly JIT Escape)", self._open_cve_2025_30397, Colors.BRIGHT_GREEN)
         if BROWSER_CHAIN_AVAILABLE:
             self.add_item("🔗 Browser Multi-Exploit Chain", self._open_browser_chain, Colors.BRIGHT_RED)
+        if AI_MENU_AVAILABLE:
+            self.add_item("🤖 AI Exploit Assistant", self._open_ai_assistant, Colors.BRIGHT_CYAN)
         self.add_item("Custom Exploit Engine", self._open_custom_menu, Colors.BRIGHT_YELLOW)
         self.add_item("Live View & Debug Console", self._open_live_view, Colors.BRIGHT_BLUE)
         self.add_item("Professional Reporting", self._open_reporting_menu, Colors.BRIGHT_CYAN)
@@ -265,6 +274,17 @@ class MainMenu(Menu):
             menu.run()
         else:
             print(f"{Colors.YELLOW}[!] Browser Chain Menü nicht verfügbar{Colors.RESET}")
+            input("Drücken Sie Enter um fortzufahren...")
+    
+    def _open_ai_assistant(self) -> None:
+        """
+        Öffnet das AI Assistant Menü
+        """
+        if AI_MENU_AVAILABLE:
+            menu = AIAssistantMenu()
+            menu.run()
+        else:
+            print(f"{Colors.YELLOW}[!] AI Assistant Menü nicht verfügbar{Colors.RESET}")
             input("Drücken Sie Enter um fortzufahren...")
     
     def _open_session_management(self) -> None:

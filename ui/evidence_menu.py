@@ -18,10 +18,8 @@ class EvidenceMenu(EnhancedMenu):
     """Evidence collection and management menu"""
     
     def __init__(self):
-        super().__init__(
-            title="🔍 Evidence Collection System",
-            description="Forensic evidence collection with chain of custody"
-        )
+        super().__init__(title="🔍 Evidence Collection System")
+        self.set_description("Forensic evidence collection with chain of custody")
         self.evidence_manager = get_evidence_manager()
         self.logger = get_logger()
         self.current_case = None
@@ -105,10 +103,8 @@ class EvidenceMenu(EnhancedMenu):
     @handle_errors
     def case_management_menu(self):
         """Case management submenu"""
-        menu = EnhancedMenu(
-            title="📁 Case Management",
-            description="Manage evidence collection cases"
-        )
+        menu = EnhancedMenu(title="📁 Case Management")
+        menu.set_description("Manage evidence collection cases")
         
         menu.add_enhanced_item(
             "Create New Case",
@@ -279,10 +275,8 @@ class EvidenceMenu(EnhancedMenu):
             input("Drücken Sie Enter um fortzufahren...")
             return
         
-        menu = EnhancedMenu(
-            title="📸 Screenshot Capture",
-            description="Capture screen evidence"
-        )
+        menu = EnhancedMenu(title="📸 Screenshot Capture")
+        menu.set_description("Capture screen evidence")
         
         menu.add_enhanced_item(
             "Full Screen Capture",
@@ -476,10 +470,8 @@ class EvidenceMenu(EnhancedMenu):
             input("Drücken Sie Enter um fortzufahren...")
             return
         
-        menu = EnhancedMenu(
-            title="🌐 Network Traffic Capture",
-            description="Capture network packets"
-        )
+        menu = EnhancedMenu(title="🌐 Network Traffic Capture")
+        menu.set_description("Capture network packets")
         
         menu.add_enhanced_item(
             "Quick Capture (60s)",
@@ -677,10 +669,8 @@ class EvidenceMenu(EnhancedMenu):
             input("Drücken Sie Enter um fortzufahren...")
             return
         
-        menu = EnhancedMenu(
-            title="💾 Memory Dumps",
-            description="Capture process and system memory"
-        )
+        menu = EnhancedMenu(title="💾 Memory Dumps")
+        menu.set_description("Capture process and system memory")
         
         menu.add_enhanced_item(
             "Process Memory Dump",
@@ -814,10 +804,8 @@ class EvidenceMenu(EnhancedMenu):
             input("Drücken Sie Enter um fortzufahren...")
             return
         
-        menu = EnhancedMenu(
-            title="📁 File & Artifact Collection",
-            description="Collect files and system artifacts"
-        )
+        menu = EnhancedMenu(title="📁 File & Artifact Collection")
+        menu.set_description("Collect files and system artifacts")
         
         menu.add_enhanced_item(
             "Collect Specific File",
@@ -1100,10 +1088,8 @@ class EvidenceMenu(EnhancedMenu):
     @handle_errors
     def report_menu(self):
         """Evidence report menu"""
-        menu = EnhancedMenu(
-            title="📊 Evidence Reports",
-            description="Generate and export evidence reports"
-        )
+        menu = EnhancedMenu(title="📊 Evidence Reports")
+        menu.set_description("Generate and export evidence reports")
         
         menu.add_enhanced_item(
             "Generate HTML Report",

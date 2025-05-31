@@ -72,21 +72,34 @@ class ProgressBar:
 class EnhancedMenu(Menu):
     """Enhanced menu with improved features"""
     
-    def __init__(self, title: str, parent=None, description: Optional[str] = None):
+    def __init__(self, title: str, parent=None):
         super().__init__(title, parent)
-        self.description = description
+        self.description = None
         self.breadcrumb = []
         self.notifications = []
         self.status_message = None
         self.show_time = True
         self.show_breadcrumb = True
         self.loading = False
+    
+    def set_description(self, description: str):
+        """Set menu description"""
+        self.description = description
         
     def add_enhanced_item(self, text: str, action: Callable, color: str = Colors.WHITE,
                          shortcut: Optional[str] = None, description: Optional[str] = None,
                          dangerous: bool = False, key: Optional[str] = None, title: Optional[str] = None) -> None:
         """Add an enhanced menu item"""
-        item = EnhancedMenuItem(text, action, color, shortcut, description, dangerous, key, title)
+        item = EnhancedMenuItem(
+            text=text, 
+            action=action, 
+            color=color, 
+            shortcut=shortcut, 
+            description=description, 
+            dangerous=dangerous, 
+            key=key, 
+            title=title
+        )
         self.items.append(item)
     
     def add_notification(self, message: str, type: str = "info"):

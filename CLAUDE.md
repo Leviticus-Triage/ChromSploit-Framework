@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## ChromSploit Framework Overview
 
-ChromSploit Framework is an educational security research tool with a modular architecture for studying browser vulnerabilities. The codebase emphasizes safety through simulation modes and professional reporting for bug bounty/pentesting work.
+ChromSploit Framework is an educational security research tool with a modular architecture for studying browser vulnerabilities. The codebase emphasizes safety through simulation modes and professional reporting for authorized penetration testing.
 
 ## Key Commands
 
@@ -13,14 +13,10 @@ ChromSploit Framework is an educational security research tool with a modular ar
 # Standard launch
 python chromsploit.py
 
-# With simulation mode (no actual exploitation)
+# With simulation mode (recommended for development)
 python chromsploit.py --simulation safe    # Safe mode (default)
 python chromsploit.py --simulation demo    # Demo mode with explanations
-python chromsploit.py --simulation fast    # Fast mode (minimal delays)
-
-# Other options
 python chromsploit.py --debug              # Enable debug output
-python chromsploit.py --log-level DEBUG    # Set logging level
 python chromsploit.py --check              # Check environment only
 ```
 
@@ -47,201 +43,196 @@ black . --line-length 120
 # Linting
 flake8 . --max-line-length 120
 
-# Type checking
-mypy chromsploit.py --ignore-missing-imports
-
-# Security scanning
-bandit -r . -x tests/ -f json -o security-report.json
-
-# Run specific test categories
-python -m pytest -m unit          # Unit tests only
-python -m pytest -m integration   # Integration tests only
-python -m pytest -m "not slow"    # Skip slow tests
-
 # Install in development mode
 pip install -e .[dev]
 
 # Create new exploit module
-cp exploits/cve_2025_4664.py exploits/cve_YYYY_XXXXX.py  # Use real example as template
+cp exploits/cve_2025_4664.py exploits/cve_YYYY_XXXXX.py  # Use as template
 ```
 
 ## Architecture
 
 ### Core System Flow
 ```
-chromsploit.py (Entry)
-    ├── Environment Check (dependencies, permissions)
+chromsploit.py (Entry Point)
+    ├── Environment Check
     ├── Configuration Loading (config/*.json)
     ├── Module Loader (core/module_loader.py)
     ├── Enhanced Logger Initialization
-    └── Main Menu (ui/main_menu.py)
-        ├── CVE Exploits
-        ├── Browser Multi-Exploit Chain ← NEW
-        ├── Reconnaissance
-        ├── Reporting
-        └── Settings
+    └── Main Menu System (ui/main_menu.py)
 ```
 
-### Critical Architectural Patterns
+### Key Architectural Patterns
 
 1. **Module Loading System** (`core/module_loader.py`):
-   - Scans `/modules` directory for dynamic loading
-   - Handles missing dependencies gracefully
-   - Maintains singleton registry of loaded modules
-   - Use `get_module_loader().load_module(name)` to load modules
+   - Dynamic loading with graceful failure handling
+   - Singleton registry for loaded modules
+   - Use `get_module_loader().load_module(name)` pattern
 
-2. **Exploit Chain System** (`core/exploit_chain.py`):
-   - Manages sequential/parallel exploit execution
-   - Dependency resolution between exploits
-   - State sharing between chain steps
-   - Progress tracking and callbacks
+2. **Enhanced Menu System** (`ui/*.py`):
+   - Base class: `EnhancedMenu` in `core/enhanced_menu.py`
+   - Keyboard shortcuts and navigation breadcrumbs
+   - Consistent error handling with `@handle_errors` decorator
+   - **CRITICAL**: EnhancedMenu.__init__() only accepts (title, parent) parameters
+   - Use `menu.set_description()` for descriptions, not constructor parameter
 
-3. **Browser Multi-Exploit Chain** (`modules/browser_exploit_chain.py`):
-   - Combines 4 browser CVEs automatically
-   - Integrates obfuscation and ngrok
-   - Templates: `full_browser_compromise`, `chrome_focused_attack`, `rapid_exploitation`
-   - Enhanced version in `browser_exploit_chain_enhanced.py` with full obfuscation
+3. **Exploit Implementation Pattern**:
+   ```python
+   class CVE20XX_XXXXX_Exploit:
+       def __init__(self):
+           self.config = {...}
+       
+       def execute(self, target_url=None):
+           return {
+               'success': bool,
+               'cve_id': str,
+               'artifacts': dict
+           }
+   
+   # Legacy function interface (required)
+   def execute_exploit(parameters: Dict[str, Any]) -> Dict[str, Any]:
+       exploit = CVE20XX_XXXXX_Exploit()
+       return exploit.execute()
+   ```
 
-4. **Obfuscation System** (`modules/obfuscation/`):
-   - `PayloadObfuscator` for exploit-specific obfuscation
-   - Supports JavaScript, HTML, WASM, binary data
-   - Levels: BASIC, STANDARD, ADVANCED, EXTREME
-   - Control flow, string encryption, anti-debugging
+4. **Global Instance Access Pattern**:
+   ```python
+   from core.enhanced_logger import get_logger
+   from core.error_handler import get_error_handler
+   from core.module_loader import get_module_loader
+   from core.ngrok_manager import get_ngrok_manager
+   ```
 
-5. **Ngrok Integration** (`core/ngrok_manager.py`):
-   - Automatic tunnel creation for callbacks
-   - Multiple tunnel types (TCP, HTTP, HTTPS)
-   - Region selection and TLS binding
-   - Used by Browser Chain for auto-tunneling
-
-### Exploit Implementation Pattern
-
-All exploits follow this structure:
-```python
-class CVE20XX_XXXXX_Exploit:
-    def __init__(self):
-        self.config = {...}
-    
-    def set_parameter(self, name, value):
-        # Parameter configuration
-    
-    def execute(self, target_url=None):
-        # Main execution logic
-        return {
-            'success': bool,
-            'cve_id': str,
-            'artifacts': dict,
-            'metadata': dict
-        }
-
-# Legacy function interface (required)
-def execute_exploit(parameters: Dict[str, Any]) -> Dict[str, Any]:
-    exploit = CVE20XX_XXXXX_Exploit()
-    # Configure and execute
-```
-
-### Enhanced Components
-
-The framework uses enhanced versions throughout:
-- `EnhancedLogger` → Structured logging with analysis
-- `EnhancedMenu` → Advanced UI with shortcuts and breadcrumbs  
-- `ErrorHandler` → Categorized errors with recovery suggestions
-- `SimulationEngine` → Safe testing without real exploitation
-- `ReportGenerator` → Professional PDF/HTML/JSON reports
-
-### Global Instance Access
-
-Always use getter functions for singletons:
-```python
-from core.enhanced_logger import get_logger
-from core.error_handler import get_error_handler
-from core.simulation import get_simulation_engine
-from core.reporting import get_report_generator
-from core.module_loader import get_module_loader
-from core.ngrok_manager import get_ngrok_manager
-```
-
-## Important Implementation Details
-
-### Language Mix
-- UI text is primarily **German** (menu items, user prompts)
-- Technical logs and code comments are **English**
-- Error messages support both languages
+5. **AI Integration Pattern**:
+   ```python
+   # Always include graceful fallback for AI modules
+   try:
+       from modules.ai.ai_orchestrator import AIOrchestrator
+       self.ai_orchestrator = AIOrchestrator()
+       self.logger.info("AI Orchestrator loaded for [module_name]")
+   except ImportError:
+       self.ai_orchestrator = None
+       self.logger.debug("AI Orchestrator not available")
+   ```
 
 ### Safety Mechanisms
 - All exploits check for `simulation_mode` in parameters
-- Real exploitation code wrapped in safety checks
 - Dangerous operations require explicit confirmation
-- All actions logged for audit trail
-
-### Browser Chain Integration
-When working with multi-exploit chains:
-1. Use `BrowserExploitChain` for basic chains
-2. Use `EnhancedBrowserExploitChain` for obfuscation + ngrok
-3. Chain templates define exploit order and parameters
-4. State is shared between exploits via `global_state`
-
-### Obfuscation Integration
-Exploits supporting obfuscation should:
-1. Check for `obfuscation_enabled` in parameters
-2. Use `payload_obfuscator` from parameters if provided
-3. Apply appropriate obfuscation based on payload type
-4. Update statistics for reporting
-
-### Testing New Features
-1. Add unit tests in `/tests` following existing patterns
-2. Use `TestBase` class for common functionality
-3. Mock external dependencies (network, filesystem)
-4. Run validation framework after changes
-5. Update `IMPLEMENTATION_LOG.md` with major changes
+- Complete audit trail logging
+- Educational flags on all content
 
 ## Configuration
 
 - **User Config**: `config/user_config.json` (persisted settings)
 - **Default Config**: `config/default_config.json` (framework defaults)
-- **Browser Chain Config**: `config/browser_chain_config.json` (multi-exploit settings)
-- **Logs**: `logs/` with automatic rotation (max 10MB, 5 backups)
+- **Logs**: `logs/` with automatic rotation
 - **Reports**: `reports/` with subdirectories by date
-- **Temp Files**: `/tmp/chromsploit_*` (cleaned on exit)
 
-## Recent Additions (v2.2)
+## Critical Implementation Details
 
-1. **Browser Multi-Exploit Chain**: Automated combination of 4 browser CVEs
-2. **Enhanced Obfuscation**: Full payload obfuscation with multiple techniques
-3. **Auto-Ngrok Integration**: Automatic tunnel creation for all callbacks
-4. **CVE-2025-24813**: Apache Tomcat RCE (WAR deployment)
-5. **CVE-2024-32002**: Git RCE (symbolic links)
-6. **Asciinema Integration**: Terminal recording and playback system
+### Menu System Requirements
+When working with any menu classes:
+1. **ALWAYS** inherit from `EnhancedMenu` or `Menu`
+2. **NEVER** pass `description=` to EnhancedMenu constructor
+3. Use `self.set_description()` method instead
+4. Ensure all menu classes have `exit_menu()` and `run()` methods
+5. Use `@handle_errors` decorator on all menu methods
 
-## Recent Bug Fixes (v2.2.1)
+### Logger Usage
+- **Always** use `from core.enhanced_logger import get_logger`
+- **Never** use `from core.logger import Logger` directly
+- Initialize with `self.logger = get_logger()` in constructors
+- Call as instance methods: `self.logger.info("message")`
 
-1. **Session Recovery**: Fixed Windows update interruption recovery - all menu navigation restored
-2. **Menu Shortcuts**: Fixed 'q' shortcut conflicts with quit command - shortcuts now processed before quit
-3. **EnhancedMenuItem**: Fixed initialization errors in all menu classes - proper parameter ordering
-4. **Ngrok Integration**: Fixed tunnel detection error with connection counts - removed incorrect len() usage
-5. **Setup.py**: Fixed package installation and entry points - proper extras_require formatting
-6. **Command Line**: Added `chromsploit` command after pip installation - working console entry point
-7. **Exploit Loading**: Fixed CVE module import mechanism - direct imports instead of module loader
-8. **Menu Methods**: Added missing `run()` and `exit_menu()` methods to all menu classes
+### NgrokManager Integration
+- Use `from core.ngrok_manager import get_ngrok_manager`
+- Both `start_tunnel()` and `create_tunnel()` methods available
+- Supports automatic CVE parameter synchronization
 
-## Tool Integration Points
+### Language Mix
+- UI text is primarily German (menu items, user prompts)
+- Technical logs and code comments are English
+- Error messages support both languages
+
+### Menu Integration
+When adding new menu items:
+1. Inherit from `EnhancedMenu`
+2. Use `@handle_errors` decorator on methods
+3. Follow the `get_*()` pattern for singletons
+4. Implement both `run()` and `exit_menu()` methods
+5. **CRITICAL**: Use proper constructor pattern:
+   ```python
+   def __init__(self):
+       super().__init__(title="Menu Title")
+       self.set_description("Menu description here")
+   ```
+
+### Error-Prone Patterns to Avoid
+1. **Wrong**: `EnhancedMenu(title="X", description="Y")`
+   **Right**: `EnhancedMenu(title="X"); menu.set_description("Y")`
+
+2. **Wrong**: `Logger.info("message")`
+   **Right**: `self.logger.info("message")`
+
+3. **Wrong**: Missing `exit_menu()` or `run()` methods
+   **Right**: Always implement both methods
+
+4. **Wrong**: `ngrok_manager.create_tunnel()` without checking if method exists
+   **Right**: Use `get_ngrok_manager().create_tunnel()` (method exists)
+
+### Testing New Features
+1. Add unit tests in `/tests` following existing patterns
+2. Use `TestBase` class for common functionality
+3. Mock external dependencies
+4. Run validation framework after changes
+5. Test all menu navigation paths
+
+## Dependencies
+
+- **Core**: Python 3.9+, requests, colorama, tabulate, click
+- **UI**: prompt_toolkit, rich, psutil
+- **Network**: scapy, dnspython, python-nmap, websockets
+- **Development**: pytest, black, flake8, mypy, bandit
+- **AI (Optional)**: PyTorch, transformers (graceful fallback implemented)
+
+## Framework Integration Points
 
 ### External Tools
-- **Ngrok**: Automatic tunnel creation via `core/ngrok_manager.py`
+- **Ngrok**: Tunnel creation via `core/ngrok_manager.py`
 - **Metasploit**: Integration via `tools/metasploit_integration.py`
-- **Sliver C2**: Full C2 framework integration in `core/sliver_c2/`
-- **OLLVM**: Binary obfuscation via `tools/ollvm_integration.py`
+- **OLLVM**: Binary obfuscation support
 
-### Framework Dependencies
-- Core depends on: `requests`, `colorama`, `tabulate`, `click`
-- Optional modules may require: `pycryptodome`, `selenium`, `scapy`
-- Development requires: `pytest`, `black`, `flake8`, `mypy`, `bandit`
+### Module Extensions
+The framework supports optional modules that gracefully degrade if dependencies are missing:
+```python
+try:
+    from optional_module import SomeFeature
+    feature_available = True
+except ImportError:
+    feature_available = False
+```
 
-## Working with Legacy Code
+## Working with the Codebase
 
-The repository contains some legacy v2.0 code in `chromsploit_framework_v2.0/` that uses different patterns:
-- Old logger in `core/logger.py` vs new `core/enhanced_logger.py`
-- Simple menus vs enhanced menu system
-- Different configuration patterns
+### Adding New Exploits
+1. Use existing CVE files as templates
+2. Implement both class and function interfaces
+3. Include simulation mode support
+4. Add comprehensive error handling
+5. Update tests and documentation
 
-When making changes, prefer the new v2.2 patterns and gradually migrate legacy code.
+### Menu Development
+1. Inherit from `EnhancedMenu`
+2. Implement conditional feature loading
+3. Use consistent key numbering
+4. Provide clear user feedback
+5. Follow the established UI patterns
+6. **CRITICAL**: Use proper initialization pattern shown above
+
+### Common Debugging
+- Check logs in `logs/chromsploit_errors.log` for issues
+- Use `--debug` flag for verbose output
+- Verify all menu classes have required methods
+- Ensure proper singleton pattern usage
+
+This framework prioritizes educational value, safety, and professional presentation for authorized security research.

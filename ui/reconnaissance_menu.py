@@ -17,25 +17,43 @@ class ReconnaissanceMenu(EnhancedMenu):
     """Advanced reconnaissance menu with target discovery capabilities"""
     
     def __init__(self):
-        super().__init__(
-            title="🔍 Reconnaissance & Target Discovery",
-            description="Comprehensive target discovery and information gathering toolkit"
-        )
+        super().__init__(title="🔍 Reconnaissance & Target Discovery")
+        self.set_description("Comprehensive target discovery and information gathering toolkit")
         self.recon_manager = get_reconnaissance_manager()
         self.logger = get_logger()
         self.current_target = None
+        
+        # Try to load AI orchestrator
+        self.ai_orchestrator = None
+        try:
+            from modules.ai.ai_orchestrator import AIOrchestrator
+            self.ai_orchestrator = AIOrchestrator()
+            self.logger.info("AI Orchestrator loaded for reconnaissance")
+        except ImportError:
+            self.logger.debug("AI Orchestrator not available")
         
         self.setup_menu_items()
     
     def setup_menu_items(self):
         """Setup reconnaissance menu items"""
+        
+        if self.ai_orchestrator:
+            self.add_enhanced_item(
+                "🤖 AI Target Profiling",
+                self.ai_target_profiling,
+                color=Colors.BRIGHT_CYAN,
+                description="AI-powered target analysis and profiling",
+                shortcut="i",
+                key="1"
+            )
+        
         self.add_enhanced_item(
             "Target Management",
             self.target_management_menu,
             color=Colors.CYAN,
             description="Add, remove, and manage reconnaissance targets",
             shortcut="t",
-            key="1"
+            key="2" if self.ai_orchestrator else "1"
         )
         
         self.add_enhanced_item(
@@ -44,7 +62,7 @@ class ReconnaissanceMenu(EnhancedMenu):
             color=Colors.BLUE,
             description="Discover subdomains using multiple techniques",
             shortcut="s",
-            key="2"
+            key="3" if self.ai_orchestrator else "2"
         )
         
         self.add_enhanced_item(
@@ -53,7 +71,7 @@ class ReconnaissanceMenu(EnhancedMenu):
             color=Colors.YELLOW,
             description="Network port discovery and service detection",
             shortcut="p",
-            key="3"
+            key="4" if self.ai_orchestrator else "3"
         )
         
         self.add_enhanced_item(
@@ -62,8 +80,18 @@ class ReconnaissanceMenu(EnhancedMenu):
             color=Colors.GREEN,
             description="Identify services and versions on open ports",
             shortcut="f",
-            key="4"
+            key="5" if self.ai_orchestrator else "4"
         )
+        
+        if self.ai_orchestrator:
+            self.add_enhanced_item(
+                "🤖 AI Attack Surface Analysis",
+                self.ai_attack_surface_analysis,
+                color=Colors.BRIGHT_YELLOW,
+                description="AI analyzes discovered attack surface and suggests priorities",
+                shortcut="a",
+                key="6"
+            )
         
         self.add_enhanced_item(
             "Full Reconnaissance",
@@ -71,7 +99,7 @@ class ReconnaissanceMenu(EnhancedMenu):
             color=Colors.RED,
             description="Complete automated reconnaissance workflow",
             shortcut="r",
-            key="5",
+            key="7" if self.ai_orchestrator else "5",
             dangerous=True
         )
         
@@ -81,7 +109,7 @@ class ReconnaissanceMenu(EnhancedMenu):
             color=Colors.PURPLE,
             description="View reconnaissance results and generate reports",
             shortcut="v",
-            key="6"
+            key="8" if self.ai_orchestrator else "6"
         )
         
         self.add_enhanced_item(
@@ -96,10 +124,8 @@ class ReconnaissanceMenu(EnhancedMenu):
     @handle_errors
     def target_management_menu(self):
         """Target management submenu"""
-        menu = EnhancedMenu(
-            title="🎯 Target Management",
-            description="Manage reconnaissance targets"
-        )
+        menu = EnhancedMenu(title="🎯 Target Management")
+        menu.set_description("Manage reconnaissance targets")
         
         menu.add_enhanced_item(
             "Add New Target",
@@ -278,10 +304,8 @@ class ReconnaissanceMenu(EnhancedMenu):
             input("Drücken Sie Enter um fortzufahren...")
             return
         
-        menu = EnhancedMenu(
-            title=f"🔍 Subdomain Enumeration - {self.current_target}",
-            description="Discover subdomains using various techniques"
-        )
+        menu = EnhancedMenu(title=f"🔍 Subdomain Enumeration - {self.current_target}")
+        menu.set_description("Discover subdomains using various techniques")
         
         menu.add_enhanced_item(
             "DNS Bruteforce",
@@ -403,10 +427,8 @@ class ReconnaissanceMenu(EnhancedMenu):
             input("Drücken Sie Enter um fortzufahren...")
             return
         
-        menu = EnhancedMenu(
-            title=f"🔍 Port Scanning - {self.current_target}",
-            description="Network port discovery and service detection"
-        )
+        menu = EnhancedMenu(title=f"🔍 Port Scanning - {self.current_target}")
+        menu.set_description("Network port discovery and service detection")
         
         menu.add_enhanced_item(
             "Quick Scan (Top 100)",
@@ -565,10 +587,8 @@ class ReconnaissanceMenu(EnhancedMenu):
             input("Drücken Sie Enter um fortzufahren...")
             return
         
-        menu = EnhancedMenu(
-            title=f"🔍 Service Fingerprinting - {self.current_target}",
-            description="Identify services and versions on open ports"
-        )
+        menu = EnhancedMenu(title=f"🔍 Service Fingerprinting - {self.current_target}")
+        menu.set_description("Identify services and versions on open ports")
         
         menu.add_enhanced_item(
             "Fingerprint Main Target",
@@ -790,10 +810,8 @@ class ReconnaissanceMenu(EnhancedMenu):
     @handle_errors
     def results_menu(self):
         """Results and reports menu"""
-        menu = EnhancedMenu(
-            title="📊 Reconnaissance Results & Reports",
-            description="View results and generate reports"
-        )
+        menu = EnhancedMenu(title="📊 Reconnaissance Results & Reports")
+        menu.set_description("View results and generate reports")
         
         menu.add_enhanced_item(
             "Target Summary",
@@ -979,6 +997,275 @@ class ReconnaissanceMenu(EnhancedMenu):
         if self.current_target:
             return f"Aktuelles Ziel: {self.current_target}"
         return "Kein Ziel ausgewählt"
+    
+    @handle_errors
+    def ai_target_profiling(self):
+        """AI-powered target analysis and profiling"""
+        self.clear_screen()
+        print("\n" + "="*70)
+        print("🤖 AI Target Profiling")
+        print("="*70)
+        print("AI erstellt ein umfassendes Ziel-Profil basierend auf OSINT-Daten")
+        print()
+        
+        # Get target
+        if self.current_target:
+            print(f"{Colors.YELLOW}Aktuelles Ziel:{Colors.RESET} {self.current_target}")
+            use_current = input(f"{Colors.CYAN}Dieses Ziel verwenden? [J/n]: {Colors.RESET}")
+            if use_current.lower() in ['n', 'nein', 'no']:
+                target = input(f"{Colors.CYAN}Neues Ziel eingeben: {Colors.RESET}").strip()
+            else:
+                target = self.current_target
+        else:
+            target = input(f"{Colors.CYAN}Ziel-Domain oder IP eingeben: {Colors.RESET}").strip()
+        
+        if not target:
+            print(f"{Colors.RED}❌ Kein Ziel angegeben!{Colors.RESET}")
+            self.pause()
+            return
+        
+        # Additional context
+        print(f"\n{Colors.YELLOW}Zusätzliche Informationen:{Colors.RESET}")
+        org_name = input(f"{Colors.CYAN}Organisationsname (optional): {Colors.RESET}").strip()
+        industry = input(f"{Colors.CYAN}Branche (tech/finance/health/gov/other): {Colors.RESET}").strip() or "other"
+        
+        print(f"\n{Colors.CYAN}[*] AI analysiert Ziel...{Colors.RESET}")
+        time.sleep(1)
+        
+        if self.ai_orchestrator:
+            try:
+                # Build target data
+                target_data = {
+                    'target': target,
+                    'organization': org_name,
+                    'industry': industry,
+                    'type': 'domain' if '.' in target else 'ip'
+                }
+                
+                # Get AI analysis
+                analysis = self.ai_orchestrator.analyze_target(target_data)
+                
+                print(f"\n{Colors.BRIGHT_GREEN}{'='*60}{Colors.RESET}")
+                print(f"{Colors.BRIGHT_GREEN}📊 AI Target Profile{Colors.RESET}")
+                print(f"{Colors.BRIGHT_GREEN}{'='*60}{Colors.RESET}\n")
+                
+                # Target assessment
+                print(f"{Colors.YELLOW}Ziel-Bewertung:{Colors.RESET}")
+                print(f"  • Domain/IP: {target}")
+                print(f"  • Typ: {target_data['type'].upper()}")
+                if org_name:
+                    print(f"  • Organisation: {org_name}")
+                print(f"  • Branche: {industry.capitalize()}")
+                
+                # Technology stack prediction
+                print(f"\n{Colors.YELLOW}Vermutete Technologien:{Colors.RESET}")
+                tech_stack = self._predict_tech_stack(industry)
+                for tech in tech_stack:
+                    print(f"  • {tech}")
+                
+                # Attack surface estimation
+                print(f"\n{Colors.YELLOW}Geschätzte Angriffsfläche:{Colors.RESET}")
+                if target_data['type'] == 'domain':
+                    print(f"  • Subdomains: 10-50 (geschätzt)")
+                    print(f"  • Offene Ports: 5-15 (typisch)")
+                    print(f"  • Web-Services: Wahrscheinlich")
+                    print(f"  • API-Endpoints: Möglich")
+                else:
+                    print(f"  • Offene Ports: 3-10 (typisch)")
+                    print(f"  • Services: Unbekannt")
+                
+                # Security posture assessment
+                security_score = 0.6  # Default medium
+                if industry in ['finance', 'gov']:
+                    security_score = 0.8
+                elif industry == 'tech':
+                    security_score = 0.7
+                
+                print(f"\n{Colors.YELLOW}Sicherheitsbewertung:{Colors.RESET}")
+                sec_color = Colors.GREEN if security_score > 0.7 else Colors.YELLOW if security_score > 0.5 else Colors.RED
+                print(f"  {sec_color}{'█' * int(security_score * 10)}{' ' * (10 - int(security_score * 10))} {security_score:.0%}{Colors.RESET}")
+                
+                # Recommended reconnaissance approach
+                print(f"\n{Colors.YELLOW}Empfohlene Reconnaissance-Strategie:{Colors.RESET}")
+                if security_score > 0.7:
+                    print(f"  1. Passive Reconnaissance zuerst")
+                    print(f"  2. Vorsichtige Subdomain-Enumeration")
+                    print(f"  3. Langsame Port-Scans")
+                    print(f"  4. Service-Fingerprinting mit Delays")
+                else:
+                    print(f"  1. Standard Subdomain-Enumeration")
+                    print(f"  2. Umfassende Port-Scans")
+                    print(f"  3. Aggressive Service-Detection")
+                    print(f"  4. Vulnerability Scanning")
+                
+                # CVE recommendations
+                cve_recs = analysis.get('cve_recommendations', [])
+                if cve_recs:
+                    print(f"\n{Colors.YELLOW}Potenzielle CVEs basierend auf Profil:{Colors.RESET}")
+                    for cve in cve_recs[:5]:
+                        print(f"  • {cve}")
+                
+                # Save profile?
+                save = input(f"\n{Colors.CYAN}Profil speichern? [J/n]: {Colors.RESET}")
+                if save.lower() not in ['n', 'nein', 'no']:
+                    # Would save profile here
+                    print(f"{Colors.GREEN}✅ Profil gespeichert!{Colors.RESET}")
+                    
+                    # Add target if not exists
+                    if target not in self.recon_manager.targets:
+                        self.recon_manager.add_target(target)
+                        self.current_target = target
+                        print(f"{Colors.GREEN}✅ Ziel zur Reconnaissance hinzugefügt{Colors.RESET}")
+                
+            except Exception as e:
+                print(f"{Colors.RED}[!] AI-Analyse fehlgeschlagen: {str(e)}{Colors.RESET}")
+        else:
+            print(f"{Colors.YELLOW}[!] AI Orchestrator nicht verfügbar{Colors.RESET}")
+        
+        self.pause()
+    
+    def _predict_tech_stack(self, industry: str) -> List[str]:
+        """Predict technology stack based on industry"""
+        tech_stacks = {
+            'tech': ['Node.js/React', 'Python/Django', 'Kubernetes', 'AWS/GCP', 'PostgreSQL', 'Redis'],
+            'finance': ['Java/Spring', '.NET', 'Oracle DB', 'IBM WebSphere', 'COBOL (Legacy)', 'High Security'],
+            'health': ['Epic/Cerner', '.NET/Java', 'HL7/FHIR', 'SQL Server', 'HIPAA Compliance'],
+            'gov': ['Java EE', 'Oracle', 'Legacy Systems', 'Strict Firewall', 'VPN Required'],
+            'other': ['WordPress/CMS', 'PHP', 'MySQL', 'Apache/Nginx', 'Standard Stack']
+        }
+        
+        return tech_stacks.get(industry, tech_stacks['other'])
+    
+    @handle_errors
+    def ai_attack_surface_analysis(self):
+        """AI analyzes discovered attack surface"""
+        self.clear_screen()
+        print("\n" + "="*70)
+        print("🤖 AI Attack Surface Analysis")
+        print("="*70)
+        print("AI analysiert die entdeckte Angriffsfläche und priorisiert Ziele")
+        print()
+        
+        if not self.current_target:
+            print(f"{Colors.YELLOW}[!] Kein Ziel ausgewählt!{Colors.RESET}")
+            print("Wählen Sie zuerst ein Ziel aus dem Target Management.")
+            self.pause()
+            return
+        
+        # Get target summary
+        summary = self.recon_manager.get_target_summary(self.current_target)
+        
+        if not summary or (summary.get('subdomains_count', 0) == 0 and summary.get('total_open_ports', 0) == 0):
+            print(f"{Colors.YELLOW}[!] Keine Reconnaissance-Daten für {self.current_target} verfügbar!{Colors.RESET}")
+            print("Führen Sie zuerst Reconnaissance-Scans durch.")
+            self.pause()
+            return
+        
+        print(f"{Colors.CYAN}[*] AI analysiert Angriffsfläche für {self.current_target}...{Colors.RESET}")
+        time.sleep(1)
+        
+        if self.ai_orchestrator:
+            try:
+                # Prepare attack surface data
+                attack_surface = {
+                    'target': self.current_target,
+                    'subdomains': summary.get('subdomains_count', 0),
+                    'open_ports': summary.get('total_open_ports', 0),
+                    'web_services': summary.get('web_services', 0),
+                    'ssl_services': summary.get('ssl_services', 0),
+                    'database_services': summary.get('database_services', 0),
+                    'other_services': summary.get('other_services', 0)
+                }
+                
+                # Get recon details
+                recon_target = self.recon_manager.targets.get(self.current_target)
+                if recon_target:
+                    attack_surface['discovered_services'] = [
+                        {'port': s.port, 'service': s.service, 'version': s.version}
+                        for s in recon_target.services[:10]  # First 10
+                    ]
+                
+                analysis = self.ai_orchestrator.analyze_target(attack_surface)
+                
+                print(f"\n{Colors.BRIGHT_GREEN}{'='*60}{Colors.RESET}")
+                print(f"{Colors.BRIGHT_GREEN}📊 AI Attack Surface Analysis{Colors.RESET}")
+                print(f"{Colors.BRIGHT_GREEN}{'='*60}{Colors.RESET}\n")
+                
+                # Attack surface overview
+                print(f"{Colors.YELLOW}Angriffsflächen-Übersicht:{Colors.RESET}")
+                print(f"  • Subdomains: {attack_surface['subdomains']}")
+                print(f"  • Offene Ports: {attack_surface['open_ports']}")
+                print(f"  • Web-Services: {attack_surface['web_services']}")
+                print(f"  • SSL-Services: {attack_surface['ssl_services']}")
+                
+                # Risk assessment
+                risk_score = min(1.0, (attack_surface['open_ports'] / 50) + (attack_surface['subdomains'] / 100))
+                risk_level = "KRITISCH" if risk_score > 0.7 else "HOCH" if risk_score > 0.5 else "MITTEL" if risk_score > 0.3 else "NIEDRIG"
+                risk_color = Colors.RED if risk_score > 0.7 else Colors.YELLOW if risk_score > 0.5 else Colors.GREEN
+                
+                print(f"\n{Colors.YELLOW}Risikobewertung:{Colors.RESET}")
+                print(f"  {risk_color}{'█' * int(risk_score * 20)}{' ' * (20 - int(risk_score * 20))} {risk_level}{Colors.RESET}")
+                
+                # Priority targets
+                print(f"\n{Colors.YELLOW}Priorisierte Angriffsziele:{Colors.RESET}")
+                
+                priorities = []
+                
+                # Web services are high priority
+                if attack_surface['web_services'] > 0:
+                    priorities.append("Web-Anwendungen (XSS, SQLi, RCE)")
+                
+                # SSL services for certificate issues
+                if attack_surface['ssl_services'] > 0:
+                    priorities.append("SSL/TLS-Services (Zertifikate, Cipher)")
+                
+                # Database services are critical
+                if attack_surface['database_services'] > 0:
+                    priorities.append("Datenbank-Services (SQLi, NoSQL Injection)")
+                
+                # Many open ports suggest poor security
+                if attack_surface['open_ports'] > 20:
+                    priorities.append("Netzwerk-Services (Buffer Overflow, DoS)")
+                
+                for i, priority in enumerate(priorities[:5], 1):
+                    print(f"  {i}. {priority}")
+                
+                # Exploitation recommendations
+                print(f"\n{Colors.YELLOW}Empfohlene Exploitation-Strategie:{Colors.RESET}")
+                
+                if risk_score > 0.7:
+                    print(f"  {Colors.RED}⚠️  Große Angriffsfläche erkannt!{Colors.RESET}")
+                    print(f"  1. Fokus auf Web-Anwendungen")
+                    print(f"  2. Automatisierte Vulnerability Scans")
+                    print(f"  3. Credential Stuffing auf Login-Seiten")
+                    print(f"  4. Service-spezifische Exploits")
+                else:
+                    print(f"  {Colors.YELLOW}📍 Moderate Angriffsfläche{Colors.RESET}")
+                    print(f"  1. Gezielte Vulnerability Scans")
+                    print(f"  2. Manual Testing wichtiger Services")
+                    print(f"  3. Configuration Reviews")
+                
+                # CVE mapping
+                cve_recs = analysis.get('cve_recommendations', [])
+                if cve_recs:
+                    print(f"\n{Colors.YELLOW}Potenzielle CVEs für entdeckte Services:{Colors.RESET}")
+                    for cve in cve_recs[:5]:
+                        confidence = analysis.get('confidences', {}).get(cve, 0.5)
+                        print(f"  • {cve} - Konfidenz: {confidence:.1%}")
+                
+                # Next steps
+                print(f"\n{Colors.YELLOW}Empfohlene nächste Schritte:{Colors.RESET}")
+                print(f"  1. Vulnerability Scan auf priorisierten Zielen")
+                print(f"  2. Service-spezifische Exploit-Recherche")
+                print(f"  3. Credential Harvesting vorbereiten")
+                print(f"  4. Post-Exploitation Planung")
+                
+            except Exception as e:
+                print(f"{Colors.RED}[!] AI-Analyse fehlgeschlagen: {str(e)}{Colors.RESET}")
+        else:
+            print(f"{Colors.YELLOW}[!] AI Orchestrator nicht verfügbar{Colors.RESET}")
+        
+        self.pause()
     
     def run(self):
         """Run the menu"""

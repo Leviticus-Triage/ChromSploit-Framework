@@ -162,6 +162,23 @@ class NgrokManager:
             self.logger.error(f"Error starting tunnel: {str(e)}")
             return None
     
+    def create_tunnel(self, port: int, protocol: str = "http", name: Optional[str] = None, 
+                     region: str = "us", subdomain: Optional[str] = None) -> Optional[NgrokTunnel]:
+        """
+        Create a new ngrok tunnel (alias for start_tunnel for backward compatibility)
+        
+        Args:
+            port: Local port to expose
+            protocol: Protocol (http, tcp, etc.)
+            name: Tunnel name
+            region: Ngrok region
+            subdomain: Custom subdomain (Pro feature)
+            
+        Returns:
+            NgrokTunnel object if successful
+        """
+        return self.start_tunnel(port, protocol, name, region, subdomain)
+    
     @handle_errors(context="NgrokManager.stop_tunnel")
     def stop_tunnel(self, tunnel_name: str) -> bool:
         """
