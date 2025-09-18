@@ -100,7 +100,7 @@ See ChromSploit Framework in action:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YourUsername/ChromSploit-Framework.git
+git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
 cd ChromSploit-Framework
 
 # 2. Create virtual environment
