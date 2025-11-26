@@ -16,7 +16,7 @@
 
 ---
 
-## 🎯 Overview
+##  Overview
 
 ChromSploit Framework is a cutting-edge educational security research tool designed for cybersecurity professionals, researchers, and students. Built with a modular architecture, it provides a comprehensive platform for studying browser vulnerabilities and exploitation techniques in controlled environments.
 
