@@ -1,9 +1,9 @@
 # Sliver C2 Integration Plan for ChromSploit Framework
 
-## 🎯 Overview
+##  Overview
 Integrate Sliver C2 (Command & Control) server functionality into every CVE exploit and process within the ChromSploit Framework to create a powerful, centralized post-exploitation management system.
 
-## 🔧 Sliver C2 Core Features to Integrate
+##  Sliver C2 Core Features to Integrate
 
 ### 1. **Implant Generation & Management**
 - Dynamic implant generation for each CVE exploit
@@ -28,7 +28,7 @@ Integrate Sliver C2 (Command & Control) server functionality into every CVE expl
 - Port forwarding
 - SOCKS proxy
 
-## 📋 Integration Strategy
+##  Integration Strategy
 
 ### Phase 1: Core Infrastructure
 1. **Sliver Server Manager**
@@ -120,7 +120,7 @@ class EdgeWasmSliver:
    - ETW patching
    - AMSI bypass
 
-## 🏗️ Implementation Architecture
+##  Implementation Architecture
 
 ```
 ChromSploit Framework
@@ -151,7 +151,7 @@ ChromSploit Framework
     └── sliver_menu.py             # Sliver C2 management UI
 ```
 
-## 🔐 Security Considerations
+##  Security Considerations
 
 1. **Encryption**
    - AES-256-GCM for implant traffic
@@ -170,7 +170,7 @@ ChromSploit Framework
    - Anti-sandbox techniques
    - EDR/AV bypass
 
-## 📊 Monitoring & Reporting
+##  Monitoring & Reporting
 
 1. **Session Telemetry**
    - Real-time session status
@@ -182,7 +182,7 @@ ChromSploit Framework
    - Session timeline generation
    - IOC extraction
 
-## 🚀 Optimization Ideas
+##  Optimization Ideas
 
 1. **Performance**
    - Async command execution
@@ -199,7 +199,7 @@ ChromSploit Framework
    - Load balancing
    - Database backend for large operations
 
-## 🔄 Workflow Integration
+##  Workflow Integration
 
 Each CVE exploit will follow this enhanced workflow:
 
@@ -211,7 +211,7 @@ Each CVE exploit will follow this enhanced workflow:
 6. **Persistence** → Long-term access
 7. **Cleanup** → Trace removal
 
-## 📝 Next Steps
+##  Next Steps
 
 1. Implement core Sliver server manager
 2. Create implant factory with CVE-specific templates
