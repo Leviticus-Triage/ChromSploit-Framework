@@ -1,0 +1,11 @@
+[
+  {
+    "timestamp": "2026-01-18T19:21:59.405044+00:00",
+    "action": "authorization_granted",
+    "details": {
+      "exploit_id": "CVE-2025-49741",
+      "user": "test_user",
+      "expires_at": null
+    }
+  }
+]

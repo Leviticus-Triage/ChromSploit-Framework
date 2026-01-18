@@ -45,6 +45,12 @@ class CVEMenu(Menu):
         # Initialize logger
         self.logger = get_logger()
         
+        # Initialize new modules
+        self.browser_detector = get_browser_detector()
+        self.exploit_monitor = get_exploit_monitor()
+        self.exploit_cache = get_exploit_cache()
+        self.safety_manager = get_safety_manager()
+        
         # Try to load AI orchestrator
         self.ai_orchestrator = None
         try:

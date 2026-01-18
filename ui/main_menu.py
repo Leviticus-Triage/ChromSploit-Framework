@@ -83,10 +83,14 @@ class MainMenu(Menu):
         self.add_item("🛡️ Vulnerability Scanner", self._open_vulnerability_scanner, Colors.BRIGHT_YELLOW)
         self.add_item("⚔️ Exploitation Chains", self._open_exploitation_chains, Colors.BRIGHT_RED)
         self.add_item("📸 Evidence Collection", self._open_evidence_collection, Colors.BRIGHT_MAGENTA)
+        self.add_item("📊 Analytics Dashboard", self._open_analytics_dashboard, Colors.BRIGHT_CYAN)
         self.add_item("CVE-2025-4664 (Chrome Data Leak)", self._open_cve_2025_4664, Colors.BRIGHT_GREEN)
         self.add_item("CVE-2025-2783 (Chrome Mojo Sandbox Escape)", self._open_cve_2025_2783, Colors.BRIGHT_GREEN)
         self.add_item("CVE-2025-2857 (Firefox Sandbox Escape)", self._open_cve_2025_2857, Colors.BRIGHT_GREEN)
         self.add_item("CVE-2025-30397 (Edge WebAssembly JIT Escape)", self._open_cve_2025_30397, Colors.BRIGHT_GREEN)
+        self.add_item("CVE-2025-49741 (Edge Information Disclosure)", self._open_cve_2025_49741, Colors.BRIGHT_GREEN)
+        self.add_item("CVE-2020-6519 (Chromium CSP Bypass)", self._open_cve_2020_6519, Colors.BRIGHT_GREEN)
+        self.add_item("CVE-2017-5375 (Firefox ASM.JS JIT-Spray)", self._open_cve_2017_5375, Colors.BRIGHT_GREEN)
         if BROWSER_CHAIN_AVAILABLE:
             self.add_item("🔗 Browser Multi-Exploit Chain", self._open_browser_chain, Colors.BRIGHT_RED)
         if AI_MENU_AVAILABLE:
@@ -174,6 +178,27 @@ class MainMenu(Menu):
         Öffnet das Menü für CVE-2025-30397
         """
         menu = CVEMenu("cve_2025_30397", "Edge WebAssembly JIT Escape", self)
+        menu.display()
+    
+    def _open_cve_2025_49741(self) -> None:
+        """
+        Öffnet das Menü für CVE-2025-49741
+        """
+        menu = CVEMenu("cve_2025_49741", "Edge Information Disclosure", self)
+        menu.display()
+    
+    def _open_cve_2020_6519(self) -> None:
+        """
+        Öffnet das Menü für CVE-2020-6519
+        """
+        menu = CVEMenu("cve_2020_6519", "Chromium CSP Bypass", self)
+        menu.display()
+    
+    def _open_cve_2017_5375(self) -> None:
+        """
+        Öffnet das Menü für CVE-2017-5375
+        """
+        menu = CVEMenu("cve_2017_5375", "Firefox ASM.JS JIT-Spray", self)
         menu.display()
     
     def _open_custom_menu(self) -> None:

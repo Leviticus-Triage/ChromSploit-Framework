@@ -1,0 +1,37 @@
+{
+  "entries": {
+    "test": {
+      "key": "test",
+      "value": "value",
+      "timestamp": 1768764019.4927783,
+      "expires_at": 1768767619.4927778,
+      "hits": 0,
+      "last_accessed": 1768764019.4927785
+    },
+    "3e97bd5a766095d88821214951ee3ce122383762fbb111d5f34910b60e838700": {
+      "key": "3e97bd5a766095d88821214951ee3ce122383762fbb111d5f34910b60e838700",
+      "value": "var _0x1a2b = 'hello';",
+      "timestamp": 1768764119.403718,
+      "expires_at": 1768767719.4037175,
+      "hits": 1,
+      "last_accessed": 1768764119.4038663
+    },
+    "94a8ebea2205d5f1c0804d2f7783cc78c548630f6dee66bb26f7f22fc9a5388d": {
+      "key": "94a8ebea2205d5f1c0804d2f7783cc78c548630f6dee66bb26f7f22fc9a5388d",
+      "value": "<html>test</html>",
+      "timestamp": 1768764119.404309,
+      "expires_at": 1768767719.4043088,
+      "hits": 0,
+      "last_accessed": 1768764119.4043093
+    },
+    "test_key": {
+      "key": "test_key",
+      "value": "test_value",
+      "timestamp": 1768764119.4023874,
+      "expires_at": 1768764179.402387,
+      "hits": 1,
+      "last_accessed": 1768764119.402589
+    }
+  },
+  "saved_at": "2026-01-18T20:21:59.404323"
+}

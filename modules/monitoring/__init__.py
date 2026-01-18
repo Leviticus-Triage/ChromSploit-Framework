@@ -1,9 +1,19 @@
-from .live_monitor import (
-    LiveMonitor, ExploitMonitor, get_live_monitor, get_exploit_monitor,
-    EventType, EventPriority, MonitorEvent
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Monitoring Module
+"""
+
+from .exploit_monitor import (
+    ExploitMonitor,
+    ExploitAttempt,
+    ExploitStatistics,
+    get_exploit_monitor
 )
 
 __all__ = [
-    'LiveMonitor', 'ExploitMonitor', 'get_live_monitor', 'get_exploit_monitor',
-    'EventType', 'EventPriority', 'MonitorEvent'
+    'ExploitMonitor',
+    'ExploitAttempt',
+    'ExploitStatistics',
+    'get_exploit_monitor'
 ]

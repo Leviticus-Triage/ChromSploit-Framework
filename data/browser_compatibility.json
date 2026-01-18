@@ -1,0 +1,144 @@
+{
+  "CVE-2025-49741": {
+    "edge": {
+      "min": "135.0.7049.114",
+      "max": "135.0.7049.115",
+      "description": "Microsoft Edge Information Disclosure",
+      "severity": "medium"
+    },
+    "chrome": {
+      "min": null,
+      "max": null,
+      "description": "Not applicable",
+      "severity": null
+    },
+    "firefox": {
+      "min": null,
+      "max": null,
+      "description": "Not applicable",
+      "severity": null
+    }
+  },
+  "CVE-2020-6519": {
+    "chrome": {
+      "min": "83.0",
+      "max": "83.0",
+      "description": "Chromium CSP Bypass",
+      "severity": "high"
+    },
+    "edge": {
+      "min": "83.0",
+      "max": "83.0",
+      "description": "Chromium CSP Bypass",
+      "severity": "high"
+    },
+    "chromium": {
+      "min": "83.0",
+      "max": "83.0",
+      "description": "Chromium CSP Bypass",
+      "severity": "high"
+    },
+    "brave": {
+      "min": "83.0",
+      "max": "83.0",
+      "description": "Chromium CSP Bypass",
+      "severity": "high"
+    },
+    "vivaldi": {
+      "min": "83.0",
+      "max": "83.0",
+      "description": "Chromium CSP Bypass",
+      "severity": "high"
+    }
+  },
+  "CVE-2017-5375": {
+    "firefox": {
+      "min": "44.0.2",
+      "max": "44.0.2",
+      "description": "Firefox ASM.JS JIT-Spray RCE",
+      "severity": "critical"
+    }
+  },
+  "CVE-2016-1960": {
+    "firefox": {
+      "min": "44.0.2",
+      "max": "44.0.2",
+      "description": "Firefox ASM.JS JIT-Spray RCE",
+      "severity": "critical"
+    }
+  },
+  "CVE-2025-4664": {
+    "chrome": {
+      "min": null,
+      "max": "136.0.7103.113",
+      "description": "Chrome Data Leak via Link Header",
+      "severity": "high"
+    },
+    "edge": {
+      "min": null,
+      "max": "136.0.7103.113",
+      "description": "Edge Data Leak via Link Header",
+      "severity": "high"
+    },
+    "chromium": {
+      "min": null,
+      "max": "136.0.7103.113",
+      "description": "Chromium Data Leak via Link Header",
+      "severity": "high"
+    },
+    "brave": {
+      "min": null,
+      "max": "136.0.7103.113",
+      "description": "Brave Data Leak via Link Header",
+      "severity": "high"
+    },
+    "vivaldi": {
+      "min": null,
+      "max": "136.0.7103.113",
+      "description": "Vivaldi Data Leak via Link Header",
+      "severity": "high"
+    }
+  },
+  "CVE-2025-2783": {
+    "chrome": {
+      "min": null,
+      "max": "136.0",
+      "description": "Chrome Mojo Sandbox Escape",
+      "severity": "critical"
+    },
+    "edge": {
+      "min": null,
+      "max": "136.0",
+      "description": "Edge Mojo Sandbox Escape",
+      "severity": "critical"
+    },
+    "chromium": {
+      "min": null,
+      "max": "136.0",
+      "description": "Chromium Mojo Sandbox Escape",
+      "severity": "critical"
+    }
+  },
+  "CVE-2025-2857": {
+    "firefox": {
+      "min": null,
+      "max": "135.0",
+      "description": "Firefox Sandbox Escape",
+      "severity": "critical"
+    }
+  },
+  "CVE-2025-30397": {
+    "edge": {
+      "min": null,
+      "max": "136.0",
+      "description": "Edge WebAssembly JIT Escape",
+      "severity": "critical"
+    },
+    "ie": {
+      "min": null,
+      "max": "11.0",
+      "description": "Internet Explorer WebAssembly JIT Escape",
+      "severity": "critical"
+    }
+  }
+}
