@@ -1,6 +1,6 @@
-# 🚀 ChromSploit Framework - Installation Guide
+# ChromSploit Framework - Installation Guide
 
-## 📋 System Requirements
+## System Requirements
 
 ### **Für Kali Linux (Empfohlen)**
 Die meisten Abhängigkeiten sind bereits vorinstalliert. Zusätzlich benötigt:
@@ -50,7 +50,7 @@ sudo apt install -y asciinema
 # sudo apt install -y golang-go
 ```
 
-## 🛠️ Installation ChromSploit Framework
+##  Installation ChromSploit Framework
 
 ### **1. Entpacken des Archives**
 ```bash
@@ -65,9 +65,9 @@ cd ChromSploit-Framework/
 python3 -m venv venv
 
 # Aktivieren
-source venv/bin/activate  # Linux/Mac
+source venv/bin/activate # Linux/Mac
 # oder
-venv\Scripts\activate     # Windows
+venv\Scripts\activate # Windows
 ```
 
 ### **3. Dependencies installieren**
@@ -92,7 +92,7 @@ chmod +x asciinema/*.sh
 python3 chromsploit.py --check
 ```
 
-## 🔧 Konfiguration
+## Konfiguration
 
 ### **Basis-Konfiguration**
 Die Standardkonfiguration funktioniert out-of-the-box. Anpassungen in:
@@ -102,18 +102,18 @@ Die Standardkonfiguration funktioniert out-of-the-box. Anpassungen in:
 ### **Wichtige Einstellungen**
 ```json
 {
-  "general": {
-    "debug_mode": false,
-    "simulation_mode": "safe"  // safe, demo, fast, off
-  },
-  "network": {
-    "default_interface": "eth0",
-    "callback_ip": "YOUR_IP_HERE"
-  }
+ "general": {
+ "debug_mode": false,
+ "simulation_mode": "safe" // safe, demo, fast, off
+ },
+ "network": {
+ "default_interface": "eth0",
+ "callback_ip": "YOUR_IP_HERE"
+ }
 }
 ```
 
-## 🚀 Erster Start
+## Erster Start
 
 ### **1. Framework starten**
 ```bash
@@ -136,7 +136,7 @@ python3 chromsploit.py --help
 3. **Settings** - Konfiguration anpassen
 4. **Help** - Integrierte Dokumentation
 
-## 🧪 Test-Empfehlungen
+## Test-Empfehlungen
 
 ### **Sichere Tests (Simulation Mode)**
 ```bash
@@ -159,7 +159,7 @@ python3 -m http.server 8080
 # CVE Exploits -> Target: localhost:8080
 ```
 
-## ⚠️ Sicherheitshinweise
+##  Sicherheitshinweise
 
 ### **WICHTIG: Nur für autorisierte Tests verwenden!**
 
@@ -171,11 +171,11 @@ python3 -m http.server 8080
 ### **Empfohlene Testumgebung**
 ```
 Kali VM (ChromSploit) <---> Target VM (Vulnerable Apps)
-         |
-         +-- Isoliertes Netzwerk (keine Internet-Verbindung)
+ |
+ +-- Isoliertes Netzwerk (keine Internet-Verbindung)
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### **Python-Module fehlen**
 ```bash
@@ -201,7 +201,7 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 sudo apt install git
 ```
 
-## 📦 Optionale Features
+## Optionale Features
 
 ### **Sliver C2 Integration**
 ```bash
@@ -225,7 +225,7 @@ cd asciinema/
 asciinema play chromsploit_complete_demo.cast
 ```
 
-## 🔍 Komponenten-Check
+## Komponenten-Check
 
 ### **Verfügbare Module prüfen**
 ```bash
@@ -248,7 +248,7 @@ ls logs/
 tail -f logs/chromsploit_*.log
 ```
 
-## 📚 Weitere Dokumentation
+## Weitere Dokumentation
 
 - `README.md` - Projekt-Übersicht
 - `docs/HOW_TO_USE.md` - Detaillierte Anleitung
@@ -256,7 +256,7 @@ tail -f logs/chromsploit_*.log
 - `docs/ARCHITECTURE.md` - System-Architektur
 - `CLAUDE.md` - AI-Assistant Guidelines
 
-## 💡 Quick Tips
+## Quick Tips
 
 1. **Starten Sie immer im Simulation Mode** für erste Tests
 2. **Lesen Sie die Logs** für detaillierte Informationen
@@ -266,13 +266,13 @@ tail -f logs/chromsploit_*.log
 
 ---
 
-## ✅ Installation Complete!
+## Installation Complete!
 
 Nach erfolgreicher Installation:
 ```bash
 python3 chromsploit.py
 ```
 
-**Willkommen bei ChromSploit Framework! 🚀**
+**Willkommen bei ChromSploit Framework! **
 
 *Professional Security Research Platform*

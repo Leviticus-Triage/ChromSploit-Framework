@@ -1,4 +1,4 @@
-# 🚀 Installation Guide
+# Installation Guide
 
 ## System Requirements
 
@@ -15,7 +15,7 @@
 - **Storage**: SSD with 10GB+ free space
 - **Network**: High-speed connection for real-time monitoring
 
-## 📦 Quick Installation
+## Quick Installation
 
 ### Method 1: Git Clone (Recommended)
 
@@ -51,7 +51,7 @@ python3 chromsploit.py
 
 ---
 
-## 🐧 Linux Installation
+## Linux Installation
 
 ### Ubuntu/Debian
 
@@ -111,7 +111,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🪟 Windows Installation
+## Windows Installation
 
 ### Method 1: Windows Subsystem for Linux (Recommended)
 
@@ -149,7 +149,7 @@ python chromsploit.py --check
 
 ---
 
-## 🍎 macOS Installation
+## macOS Installation
 
 ### Using Homebrew (Recommended)
 
@@ -192,7 +192,7 @@ pip install -r requirements.txt
 
 ---
 
-## 🐳 Docker Installation
+## Docker Installation
 
 ### Quick Start with Docker
 
@@ -202,10 +202,10 @@ docker pull chromsploit/framework:v2.2
 
 # 2. Run container
 docker run -it --rm \
-  --name chromsploit \
-  -p 8080:8080 \
-  -p 4444:4444 \
-  chromsploit/framework:v2.2
+ --name chromsploit \
+ -p 8080:8080 \
+ -p 4444:4444 \
+ chromsploit/framework:v2.2
 
 # 3. Or build from source
 git clone https://github.com/Leviticus-Triage/ChromSploit-Framework.git
@@ -219,21 +219,21 @@ docker run -it --rm chromsploit:local
 ```yaml
 version: '3.8'
 services:
-  chromsploit:
-    image: chromsploit/framework:v2.2
-    ports:
-      - "8080:8080"
-      - "4444:4444"
-    volumes:
-      - ./reports:/app/reports
-      - ./logs:/app/logs
-    environment:
-      - CHROMSPLOIT_MODE=safe
+ chromsploit:
+ image: chromsploit/framework:v2.2
+ ports:
+ - "8080:8080"
+ - "4444:4444"
+ volumes:
+ - ./reports:/app/reports
+ - ./logs:/app/logs
+ environment:
+ - CHROMSPLOIT_MODE=safe
 ```
 
 ---
 
-## 🛠️ Advanced Installation
+##  Advanced Installation
 
 ### Development Installation
 
@@ -284,15 +284,15 @@ pip install -r requirements-minimal.txt
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### Initial Setup
 
 ```bash
 # 1. Activate virtual environment
-source venv/bin/activate  # Linux/macOS
+source venv/bin/activate # Linux/macOS
 # or
-venv\Scripts\activate    # Windows
+venv\Scripts\activate # Windows
 
 # 2. Run initial configuration
 python chromsploit.py --configure
@@ -305,23 +305,23 @@ python chromsploit.py --check
 
 | File | Purpose | Location |
 |-----------------------------|------------------------|-----------|
-|      `user_config.json`     |    User preferences    | `config/` |
-|     `default_config.json`   |   Framework defaults   | `config/` |
+| `user_config.json` | User preferences | `config/` |
+| `default_config.json` | Framework defaults | `config/` |
 | `browser_chain_config.json` | Multi-exploit settings | `config/` |
 
 ### Environment Variables
 
 ```bash
 # Optional environment variables
-export CHROMSPLOIT_MODE=safe           # Default execution mode
-export CHROMSPLOIT_LOG_LEVEL=INFO      # Logging level
-export CHROMSPLOIT_DATA_DIR=/custom    # Custom data directory
-export CHROMSPLOIT_NGROK_TOKEN=xxx     # Ngrok authentication token
+export CHROMSPLOIT_MODE=safe # Default execution mode
+export CHROMSPLOIT_LOG_LEVEL=INFO # Logging level
+export CHROMSPLOIT_DATA_DIR=/custom # Custom data directory
+export CHROMSPLOIT_NGROK_TOKEN=xxx # Ngrok authentication token
 ```
 
 ---
 
-## ✅ Verification
+## Verification
 
 ### System Check
 
@@ -330,11 +330,11 @@ export CHROMSPLOIT_NGROK_TOKEN=xxx     # Ngrok authentication token
 python chromsploit.py --check
 
 # Expected output:
-# ✅ Python version: 3.9+
-# ✅ Dependencies: All installed
-# ✅ Permissions: Adequate
-# ✅ Network: Available
-# ✅ Storage: Sufficient
+# Python version: 3.9+
+# Dependencies: All installed
+# Permissions: Adequate
+# Network: Available
+# Storage: Sufficient
 ```
 
 ### Feature Test
@@ -361,7 +361,7 @@ python -m core.validation_framework --benchmark
 
 ---
 
-## 🚀 First Run
+## First Run
 
 ### Safe Mode (Recommended)
 
@@ -391,12 +391,12 @@ asciinema play chromsploit_complete_demo.cast
 
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
 <details>
-<summary><b>🐛 Python Version Issues</b></summary>
+<summary><b> Python Version Issues</b></summary>
 
 ```bash
 # Check Python version
@@ -413,7 +413,7 @@ sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
 </details>
 
 <details>
-<summary><b>📦 Dependency Installation Failures</b></summary>
+<summary><b> Dependency Installation Failures</b></summary>
 
 ```bash
 # Clear pip cache
@@ -431,7 +431,7 @@ pip install requests colorama pytest click
 </details>
 
 <details>
-<summary><b>🔐 Permission Errors</b></summary>
+<summary><b> Permission Errors</b></summary>
 
 ```bash
 # Fix file permissions
@@ -447,7 +447,7 @@ sudo chown -R $USER:$USER .
 </details>
 
 <details>
-<summary><b>🌐 Network Issues</b></summary>
+<summary><b> Network Issues</b></summary>
 
 ```bash
 # Test network connectivity
@@ -464,13 +464,13 @@ pip install -r requirements.txt --trusted-host pypi.org --trusted-host pypi.pyth
 
 ### Getting Help
 
-- 📖 Check [FAQ](../FAQ.md)
-- 🐛 Open [GitHub Issue](../../issues)
-- 💬 Join [Discussions](../../discussions)
+- Check [FAQ](../FAQ.md)
+- Open [GitHub Issue](../../issues)
+- Join [Discussions](../../discussions)
 
 ---
 
-## 🔄 Updating
+## Updating
 
 ### Automatic Update
 
@@ -497,7 +497,7 @@ python chromsploit.py --migrate
 
 ---
 
-## 🗑️ Uninstallation
+##  Uninstallation
 
 ### Complete Removal
 
@@ -518,16 +518,16 @@ docker rmi chromsploit/framework:v2.2
 
 ---
 
-## 📊 Installation Statistics
+## Installation Statistics
 
 <div align="center">
 
-|   Platform    | Success Rate | Avg. Instal Time | Disk Usage |
+| Platform | Success Rate | Avg. Instal Time | Disk Usage |
 |---------------|--------------|------------------|------------|
-| Ubuntu 20.04+ |      98%     |    3-5 minutes   |    450MB   |
-|  Windows 10+  |      95%     |    5-8 minutes   |    520MB   |
-|   macOS 11+   |      97%     |    4-6 minutes   |    480MB   |
-|  Kali  Linux  |      99%     |    2-3 minutes   |    420MB   |
+| Ubuntu 20.04+ | 98% | 3-5 minutes | 450MB |
+| Windows 10+ | 95% | 5-8 minutes | 520MB |
+| macOS 11+ | 97% | 4-6 minutes | 480MB |
+| Kali Linux | 99% | 2-3 minutes | 420MB |
 
 </div>
 
@@ -535,8 +535,8 @@ docker rmi chromsploit/framework:v2.2
 
 <div align="center">
 
-**✅ Installation Complete! Ready to start your security research journey with ChromSploit Framework.**
+** Installation Complete! Ready to start your security research journey with ChromSploit Framework.**
 
-🚀 **Next Step:** [Quick Start Guide](../README.md#quick-start)
+ **Next Step:** [Quick Start Guide](../README.md#quick-start)
 
 </div>

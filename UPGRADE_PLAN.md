@@ -48,35 +48,35 @@ Dieses Dokument beschreibt den Plan zur Erweiterung des ChromSploit-Frameworks u
 - Security Research Papers
 
 ### Kriterien für Exploit-Auswahl:
-- ✅ Funktionsfähiger PoC vorhanden
-- ✅ Browser-spezifisch (nicht nur generisch)
-- ✅ Kann obfuskiert werden
-- ✅ Funktioniert auch bei ungepatchten Clients
+- Funktionsfähiger PoC vorhanden
+- Browser-spezifisch (nicht nur generisch)
+- Kann obfuskiert werden
+- Funktioniert auch bei ungepatchten Clients
 
 ## Phase 3: Obfuskierung & Variation
 
 ### Obfuskierungstechniken:
 1. **Code-Variationen**:
-   - Variable-Namen ändern
-   - Funktionsstruktur umorganisieren
-   - Kommentare hinzufügen/entfernen
-   - Whitespace-Manipulation
+ - Variable-Namen ändern
+ - Funktionsstruktur umorganisieren
+ - Kommentare hinzufügen/entfernen
+ - Whitespace-Manipulation
 
 2. **Payload-Obfuskierung**:
-   - Base64/Hex-Encoding
-   - Unicode-Escape-Sequenzen
-   - String-Konkatenation
-   - Template-Literal-Variationen
+ - Base64/Hex-Encoding
+ - Unicode-Escape-Sequenzen
+ - String-Konkatenation
+ - Template-Literal-Variationen
 
 3. **Timing-Variationen**:
-   - Delays einfügen
-   - Asynchrone Ausführung
-   - Event-basierte Trigger
+ - Delays einfügen
+ - Asynchrone Ausführung
+ - Event-basierte Trigger
 
 4. **Browser-Fingerprinting-Bypass**:
-   - User-Agent-Rotation
-   - Feature-Detection-Umgehung
-   - Canvas-Fingerprint-Spoofing
+ - User-Agent-Rotation
+ - Feature-Detection-Umgehung
+ - Canvas-Fingerprint-Spoofing
 
 ## Phase 4: Implementierung
 
@@ -93,24 +93,24 @@ import [dependencies]
 from core.obfuscation import Obfuscator
 
 class CVEXXXX_XXXX_Exploit:
-    """[CVE Name] exploit with obfuscation"""
-    
-    def __init__(self):
-        self.config = {
-            'target_browser': 'chrome',  # chrome, edge, firefox, brave, vivaldi, comet
-            'obfuscation_level': 'medium',
-            # ... weitere Config
-        }
-        self.obfuscator = Obfuscator()
-    
-    def generate_payload(self, base_payload: str) -> str:
-        """Generate obfuscated payload"""
-        return self.obfuscator.obfuscate(base_payload, level=self.config['obfuscation_level'])
-    
-    def exploit(self, target_url: str) -> Dict:
-        """Execute exploit"""
-        # Implementierung
-        pass
+ """[CVE Name] exploit with obfuscation"""
+ 
+ def __init__(self):
+ self.config = {
+ 'target_browser': 'chrome', # chrome, edge, firefox, brave, vivaldi, comet
+ 'obfuscation_level': 'medium',
+ # ... weitere Config
+ }
+ self.obfuscator = Obfuscator()
+ 
+ def generate_payload(self, base_payload: str) -> str:
+ """Generate obfuscated payload"""
+ return self.obfuscator.obfuscate(base_payload, level=self.config['obfuscation_level'])
+ 
+ def exploit(self, target_url: str) -> Dict:
+ """Execute exploit"""
+ # Implementierung
+ pass
 ```
 
 ## Phase 5: Integration ins Framework
@@ -124,7 +124,7 @@ class CVEXXXX_XXXX_Exploit:
 
 ## Nächste Schritte
 
-1. ✅ Framework-Struktur analysiert
+1. Framework-Struktur analysiert
 2. ⏳ CVE-Recherche durchführen
 3. ⏳ Exploits finden und analysieren
 4. ⏳ Obfuskierungs-Strategien entwickeln

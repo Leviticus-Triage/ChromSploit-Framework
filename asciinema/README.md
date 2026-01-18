@@ -1,17 +1,17 @@
 # ChromSploit Framework - Asciinema Demos
 
-🎬 **Professional Terminal Recordings for GitHub Repository**
+ **Professional Terminal Recordings for GitHub Repository**
 
 Diese Sammlung enthält hochwertige asciinema-Aufnahmen, die verschiedene Aspekte des ChromSploit Frameworks demonstrieren.
 
-## 📁 Verfügbare Aufnahmen
+## Verfügbare Aufnahmen
 
-### 🎯 Vollständige Demo
+### Vollständige Demo
 - **`chromsploit_complete_demo.cast`** - Komplette Demonstration (106 Sekunden)
-  - Alle Funktionen in einer zusammenhängenden Präsentation
-  - Perfekt für GitHub README und Projektübersicht
+ - Alle Funktionen in einer zusammenhängenden Präsentation
+ - Perfekt für GitHub README und Projektübersicht
 
-### 🔍 Einzelne Module
+### Einzelne Module
 
 | Aufnahme | Beschreibung | Dauer | Highlights |
 |----------|--------------|-------|------------|
@@ -24,7 +24,7 @@ Diese Sammlung enthält hochwertige asciinema-Aufnahmen, die verschiedene Aspekt
 | `07_git_rce.cast` | Git RCE Demo | ~26s | Symbolic Links, Hooks |
 | `08_framework_features.cast` | Feature-Übersicht | ~24s | Vollständige Capabilities |
 
-## 🚀 Verwendung
+## Verwendung
 
 ### Für GitHub Repository
 
@@ -49,7 +49,7 @@ asciinema play chromsploit_complete_demo.cast
 - **Vollständige Demo:** Nutzen Sie die kombinierte Version
 - **Interactive Demos:** Asciinema Server für Live-Präsentationen
 
-## 🎨 Technische Details
+## Technische Details
 
 ### Aufnahme-Spezifikationen
 - **Terminal:** xterm-256color
@@ -59,15 +59,15 @@ asciinema play chromsploit_complete_demo.cast
 
 ### Inhaltliche Highlights
 
-#### 🔧 Framework-Features
-- ✅ 6 Advanced CVE Exploits mit echtem Code
-- ✅ AI-gestützte Exploit-Orchestrierung
-- ✅ Live-Monitoring & Dashboards
-- ✅ Payload-Obfuscation & Anti-Analysis
-- ✅ Self-Healing & Resilience
-- ✅ Professionelle Security Reports
+#### Framework-Features
+- 6 Advanced CVE Exploits mit echtem Code
+- AI-gestützte Exploit-Orchestrierung
+- Live-Monitoring & Dashboards
+- Payload-Obfuscation & Anti-Analysis
+- Self-Healing & Resilience
+- Professionelle Security Reports
 
-#### ⚡ CVE-Exploit Demos
+#### CVE-Exploit Demos
 - **CVE-2025-2783:** Chrome Mojo IPC Sandbox Escape
 - **CVE-2025-30397:** Edge WebAssembly JIT Type Confusion
 - **CVE-2025-24813:** Apache Tomcat RCE
@@ -75,7 +75,7 @@ asciinema play chromsploit_complete_demo.cast
 - **CVE-2025-4664:** Chrome Link Header Policy
 - **CVE-2025-2857:** Chrome OAuth Exploitation
 
-## 📊 Statistiken
+## Statistiken
 
 ```
 Gesamt-Aufnahmezeit: 106.28 Sekunden
@@ -85,7 +85,7 @@ Demonstrierte Features: 50+
 CVE-Exploits gezeigt: 6
 ```
 
-## 🛠️ Erstellung & Bearbeitung
+##  Erstellung & Bearbeitung
 
 ### Neue Aufnahmen erstellen
 ```bash
@@ -105,7 +105,7 @@ python3 concat_recordings.py
 # Empfohlen: asciinema-edit, terminalizer
 ```
 
-## 🎯 Zielgruppe
+## Zielgruppe
 
 ### Für Entwickler
 - **Repository-Besucher:** Schneller Überblick über Capabilities
@@ -117,15 +117,15 @@ python3 concat_recordings.py
 - **Penetration Testing:** Methodologie und Tools
 - **Vulnerability Research:** Exploit-Entwicklung
 
-## 📋 Metadata
+## Metadata
 
 ### Playlist-Information
 Die `playlist.json` enthält strukturierte Metadaten:
 ```json
 {
-  "title": "ChromSploit Framework Demo Playlist",
-  "description": "Complete demonstration of ChromSploit Framework capabilities",
-  "recordings": [...]
+ "title": "ChromSploit Framework Demo Playlist",
+ "description": "Complete demonstration of ChromSploit Framework capabilities",
+ "recordings": [...]
 }
 ```
 
@@ -138,15 +138,15 @@ Die `playlist.json` enthält strukturierte Metadaten:
 - `chrome-exploits`
 - `security-testing`
 
-## 🔒 Ethische Nutzung
+## Ethische Nutzung
 
-⚠️ **Wichtiger Hinweis:** Diese Demos dienen ausschließlich:
+ **Wichtiger Hinweis:** Diese Demos dienen ausschließlich:
 - **Autorisierte Penetration Tests**
 - **Cybersecurity-Bildung**
 - **Vulnerability Research**
 - **Security Awareness Training**
 
-## 📞 Support
+## Support
 
 Bei Fragen zu den Aufnahmen oder dem Framework:
 - GitHub Issues im Hauptrepository
@@ -155,5 +155,5 @@ Bei Fragen zu den Aufnahmen oder dem Framework:
 
 ---
 
-**ChromSploit Framework** - Professional Security Research Platform  
-🎬 *Demonstriert mit professionellen asciinema-Aufnahmen*
+**ChromSploit Framework** - Professional Security Research Platform 
+ *Demonstriert mit professionellen asciinema-Aufnahmen*

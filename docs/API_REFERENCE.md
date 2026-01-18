@@ -1,4 +1,4 @@
-# 📚 API Reference
+# API Reference
 
 ## Core Framework APIs
 
@@ -13,7 +13,7 @@ Central class for dynamic module loading with dependency management.
 ```python
 from core.module_loader import get_module_loader
 
-loader = get_module_loader()  # Singleton instance
+loader = get_module_loader() # Singleton instance
 ```
 
 **Methods:**
@@ -43,7 +43,7 @@ Checks if all module dependencies are available.
 ```python
 deps_ok, missing = loader.check_dependencies('browser_exploit_chain')
 if not deps_ok:
-    print(f"Missing dependencies: {missing}")
+ print(f"Missing dependencies: {missing}")
 ```
 
 **Returns:** Tuple of (dependencies_satisfied, missing_dependencies)
@@ -55,7 +55,7 @@ Returns dictionary of currently loaded modules.
 ```python
 loaded = loader.get_loaded_modules()
 for name, module in loaded.items():
-    print(f"Loaded: {name}")
+ print(f"Loaded: {name}")
 ```
 
 ### Exploit Chain API
@@ -78,22 +78,22 @@ Adds an exploit step to the chain.
 
 ```python
 step_id = chain.add_step(
-    exploit_id="cve_2025_4664",
-    parameters={
-        "target_url": "http://example.com",
-        "simulation_mode": True
-    },
-    dependencies=[]  # No dependencies for first step
+ exploit_id="cve_2025_4664",
+ parameters={
+ "target_url": "http://example.com",
+ "simulation_mode": True
+ },
+ dependencies=[] # No dependencies for first step
 )
 
 # Add dependent step
 second_step = chain.add_step(
-    exploit_id="cve_2025_2783",
-    parameters={
-        "target_url": "http://example.com",
-        "callback_port": 8080
-    },
-    dependencies=[step_id]  # Depends on first step
+ exploit_id="cve_2025_2783",
+ parameters={
+ "target_url": "http://example.com",
+ "callback_port": 8080
+ },
+ dependencies=[step_id] # Depends on first step
 )
 ```
 
@@ -110,19 +110,19 @@ Executes the exploit chain with optional progress tracking.
 
 ```python
 def progress_callback(step, status, result):
-    print(f"Step {step.id}: {status}")
-    if status == 'completed' and result.get('success'):
-        print(f"✓ {step.cve_id} successful")
+ print(f"Step {step.id}: {status}")
+ if status == 'completed' and result.get('success'):
+ print(f" {step.cve_id} successful")
 
 result = chain.execute(
-    parallel=False,  # Sequential execution
-    callback=progress_callback
+ parallel=False, # Sequential execution
+ callback=progress_callback
 )
 
 if result['success']:
-    print(f"Chain completed: {len(result['executed_steps'])} steps")
+ print(f"Chain completed: {len(result['executed_steps'])} steps")
 else:
-    print(f"Chain failed: {result['error']}")
+ print(f"Chain failed: {result['error']}")
 ```
 
 **Parameters:**
@@ -151,9 +151,9 @@ Executes a predefined exploit chain template.
 
 ```python
 target_config = {
-    'target_url': 'http://target.example.com',
-    'simulation_mode': True,
-    'callback_port': 8080
+ 'target_url': 'http://target.example.com',
+ 'simulation_mode': True,
+ 'callback_port': 8080
 }
 
 result = browser_chain.execute_template('full_browser_compromise', target_config)
@@ -172,7 +172,7 @@ Returns list of available exploit chain templates.
 ```python
 templates = browser_chain.get_available_templates()
 for template in templates:
-    print(f"Available: {template}")
+ print(f"Available: {template}")
 ```
 
 ### EnhancedBrowserExploitChain
@@ -193,15 +193,15 @@ Executes enhanced chain with automatic obfuscation and tunneling.
 
 ```python
 result = enhanced_chain.execute_enhanced_template(
-    'full_browser_compromise',
-    target_config,
-    obfuscation_level='ADVANCED'
+ 'full_browser_compromise',
+ target_config,
+ obfuscation_level='ADVANCED'
 )
 
 # Check obfuscation statistics
 if 'obfuscation_stats' in result:
-    stats = result['obfuscation_stats']
-    print(f"Obfuscated {stats['payloads_processed']} payloads")
+ stats = result['obfuscation_stats']
+ print(f"Obfuscated {stats['payloads_processed']} payloads")
 ```
 
 **Obfuscation Levels:**
@@ -236,9 +236,9 @@ from exploits.cve_2025_4664 import execute_exploit
 
 # Function-based interface (legacy compatibility)
 parameters = {
-    'target_url': 'http://example.com',
-    'simulation_mode': True,
-    'timeout': 30
+ 'target_url': 'http://example.com',
+ 'simulation_mode': True,
+ 'timeout': 30
 }
 
 result = execute_exploit(parameters)
@@ -267,13 +267,13 @@ result = exploit.execute('http://optional-target.com')
 
 # Standard result format
 {
-    'success': bool,           # Exploitation success
-    'cve_id': str,            # CVE identifier
-    'target': str,            # Target URL
-    'artifacts': dict,        # Collected artifacts
-    'metadata': dict,         # Execution metadata
-    'message': str,           # Human-readable result
-    'execution_time': float   # Time taken in seconds
+ 'success': bool, # Exploitation success
+ 'cve_id': str, # CVE identifier
+ 'target': str, # Target URL
+ 'artifacts': dict, # Collected artifacts
+ 'metadata': dict, # Execution metadata
+ 'message': str, # Human-readable result
+ 'execution_time': float # Time taken in seconds
 }
 ```
 
@@ -283,9 +283,9 @@ Check if target is accessible and potentially vulnerable.
 
 ```python
 if exploit.validate_target('http://example.com'):
-    result = exploit.execute()
+ result = exploit.execute()
 else:
-    print("Target not accessible or not vulnerable")
+ print("Target not accessible or not vulnerable")
 ```
 
 ## Obfuscation APIs
@@ -309,10 +309,10 @@ Obfuscate JavaScript payloads.
 ```python
 original_js = """
 function exploit() {
-    fetch('/api/data', {
-        method: 'POST',
-        body: JSON.stringify({cmd: 'whoami'})
-    });
+ fetch('/api/data', {
+ method: 'POST',
+ body: JSON.stringify({cmd: 'whoami'})
+ });
 }
 """
 
@@ -325,9 +325,9 @@ Obfuscate HTTP request payloads.
 
 ```python
 http_payload = {
-    'method': 'POST',
-    'headers': {'Content-Type': 'application/json'},
-    'data': {'exploit': 'payload_data'}
+ 'method': 'POST',
+ 'headers': {'Content-Type': 'application/json'},
+ 'data': {'exploit': 'payload_data'}
 }
 
 obfuscated_payload = obfuscator.obfuscate_http_payload(http_payload, 'STANDARD')
@@ -338,7 +338,7 @@ obfuscated_payload = obfuscator.obfuscate_http_payload(http_payload, 'STANDARD')
 Obfuscate binary payloads and shellcode.
 
 ```python
-shellcode = b"\x90\x90\x90\x90"  # Example shellcode
+shellcode = b"\x90\x90\x90\x90" # Example shellcode
 obfuscated_shellcode = obfuscator.obfuscate_binary_data(shellcode, 'ADVANCED')
 ```
 
@@ -368,8 +368,8 @@ print(f"Callback URL: {public_url}")
 
 # TCP tunnel with custom options
 tcp_tunnel = ngrok.create_tunnel('tcp', 4444, {
-    'region': 'us',
-    'bind_tls': True
+ 'region': 'us',
+ 'bind_tls': True
 })
 ```
 
@@ -415,14 +415,14 @@ Log structured messages with context.
 
 ```python
 logger.log('INFO', 'Starting exploit execution', {
-    'cve_id': 'CVE-2025-4664',
-    'target': 'http://example.com',
-    'component': 'exploit_engine'
+ 'cve_id': 'CVE-2025-4664',
+ 'target': 'http://example.com',
+ 'component': 'exploit_engine'
 })
 
 logger.log('ERROR', 'Exploit failed', {
-    'error_type': 'NetworkError',
-    'retry_count': 3
+ 'error_type': 'NetworkError',
+ 'retry_count': 3
 })
 ```
 
@@ -450,13 +450,13 @@ error_handler = get_error_handler()
 # Decorator usage
 @handle_errors
 def risky_operation():
-    # Code that might fail
-    pass
+ # Code that might fail
+ pass
 
 # Context manager usage
 with error_handler.error_context('Operation name'):
-    # Code with automatic error handling
-    pass
+ # Code with automatic error handling
+ pass
 ```
 
 ## Configuration APIs
@@ -518,9 +518,9 @@ Execute complete test suite.
 ```python
 results = validator.run_all_tests()
 for suite_name, test_results in results.items():
-    passed = sum(1 for r in test_results if r.passed)
-    total = len(test_results)
-    print(f"{suite_name}: {passed}/{total} tests passed")
+ passed = sum(1 for r in test_results if r.passed)
+ total = len(test_results)
+ print(f"{suite_name}: {passed}/{total} tests passed")
 ```
 
 ##### `run_exploit_tests(cve_id: str = None) -> List[TestResult]`
@@ -553,22 +553,22 @@ print(f"Module loading: {benchmarks['module_load_time']:.2f}s")
 
 ```python
 {
-    'success': bool,              # True if exploit succeeded
-    'cve_id': str,               # CVE identifier
-    'target': str,               # Target URL or IP
-    'message': str,              # Human-readable result
-    'artifacts': {               # Collected data/files
-        'cookies': dict,
-        'responses': list,
-        'files': list
-    },
-    'metadata': {                # Execution metadata
-        'timestamp': str,        # ISO format timestamp
-        'execution_time': float, # Seconds taken
-        'simulation': bool,      # Was this simulated?
-        'obfuscation_applied': bool
-    },
-    'error': str                 # Error message if success=False
+ 'success': bool, # True if exploit succeeded
+ 'cve_id': str, # CVE identifier
+ 'target': str, # Target URL or IP
+ 'message': str, # Human-readable result
+ 'artifacts': { # Collected data/files
+ 'cookies': dict,
+ 'responses': list,
+ 'files': list
+ },
+ 'metadata': { # Execution metadata
+ 'timestamp': str, # ISO format timestamp
+ 'execution_time': float, # Seconds taken
+ 'simulation': bool, # Was this simulated?
+ 'obfuscation_applied': bool
+ },
+ 'error': str # Error message if success=False
 }
 ```
 
@@ -576,18 +576,18 @@ print(f"Module loading: {benchmarks['module_load_time']:.2f}s")
 
 ```python
 {
-    'success': bool,
-    'chain_id': str,
-    'executed_steps': list,      # List of completed steps
-    'failed_steps': list,        # List of failed steps
-    'total_time': float,
-    'artifacts': dict,           # Combined artifacts
-    'chain_statistics': {
-        'total_steps': int,
-        'successful_steps': int,
-        'failed_steps': int,
-        'parallel_execution': bool
-    }
+ 'success': bool,
+ 'chain_id': str,
+ 'executed_steps': list, # List of completed steps
+ 'failed_steps': list, # List of failed steps
+ 'total_time': float,
+ 'artifacts': dict, # Combined artifacts
+ 'chain_statistics': {
+ 'total_steps': int,
+ 'successful_steps': int,
+ 'failed_steps': int,
+ 'parallel_execution': bool
+ }
 }
 ```
 
@@ -595,13 +595,13 @@ print(f"Module loading: {benchmarks['module_load_time']:.2f}s")
 
 ```python
 {
-    'name': str,
-    'version': str,
-    'description': str,
-    'dependencies': list,        # Required dependencies
-    'optional_dependencies': list,
-    'loaded': bool,
-    'fallback_available': bool
+ 'name': str,
+ 'version': str,
+ 'description': str,
+ 'dependencies': list, # Required dependencies
+ 'optional_dependencies': list,
+ 'loaded': bool,
+ 'fallback_available': bool
 }
 ```
 
@@ -621,32 +621,32 @@ browser_chain = EnhancedBrowserExploitChain()
 
 # Configure target
 target_config = {
-    'target_url': 'http://target.example.com',
-    'simulation_mode': True,
-    'callback_port': 8080,
-    'ngrok_enabled': True,
-    'obfuscation_enabled': True
+ 'target_url': 'http://target.example.com',
+ 'simulation_mode': True,
+ 'callback_port': 8080,
+ 'ngrok_enabled': True,
+ 'obfuscation_enabled': True
 }
 
 # Execute enhanced browser chain
 logger.log('INFO', 'Starting browser exploit chain', {'target': target_config['target_url']})
 
 result = browser_chain.execute_enhanced_template(
-    'full_browser_compromise',
-    target_config,
-    obfuscation_level='ADVANCED'
+ 'full_browser_compromise',
+ target_config,
+ obfuscation_level='ADVANCED'
 )
 
 # Process results
 if result['success']:
-    logger.log('INFO', f"Chain completed successfully: {len(result['executed_steps'])} steps")
-    
-    # Extract artifacts
-    for step in result['executed_steps']:
-        if step['artifacts']:
-            logger.log('INFO', f"Artifacts from {step['cve_id']}: {list(step['artifacts'].keys())}")
+ logger.log('INFO', f"Chain completed successfully: {len(result['executed_steps'])} steps")
+ 
+ # Extract artifacts
+ for step in result['executed_steps']:
+ if step['artifacts']:
+ logger.log('INFO', f"Artifacts from {step['cve_id']}: {list(step['artifacts'].keys())}")
 else:
-    logger.log('ERROR', f"Chain failed: {result['error']}")
+ logger.log('ERROR', f"Chain failed: {result['error']}")
 ```
 
 ### Custom Module Development
@@ -656,25 +656,25 @@ else:
 from typing import Dict, Any
 
 class CustomReconModule:
-    def __init__(self):
-        self.name = "CustomRecon"
-        self.version = "1.0.0"
-    
-    def scan_target(self, target: str) -> Dict[str, Any]:
-        # Custom reconnaissance logic
-        return {
-            'success': True,
-            'target': target,
-            'findings': {'ports': [80, 443], 'services': ['http', 'https']}
-        }
+ def __init__(self):
+ self.name = "CustomRecon"
+ self.version = "1.0.0"
+ 
+ def scan_target(self, target: str) -> Dict[str, Any]:
+ # Custom reconnaissance logic
+ return {
+ 'success': True,
+ 'target': target,
+ 'findings': {'ports': [80, 443], 'services': ['http', 'https']}
+ }
 
 def register():
-    return {
-        'name': 'CustomRecon',
-        'version': '1.0.0',
-        'class': CustomReconModule,
-        'dependencies': ['requests', 'socket']
-    }
+ return {
+ 'name': 'CustomRecon',
+ 'version': '1.0.0',
+ 'class': CustomReconModule,
+ 'dependencies': ['requests', 'socket']
+ }
 
 # Usage
 from core.module_loader import get_module_loader

@@ -1,10 +1,10 @@
 # ChromSploit Framework v3.0 - Dokumentation
 
-## 📖 Übersicht
+## Übersicht
 
 Willkommen zur offiziellen Dokumentation des ChromSploit Frameworks v3.0. Diese Dokumentation bietet umfassende Informationen über Installation, Verwendung, Architektur und API-Referenzen.
 
-## 📚 Dokumentationsstruktur
+## Dokumentationsstruktur
 
 ### 1. [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)
 **Projektübersicht und Implementierungsstatus**
@@ -52,9 +52,9 @@ Willkommen zur offiziellen Dokumentation des ChromSploit Frameworks v3.0. Diese 
 - Performance-Optimierungen
 - Community-Features
 
-## 🚀 Hauptfeatures v3.0
+## Hauptfeatures v3.0
 
-### ✅ Implementierte Features
+### Implementierte Features
 
 1. **Module Loader System** - Dynamisches Laden mit Fallbacks
 2. **Validation Framework** - Umfassende Tests
@@ -65,7 +65,7 @@ Willkommen zur offiziellen Dokumentation des ChromSploit Frameworks v3.0. Diese 
 7. **Enhanced Obfuscation** - Multi-Level + OLLVM
 8. **Live Monitoring** - Echtzeit-Dashboard
 
-## 🛠️ Quick Links
+##  Quick Links
 
 ### Installation
 ```bash
@@ -83,7 +83,7 @@ python chromsploit.py
 - API-Docs: [API_REFERENCE.md](API_REFERENCE.md)
 - Architektur: [ARCHITECTURE.md](ARCHITECTURE.md)
 
-## 📋 Voraussetzungen
+## Voraussetzungen
 
 ### Erforderlich
 - Python 3.9+
@@ -95,7 +95,7 @@ python chromsploit.py
 - astor (Python-Obfuskierung)
 - OLLVM (Binary-Obfuskierung)
 
-## 🔒 Sicherheit & Ethik
+## Sicherheit & Ethik
 
 **WICHTIG**: Dieses Framework ist ausschließlich für:
 - Bildungszwecke
@@ -104,7 +104,7 @@ python chromsploit.py
 
 Verwendung nur auf eigenen Systemen oder mit expliziter Erlaubnis!
 
-## 🤝 Beitragen
+## Beitragen
 
 Beiträge sind willkommen! Bitte beachten Sie:
 1. Code muss dokumentiert sein
@@ -112,16 +112,16 @@ Beiträge sind willkommen! Bitte beachten Sie:
 3. Sicherheit hat Priorität
 4. Ethische Richtlinien beachten
 
-## 📄 Lizenz
+## Lizenz
 
 Apache 2.0 Lizenz - Leviticus Triage
 
-## 📞 Support
+## Support
 
 - Issues: GitHub Issues
 
 ---
 
-**Version**: 3.0  
-**Letzte Aktualisierung**: Juni 2025  
+**Version**: 3.0 
+**Letzte Aktualisierung**: Juni 2025 
 **Status**: beta

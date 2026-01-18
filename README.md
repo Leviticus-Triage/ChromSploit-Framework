@@ -16,33 +16,33 @@
 
 ---
 
-## 📋 Overview
+## Overview
 
 ChromSploit Framework is a cutting-edge educational security research tool designed for cybersecurity professionals, researchers, and students. Built with a modular architecture, it provides a comprehensive platform for studying browser vulnerabilities and exploitation techniques in controlled environments.
 
-> ⚠️ **IMPORTANT**: This framework is intended **exclusively** for educational purposes and authorized security testing. Unauthorized use is strictly prohibited and may violate applicable laws.
+>  **IMPORTANT**: This framework is intended **exclusively** for educational purposes and authorized security testing. Unauthorized use is strictly prohibited and may violate applicable laws.
 
 ### Key Highlights
 
-- **🔍 Intelligent Browser Detection**: Automatic browser identification and exploit recommendations
-- **📊 Analytics Dashboard**: Real-time monitoring and performance metrics
-- **⚡ Performance Optimization**: Advanced caching system for faster execution
-- **🛡️ Enhanced Safety**: Multi-level authorization and target validation
-- **🧪 Automated Testing**: Browser test automation with Selenium/Playwright
-- **🔗 Multi-Exploit Chains**: Automated combination of multiple CVEs
-- **🎨 Advanced Obfuscation**: EXTREME-level payload obfuscation with 9+ techniques
-- **🌐 Auto-Ngrok Integration**: Automatic tunnel creation for seamless exploitation
-- **📄 Professional Reporting**: Comprehensive PDF/HTML/JSON reports
+- **Intelligent Browser Detection**: Automatic browser identification and exploit recommendations
+- **Analytics Dashboard**: Real-time monitoring and performance metrics
+- **Performance Optimization**: Advanced caching system for faster execution
+- **Enhanced Safety**: Multi-level authorization and target validation
+- **Automated Testing**: Browser test automation with Selenium/Playwright
+- **Multi-Exploit Chains**: Automated combination of multiple CVEs
+- **Advanced Obfuscation**: EXTREME-level payload obfuscation with 9+ techniques
+- **Auto-Ngrok Integration**: Automatic tunnel creation for seamless exploitation
+- **Professional Reporting**: Comprehensive PDF/HTML/JSON reports
 
 ---
 
-## ✨ Features
+## Features
 
 <table>
 <tr>
 <td width="50%">
 
-### 🎯 Core Capabilities
+### Core Capabilities
 - **9 Advanced CVE Exploits** with real functional code
 - **Browser Detection & Auto-Selection** for intelligent targeting
 - **Monitoring & Analytics Dashboard** with real-time metrics
@@ -57,7 +57,7 @@ ChromSploit Framework is a cutting-edge educational security research tool desig
 </td>
 <td width="50%">
 
-### 🚀 Advanced Features
+### Advanced Features
 - **Extreme Payload Obfuscation** (Control Flow, String Encryption, Anti-VM)
 - **Automatic Ngrok Tunneling** (TCP, HTTP, WebSocket)
 - **Professional Security Reports** (PDF, HTML, Markdown, JSON)
@@ -75,7 +75,7 @@ ChromSploit Framework is a cutting-edge educational security research tool desig
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -93,7 +93,7 @@ cd ChromSploit-Framework
 
 # 2. Create virtual environment
 python3 -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate # Windows: venv\Scripts\activate
 
 # 3. Install dependencies
 pip install -r requirements.txt
@@ -117,35 +117,35 @@ python chromsploit.py --check
 
 ---
 
-## 🎯 CVE Exploit Arsenal
+## CVE Exploit Arsenal
 
 <details>
-<summary><b>📋 Click to expand CVE details</b></summary>
+<summary><b>Click to expand CVE details</b></summary>
 
 ### Browser Exploits
 
 | CVE ID | Target | Type | Description | Status |
 |--------|--------|------|-------------|--------|
-| **CVE-2025-4664** | Chrome | Data Leak | Link header referrer policy bypass | ✅ Functional |
-| **CVE-2025-2783** | Chrome | Sandbox Escape | Mojo IPC handle confusion | ✅ Functional |
-| **CVE-2025-30397** | Edge | Memory Corruption | WebAssembly JIT type confusion | ✅ Functional |
-| **CVE-2025-2857** | Firefox | Sandbox Escape | IPDL privilege escalation | ✅ Functional |
-| **CVE-2025-49741** | Edge | Information Disclosure | Internal request data leakage | ✅ Functional |
-| **CVE-2020-6519** | Chromium | CSP Bypass | Content Security Policy bypass | ✅ Functional |
-| **CVE-2017-5375** | Firefox | RCE | ASM.JS JIT-Spray Remote Code Execution | ✅ Functional |
+| **CVE-2025-4664** | Chrome | Data Leak | Link header referrer policy bypass | Functional |
+| **CVE-2025-2783** | Chrome | Sandbox Escape | Mojo IPC handle confusion | Functional |
+| **CVE-2025-30397** | Edge | Memory Corruption | WebAssembly JIT type confusion | Functional |
+| **CVE-2025-2857** | Firefox | Sandbox Escape | IPDL privilege escalation | Functional |
+| **CVE-2025-49741** | Edge | Information Disclosure | Internal request data leakage | Functional |
+| **CVE-2020-6519** | Chromium | CSP Bypass | Content Security Policy bypass | Functional |
+| **CVE-2017-5375** | Firefox | RCE | ASM.JS JIT-Spray Remote Code Execution | Functional |
 
 ### Server-Side Exploits
 
 | CVE ID | Target | Type | Description | Status |
 |--------|--------|------|-------------|--------|
-| **CVE-2025-24813** | Apache Tomcat | RCE | Malicious WAR deployment | ✅ Functional |
-| **CVE-2024-32002** | Git | RCE | Symbolic link repository attack | ✅ Functional |
+| **CVE-2025-24813** | Apache Tomcat | RCE | Malicious WAR deployment | Functional |
+| **CVE-2024-32002** | Git | RCE | Symbolic link repository attack | Functional |
 
 </details>
 
 ---
 
-## 🔍 New in v3.0: Intelligent Features
+## New in v3.0: Intelligent Features
 
 ### Browser Detection & Auto-Selection
 
@@ -175,7 +175,7 @@ Real-time tracking and analytics for exploit execution:
 - **Historical Data**: Last 1000 exploit attempts tracked
 - **Report Export**: JSON report generation
 
-Access via: Main Menu → **📊 Analytics Dashboard**
+Access via: Main Menu → Analytics Dashboard
 
 ### Caching System
 
@@ -208,7 +208,7 @@ Automated browser testing with Selenium/Playwright:
 
 ---
 
-## 🔗 Browser Multi-Exploit Chain
+## Browser Multi-Exploit Chain
 
 The flagship feature that automates exploitation of multiple browser CVEs in sequence:
 
@@ -216,14 +216,14 @@ The flagship feature that automates exploitation of multiple browser CVEs in seq
 
 ```mermaid
 graph LR
-    A[🔍 CVE-2025-4664<br/>Reconnaissance] --> B[🔐 CVE-2025-2857<br/>OAuth Theft]
-    B --> C[🧠 CVE-2025-30397<br/>WebAssembly JIT]
-    C --> D[💥 CVE-2025-2783<br/>Sandbox Escape]
-    
-    style A fill:#e1f5fe
-    style B fill:#f3e5f5
-    style C fill:#fff3e0
-    style D fill:#ffebee
+ A[CVE-2025-4664<br/>Reconnaissance] --> B[CVE-2025-2857<br/>OAuth Theft]
+ B --> C[CVE-2025-30397<br/>WebAssembly JIT]
+ C --> D[CVE-2025-2783<br/>Sandbox Escape]
+ 
+ style A fill:#e1f5fe
+ style B fill:#f3e5f5
+ style C fill:#fff3e0
+ style D fill:#ffebee
 ```
 
 </div>
@@ -238,47 +238,47 @@ graph LR
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 <details>
-<summary><b>📋 System Architecture Overview</b></summary>
+<summary><b>System Architecture Overview</b></summary>
 
 ```
 ChromSploit Framework v3.0
-├──  Core Engine
-│   ├── Enhanced Menu System
-│   ├── Module Loader
-│   ├── Exploit Chain Manager
-│   ├── Error Handler
-│   └── Safety Manager
-├──  Detection & Analytics
-│   ├── Browser Detector
-│   ├── Exploit Monitor
-│   └── Analytics Dashboard
-├──  Performance & Caching
-│   ├── Exploit Cache
-│   └── Cache Manager
-├──  Exploit Modules
-│   ├── Browser CVEs (7)
-│   ├── Server CVEs (2)
-│   └── Custom Exploits
-├──  Obfuscation Engine
-│   ├── JavaScript Obfuscation
-│   ├── Binary Data Encryption
-│   ├── Control Flow Flattening
-│   └── Anti-Analysis
-├──  Testing Framework
-│   ├── Browser Test Automation
-│   ├── Selenium Integration
-│   └── Playwright Integration
-├──  Network Integration
-│   ├── Ngrok Manager
-│   ├── HTTP Servers
-│   └── WebSocket Handlers
-└──  Reporting System
-    ├── PDF Generation
-    ├── HTML Reports
-    └── JSON Export
+├── Core Engine
+│ ├── Enhanced Menu System
+│ ├── Module Loader
+│ ├── Exploit Chain Manager
+│ ├── Error Handler
+│ └── Safety Manager
+├── Detection & Analytics
+│ ├── Browser Detector
+│ ├── Exploit Monitor
+│ └── Analytics Dashboard
+├── Performance & Caching
+│ ├── Exploit Cache
+│ └── Cache Manager
+├── Exploit Modules
+│ ├── Browser CVEs (7)
+│ ├── Server CVEs (2)
+│ └── Custom Exploits
+├── Obfuscation Engine
+│ ├── JavaScript Obfuscation
+│ ├── Binary Data Encryption
+│ ├── Control Flow Flattening
+│ └── Anti-Analysis
+├── Testing Framework
+│ ├── Browser Test Automation
+│ ├── Selenium Integration
+│ └── Playwright Integration
+├── Network Integration
+│ ├── Ngrok Manager
+│ ├── HTTP Servers
+│ └── WebSocket Handlers
+└── Reporting System
+ ├── PDF Generation
+ ├── HTML Reports
+ └── JSON Export
 ```
 
 </details>
@@ -295,7 +295,7 @@ ChromSploit Framework v3.0
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 | Document | Description |
 |----------|-------------|
@@ -309,7 +309,7 @@ ChromSploit Framework v3.0
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -332,36 +332,36 @@ python -m core.validation_framework
 
 ---
 
-## 🆕 What's New in v3.0
+## What's New in v3.0
 
 <details>
-<summary><b>🚀 Major Updates & Features</b></summary>
+<summary><b>Major Updates & Features</b></summary>
 
 ### New Features
 
-#### 🔍 Intelligent Detection & Analytics
+#### Intelligent Detection & Analytics
 - **Browser Detection & Auto-Selection**: Automatic browser identification from User-Agent
 - **Monitoring & Analytics Dashboard**: Real-time exploit tracking and statistics
 - **Compatibility Matrix**: Browser version compatibility tracking for all CVEs
 - **Success Rate Tracking**: Per-CVE success rate calculation
 
-#### ⚡ Performance & Caching
+#### Performance & Caching
 - **Advanced Caching System**: Payload, obfuscation, and detection caching
 - **Persistent Storage**: JSON-based cache with TTL management
 - **LRU Eviction**: Automatic cache management
 
-#### 🛡️ Enhanced Safety
+#### Enhanced Safety
 - **Multi-Level Authorization**: Per-user/exploit authorization system
 - **Target Validation**: Localhost checks and production warnings
 - **Safety Levels**: Configurable safety modes (SAFE, RESTRICTED, STANDARD, UNRESTRICTED)
 - **Comprehensive Audit Logging**: Complete action tracking
 
-#### 🧪 Testing & Automation
+#### Testing & Automation
 - **Browser Test Automation**: Selenium/Playwright integration
 - **Multi-Browser Testing**: Automated testing across browsers
 - **Test Reports**: Detailed validation results
 
-#### 🎯 New CVE Exploits
+#### New CVE Exploits
 - **CVE-2025-49741**: Edge Information Disclosure
 - **CVE-2020-6519**: Chromium CSP Bypass
 - **CVE-2017-5375**: Firefox ASM.JS JIT-Spray RCE
@@ -389,7 +389,7 @@ python -m core.validation_framework
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions from the security research community!
 
@@ -424,22 +424,22 @@ Please read our [Contributing Guide](CONTRIBUTING.md) for detailed information.
 
 ---
 
-## 🔒 Security & Ethics
+## Security & Ethics
 
 ### Responsible Use
 
 This framework is designed for:
-- ✅ **Educational purposes** and learning
-- ✅ **Authorized penetration testing**
-- ✅ **Security research** in controlled environments
-- ✅ **Bug bounty programs** with proper authorization
+- **Educational purposes** and learning
+- **Authorized penetration testing**
+- **Security research** in controlled environments
+- **Bug bounty programs** with proper authorization
 
 ### Prohibited Uses
 
-- ❌ **Unauthorized access** to systems or networks
-- ❌ **Malicious attacks** on third-party systems
-- ❌ **Commercial exploitation** without permission
-- ❌ **Distribution of malware** or harmful content
+- **Unauthorized access** to systems or networks
+- **Malicious attacks** on third-party systems
+- **Commercial exploitation** without permission
+- **Distribution of malware** or harmful content
 
 ### Safety Features
 
@@ -453,20 +453,20 @@ This framework is designed for:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
 
 ### Summary
-- ✅ Commercial use allowed (with restrictions)
-- ✅ Modification and distribution permitted
-- ✅ Patent use granted
-- ❗ **Must include license and copyright notice**
-- ❗ **No warranty provided**
+- Commercial use allowed (with restrictions)
+- Modification and distribution permitted
+- Patent use granted
+- **Must include license and copyright notice**
+- **No warranty provided**
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 <div align="center">
 
@@ -482,7 +482,7 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](LI
 
 ---
 
-## 📞 Support & Contact
+## Support & Contact
 
 <table>
 <tr>
@@ -514,9 +514,9 @@ Responsible disclosure
 
 <div align="center">
 
-### ⭐ Star us on GitHub if ChromSploit Framework helped your security research! 
+### Star us on GitHub if ChromSploit Framework helped your security research! 
 
-**Made with ❤️ by the Leviticus-Triage Team**
+**Made with by the Leviticus-Triage Team**
 
 [![GitHub stars](https://img.shields.io/github/stars/Leviticus-Triage/ChromSploit-Framework.svg?style=social&label=Star)](../../stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/Leviticus-Triage/ChromSploit-Framework.svg?style=social&label=Fork)](../../network/members)

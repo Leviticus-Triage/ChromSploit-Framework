@@ -1,6 +1,6 @@
 # ChromSploit Framework v3.0 - Benutzeranleitung
 
-## 🚀 Schnellstart
+## Schnellstart
 
 ### Installation und Start
 
@@ -19,7 +19,7 @@ python chromsploit.py --simulation safe
 python chromsploit.py --debug
 ```
 
-## 📚 Feature-Anleitungen
+## Feature-Anleitungen
 
 ### 1. Module Loader System
 
@@ -34,17 +34,17 @@ Das Module Loader System lädt Module dynamisch und verwaltet Abhängigkeiten au
 
 **Schritte zur Erstellung einer Exploit-Chain**:
 
-1. Hauptmenü → "⚔️ Exploitation Chains"
+1. Hauptmenü → " Exploitation Chains"
 2. Wähle "Create New Chain"
 3. Optionen:
-   - **Manual Creation**: Schritt für Schritt konfigurieren
-   - **AI-Assisted**: KI analysiert Ziel und schlägt Chain vor
-   - **From Template**: Vordefinierte Chains verwenden
+ - **Manual Creation**: Schritt für Schritt konfigurieren
+ - **AI-Assisted**: KI analysiert Ziel und schlägt Chain vor
+ - **From Template**: Vordefinierte Chains verwenden
 
 **Beispiel einer Chain**:
 ```
 1. Reconnaissance (CVE-2025-4664) → Daten sammeln
-2. Initial Access (OAuth Exploit) → Zugang erhalten  
+2. Initial Access (OAuth Exploit) → Zugang erhalten 
 3. Privilege Escalation (CVE-2025-2783) → Rechte erweitern
 4. Persistence (Custom Payload) → Zugang sichern
 ```
@@ -53,11 +53,11 @@ Das Module Loader System lädt Module dynamisch und verwaltet Abhängigkeiten au
 
 **KI-gestützte Exploit-Auswahl**:
 
-1. Hauptmenü → "⚔️ Exploitation Chains" → "AI-Assisted Chain"
+1. Hauptmenü → " Exploitation Chains" → "AI-Assisted Chain"
 2. Zielinformationen eingeben:
-   - Browser-Typ und Version
-   - Betriebssystem
-   - Bekannte Schwachstellen
+ - Browser-Typ und Version
+ - Betriebssystem
+ - Bekannte Schwachstellen
 3. KI analysiert und empfiehlt optimale Exploit-Kombination
 
 **Fallback-Modus**:
@@ -69,15 +69,15 @@ Falls ML-Bibliotheken nicht verfügbar, nutzt das System regelbasierte Auswahl.
 
 1. Hauptmenü → "Resilience & Self-Healing"
 2. Optionen:
-   - **System Health Status**: Aktueller Zustand aller Komponenten
-   - **Start Monitoring**: Automatische Überwachung aktivieren
-   - **Self-Healing System**: Proaktive Heilung aktivieren
+ - **System Health Status**: Aktueller Zustand aller Komponenten
+ - **Start Monitoring**: Automatische Überwachung aktivieren
+ - **Self-Healing System**: Proaktive Heilung aktivieren
 
 **Komponenten-Status**:
-- 🟢 **Healthy**: Komponente funktioniert normal
-- 🟡 **Degraded**: Teilweise Probleme
-- 🔴 **Failed**: Komponente ausgefallen
-- 🔵 **Recovering**: Wiederherstellung läuft
+- **Healthy**: Komponente funktioniert normal
+- **Degraded**: Teilweise Probleme
+- **Failed**: Komponente ausgefallen
+- **Recovering**: Wiederherstellung läuft
 
 ### 5. Enhanced Obfuscation
 
@@ -87,10 +87,10 @@ Falls ML-Bibliotheken nicht verfügbar, nutzt das System regelbasierte Auswahl.
 2. "Obfuscate JavaScript"
 3. Code eingeben oder Datei laden
 4. Obfuskierungslevel wählen:
-   - **MINIMAL**: Basis-Obfuskierung
-   - **STANDARD**: Empfohlenes Level
-   - **AGGRESSIVE**: Starke Obfuskierung
-   - **MAXIMUM**: Maximale Obfuskierung
+ - **MINIMAL**: Basis-Obfuskierung
+ - **STANDARD**: Empfohlenes Level
+ - **AGGRESSIVE**: Starke Obfuskierung
+ - **MAXIMUM**: Maximale Obfuskierung
 
 **Multi-Stage Payloads**:
 - Erstelle mehrstufige Payloads mit steigender Obfuskierung
@@ -103,28 +103,28 @@ Falls ML-Bibliotheken nicht verfügbar, nutzt das System regelbasierte Auswahl.
 1. Hauptmenü → "Live Monitoring"
 2. "Terminal Display"
 3. Tastenkombinationen:
-   - `q`: Beenden
-   - `s`: Statistiken ein/aus
-   - `c`: Events löschen
-   - `f`: Filter setzen
+ - `q`: Beenden
+ - `s`: Statistiken ein/aus
+ - `c`: Events löschen
+ - `f`: Filter setzen
 
 **Web Dashboard**:
 
 1. "Web Dashboard" wählen
 2. Browser öffnet automatisch: http://localhost:8889
 3. Features:
-   - Echtzeit-Statistiken
-   - Event-Timeline
-   - Filterbare Event-Liste
+ - Echtzeit-Statistiken
+ - Event-Timeline
+ - Filterbare Event-Liste
 
 **Alerts konfigurieren**:
 ```
 1. "Alert Configuration"
 2. "Add Alert"
 3. Bedingungen definieren:
-   - Event-Typ (z.B. EXPLOIT_SUCCESS)
-   - Mindest-Priorität
-   - Nachrichteninhalt
+ - Event-Typ (z.B. EXPLOIT_SUCCESS)
+ - Mindest-Priorität
+ - Nachrichteninhalt
 ```
 
 ### 7. Exploit-Ausführung
@@ -137,11 +137,11 @@ Falls ML-Bibliotheken nicht verfügbar, nutzt das System regelbasierte Auswahl.
 4. "Execute Exploit" wählen
 
 **Sicherheitshinweise**:
-- ⚠️ Nur auf eigenen Systemen oder mit Erlaubnis verwenden
-- 🛡️ Simulationsmodus für Tests nutzen
-- 📝 Alle Aktionen werden geloggt
+-  Nur auf eigenen Systemen oder mit Erlaubnis verwenden
+-  Simulationsmodus für Tests nutzen
+- Alle Aktionen werden geloggt
 
-## 🛠️ Erweiterte Funktionen
+##  Erweiterte Funktionen
 
 ### Validation Framework
 
@@ -172,7 +172,7 @@ python -m core.validation_framework
 - Verfügbar in: JSON, HTML, Markdown
 - Speicherort: `reports/`
 
-## 🔧 Konfiguration
+## Konfiguration
 
 ### Abhängigkeiten installieren
 
@@ -196,59 +196,59 @@ pip install astor
 
 1. Hauptmenü → "Einstellungen"
 2. Optionen:
-   - Logging-Level anpassen
-   - Simulationsmodus aktivieren
-   - Ausgabeverzeichnis ändern
-   - Module aktivieren/deaktivieren
+ - Logging-Level anpassen
+ - Simulationsmodus aktivieren
+ - Ausgabeverzeichnis ändern
+ - Module aktivieren/deaktivieren
 
-## 📊 Typische Workflows
+## Typische Workflows
 
 ### 1. Penetrationstest-Workflow
 
 ```
 1. Reconnaissance
-   → Ziel analysieren
-   → Schwachstellen identifizieren
+ → Ziel analysieren
+ → Schwachstellen identifizieren
 
 2. Exploit-Auswahl
-   → KI-Orchestrator nutzen
-   → Passende CVEs auswählen
+ → KI-Orchestrator nutzen
+ → Passende CVEs auswählen
 
 3. Chain erstellen
-   → Exploit-Reihenfolge planen
-   → Abhängigkeiten prüfen
+ → Exploit-Reihenfolge planen
+ → Abhängigkeiten prüfen
 
 4. Ausführung
-   → Live-Monitoring aktivieren
-   → Chain ausführen
-   → Ergebnisse überwachen
+ → Live-Monitoring aktivieren
+ → Chain ausführen
+ → Ergebnisse überwachen
 
 5. Reporting
-   → Automatische Reports prüfen
-   → Zusätzliche Dokumentation
+ → Automatische Reports prüfen
+ → Zusätzliche Dokumentation
 ```
 
 ### 2. Entwicklungs-Workflow
 
 ```
 1. Neuen Exploit entwickeln
-   → Template verwenden
-   → In exploits/ speichern
+ → Template verwenden
+ → In exploits/ speichern
 
 2. Validation
-   → Tests schreiben
-   → Framework-Tests ausführen
+ → Tests schreiben
+ → Framework-Tests ausführen
 
 3. Integration
-   → Module Loader registrierung
-   → Menü-Integration
+ → Module Loader registrierung
+ → Menü-Integration
 
 4. Obfuskierung
-   → Payload obfuskieren
-   → Anti-Detection hinzufügen
+ → Payload obfuskieren
+ → Anti-Detection hinzufügen
 ```
 
-## ❓ Häufige Fragen
+## Häufige Fragen
 
 **Q: Wie aktiviere ich alle Features?**
 A: Installiere alle optionalen Abhängigkeiten mit:
@@ -265,7 +265,7 @@ A: Nutze die Vorlagen in `exploits/` und registriere sie im Module Loader.
 **Q: Kann ich das Framework remote nutzen?**
 A: Ja, nutze Ngrok Tunneling aus dem Hauptmenü für Remote-Zugriff.
 
-## 🚨 Sicherheitshinweise
+## Sicherheitshinweise
 
 1. **Nur für autorisierte Tests** verwenden
 2. **Simulationsmodus** für Entwicklung und Tests
